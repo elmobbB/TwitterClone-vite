@@ -10,7 +10,10 @@ import { createUserDocument } from "../../firebase";
 import { db } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
 // import { dataRef } from "../../firebase";
-function TweetBox() {
+interface ButtonProps {
+  onFetch: () => void;
+}
+function TweetBox({ onFetch }: ButtonProps) {
   const [tweetContent, setTweetContent] = useState("");
   function submitHandler(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -19,7 +22,7 @@ function TweetBox() {
     //send data to database
 
     try {
-      const docRef = addDoc(collection(db, "users"), {
+      const docRef = addDoc(collection(db, "tweets"), {
         tweetContent: tweetContent,
       });
     } catch (e) {
@@ -70,6 +73,7 @@ function TweetBox() {
             </div>
             <div>
               <button
+                onClick={onFetch}
                 type="submit"
                 disabled={!tweetContent}
                 className="bg-twitter rounded-full px-5 py-2 font-bold text-white disabled:opacity-40"

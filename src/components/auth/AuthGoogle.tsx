@@ -2,11 +2,24 @@ import React, { useEffect } from "react";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
 import firebase from "firebase/compat/app";
-function AuthGoogle(props) {
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../firebase";
+interface Props {
+  auth: any;
+}
+function AuthGoogle({ auth }: Props) {
+  // try {
+  //   //create an user collection
+  //   const docRef = addDoc(collection(db, "users"), {
+  //     uid: user.uid,
+  //     email: user.email,
+  //   });
+  // } catch (e) {
+  //   console.log("error");
+  // }
   useEffect(() => {
     const ui =
-      firebaseui.auth.AuthUI.getInstance() ||
-      new firebaseui.auth.AuthUI(props.auth);
+      firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
     ui.start(".firebase-auth-container", {
       signInOptions: [
         {
@@ -17,7 +30,7 @@ function AuthGoogle(props) {
       signInSuccessUrl: "/authenticated",
       privacyPolicyUrl: "<your-privacy-policy-url>",
     });
-  }, [props.auth]);
+  }, [auth]);
   return (
     <div>
       <div className={"firebase-auth-container"}></div>

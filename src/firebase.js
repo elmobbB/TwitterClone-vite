@@ -1,6 +1,5 @@
 import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
-
 const firebaseConfig = {
   apiKey: "AIzaSyDfU6mOcDHfBQKcufkg6cmCNGiFIkAsLZo",
   authDomain: "twitter-database-a9d09.firebaseapp.com",
@@ -13,7 +12,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const auth = firebase.initializeApp(firebaseConfig);
+export const App = firebase.initializeApp(firebaseConfig);
 export const createUserDocument = (user, additionalData) => {
   if (!user) return;
   const userRef = firestore.doc(`users/${user.uid}`);
@@ -34,7 +33,7 @@ export const createUserDocument = (user, additionalData) => {
     }
   }
 };
-export const db = getFirestore(auth);
+export const db = getFirestore(App);
 
 export const getDb = () => {
   if (!db) {
@@ -56,5 +55,4 @@ export const getDb = () => {
 
   return db;
 };
-
 export default firebase;

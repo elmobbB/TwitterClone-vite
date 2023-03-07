@@ -5,9 +5,13 @@ import Widgets from "./components/Widgets/Widgets";
 import SideBar from "./components/SideBar/SideBar";
 import firebase from "firebase/compat/app";
 import AuthGoogle from "./components/auth/AuthGoogle";
-import { onAuthStateChanged } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
+import { db } from "./firebase";
+import { collection, addDoc } from "firebase/firestore";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -40,6 +44,13 @@ function App() {
   }
 
   const [user, setUser] = useState({});
+  // try {
+  //   const docRef = addDoc(collection(db, "tweets"), {
+  //     tweetContent: tweetContent,
+  //   });
+  // } catch (e) {
+  //   console.log("error");
+  // }
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {

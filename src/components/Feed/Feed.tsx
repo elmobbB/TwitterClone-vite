@@ -87,7 +87,7 @@ const Feed = () => {
     setError(null);
 
     try {
-      const doc_refs = await getDocs(collection(getDb(), "users"));
+      const doc_refs = await getDocs(collection(getDb(), "tweets"));
 
       console.log();
 
@@ -132,7 +132,7 @@ const Feed = () => {
           <ArrowPathIcon className="h-8 w-8  mr-5 mt-5 cursor-pointer text-twitter transition-all duration-500 ease-out hover:rotate-180 active:scale-125" />
         </button>
       </div>
-      <TweetBox />
+      <TweetBox onFetch={fetchPostedTweets} />
       {/* <AddPosts onAddTweets={ctx} /> */}
 
       <ul>
