@@ -12,6 +12,7 @@ interface Props {
   postDate: string;
   tweetContent: string;
   imgPath: string;
+  email: string;
 }
 
 function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {

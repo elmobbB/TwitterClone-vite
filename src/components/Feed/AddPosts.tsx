@@ -7,13 +7,15 @@ import {
 } from "@heroicons/react/24/outline";
 import PostIcon from "./PostIcon";
 interface Props {
-  id: any;
-  name: any;
+  id: string;
+  name: string;
   postDate: any;
-  tweetContent: any;
-  imgPath: any;
+  tweetContent: string;
+  imgPath: string;
+  email: string;
 }
-function AddPosts({ id, name, postDate, tweetContent, imgPath }: Props) {
+function AddPosts({ id, name, postDate, tweetContent, imgPath, email }: Props) {
+  const tweetName = email.substring(0, email.lastIndexOf("@"));
   return (
     <li className="flex space-x-2 p-5 border">
       <img
@@ -24,7 +26,7 @@ function AddPosts({ id, name, postDate, tweetContent, imgPath }: Props) {
       <div className="w-11/12 ">
         <div className="flex w-11/12 ">
           <h2 className="l pr-3 font-bold">{name}</h2>
-          <h2 className="text-gray-500 pr-2">@{id}</h2>
+          <h2 className="text-gray-500 pr-2">@{tweetName}</h2>
           <h2 className="text-gray-500">{postDate}</h2>
         </div>
         <div className="mb-4 w-11/12  ">{tweetContent}</div>

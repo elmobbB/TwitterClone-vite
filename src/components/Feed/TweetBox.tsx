@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
   PhotoIcon,
   GifIcon,
@@ -6,37 +6,28 @@ import {
   CalendarIcon,
   MapIcon,
 } from "@heroicons/react/24/outline";
-import { createUserDocument } from "../../firebase";
 import { db } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
-// import { dataRef } from "../../firebase";
+import UserContext from "../store/UserContext";
 interface ButtonProps {
   onFetch: () => void;
 }
 function TweetBox({ onFetch }: ButtonProps) {
+  const ctx = useContext(UserContext);
   const [tweetContent, setTweetContent] = useState("");
   function submitHandler(e: React.SyntheticEvent) {
     e.preventDefault();
     setTweetContent("");
 
     //send data to database
-
     try {
       const docRef = addDoc(collection(db, "tweets"), {
         tweetContent: tweetContent,
+        email: ctx.email,
       });
     } catch (e) {
       console.log("error");
     }
-
-    // createUserDocument(user);
-    // dataRef
-    //   .ref("user")
-    //   .push({
-    //     // why cant unshift?
-    //     tweetContent: tweetContent,
-    //   })
-    //   .catch(alert);
   }
 
   function changeHandler(e: React.FormEvent<HTMLInputElement>) {

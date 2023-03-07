@@ -16,11 +16,14 @@ import TweetButton from "./TweetButton";
 import firebase from "firebase/compat/app";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import SetIcon from "./modal/setIcon";
+import UserContext from "../store/UserContext";
+import { useContext } from "react";
 // interface SidebarRowProps {
 //   Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 //   title: string;
 // }
 const SideBar = () => {
+  const ctx = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
 
   const signoutHandler = () => {
@@ -34,6 +37,9 @@ const SideBar = () => {
   const hideModalHandler = () => {
     setShowModal(false);
   };
+
+  const email = ctx.email;
+  const name = email.substring(0, email.lastIndexOf("@"));
 
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
@@ -65,7 +71,7 @@ const SideBar = () => {
       </button>
 
       <TweetButton />
-      <div className="hidden lg:block">
+      <div className="static hidden lg:block">
         <div className="flex text-center items-center my-60">
           <div>
             <img
@@ -75,8 +81,9 @@ const SideBar = () => {
             />
           </div>
           <div className="pl-4">
-            <h2>User Name</h2>
-            <h3>User id</h3>
+            <h2>{name}</h2>
+            {/* <h2>{ctx.name}</h2> */}
+            {/* <h3>{ctx.uid}</h3> */}
           </div>
         </div>
       </div>

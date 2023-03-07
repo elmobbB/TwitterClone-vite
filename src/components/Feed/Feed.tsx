@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import TweetBox from "./TweetBox";
 import Posts from "./Posts";
-import { UseContext } from "../../useContext";
-import AddPosts from "./AddPosts";
 import { getDocs, collection } from "firebase/firestore";
 import { getDb } from "../../firebase";
+import AddPosts from "./AddPosts";
+import UserContext from "../store/UserContext";
 const Feed = () => {
+  const ctx = useContext(UserContext);
   const [tweets, setTweets] = useState<
     {
       // key: string;
@@ -21,17 +22,19 @@ const Feed = () => {
     {
       // key: string;
       id: string;
+      email: string;
       // name: string;
       // postDate: string;
       tweetContent: string;
       // imgPath: string;
     }[]
   >([]);
-  const [isLoading, setIsloading] = useState(true);
+  const [isLoading, setIsloading] = useState(false);
   const [error, setError] = useState(null);
 
   //fake data
   const fetchTweets = useCallback(async () => {
+    setIsloading(true);
     setError(null);
 
     try {
@@ -69,7 +72,6 @@ const Feed = () => {
       setIsloading(false);
     } catch (error) {
       if (error instanceof Error) {
-        // ✅ TypeScript knows err is Error
         console.log(error.message);
       } else {
         console.log("Unexpected error", error);
@@ -84,6 +86,7 @@ const Feed = () => {
 
   //user post tweets
   const fetchPostedTweets = useCallback(async () => {
+    setIsloading(true);
     setError(null);
 
     try {
@@ -94,13 +97,15 @@ const Feed = () => {
       interface myType {
         id: string;
         tweetContent: string;
+        email: string;
       }
       const loadedPostedTweets: myType[] = [];
 
-      doc_refs.forEach((user) => {
+      doc_refs.forEach((tweet) => {
         loadedPostedTweets.unshift({
-          id: user.id,
-          tweetContent: user.data().tweetContent,
+          email: tweet.data().email,
+          id: tweet.id,
+          tweetContent: tweet.data().tweetContent,
         });
       });
       setPostedTweets(loadedPostedTweets);
@@ -133,7 +138,6 @@ const Feed = () => {
         </button>
       </div>
       <TweetBox onFetch={fetchPostedTweets} />
-      {/* <AddPosts onAddTweets={ctx} /> */}
 
       <ul>
         {postedTweets
@@ -141,7 +145,8 @@ const Feed = () => {
           .reverse()
           .map((post) => {
             return (
-              <Posts
+              <AddPosts
+                email={post.email}
                 key={post.id}
                 id={post.id}
                 tweetContent={post.tweetContent}

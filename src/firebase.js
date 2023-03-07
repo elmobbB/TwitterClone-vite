@@ -1,5 +1,7 @@
 import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDfU6mOcDHfBQKcufkg6cmCNGiFIkAsLZo",
   authDomain: "twitter-database-a9d09.firebaseapp.com",
@@ -13,26 +15,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const App = firebase.initializeApp(firebaseConfig);
-export const createUserDocument = (user, additionalData) => {
-  if (!user) return;
-  const userRef = firestore.doc(`users/${user.uid}`);
 
-  const snapshot = useRef.get();
-
-  if (!snapshot.exists) {
-    const { email } = user;
-    const { displayName } = additionalData;
-
-    try {
-      userRef.set({
-        email,
-        createdAt: new Date(),
-      });
-    } catch (error) {
-      alert(error);
-    }
-  }
-};
 export const db = getFirestore(App);
 
 export const getDb = () => {
