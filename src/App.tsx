@@ -3,15 +3,9 @@ import React, { useEffect, useState } from "react";
 import Feed from "./components/Feed/Feed";
 import Widgets from "./components/Widgets/Widgets";
 import SideBar from "./components/SideBar/SideBar";
-import firebase from "firebase/compat/app";
+import firebase from "./firebase";
 import AuthGoogle from "./components/auth/AuthGoogle";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { db } from "./firebase";
-import { collection, addDoc } from "firebase/firestore";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -25,32 +19,12 @@ import { collection, addDoc } from "firebase/firestore";
 // ];
 type Type = { exact: true; path: string; component: () => Element };
 function App() {
-  const firebaseConfig = {
-    apiKey: "AIzaSyDfU6mOcDHfBQKcufkg6cmCNGiFIkAsLZo",
-    authDomain: "twitter-database-a9d09.firebaseapp.com",
-    databaseURL: "https://twitter-database-a9d09-default-rtdb.firebaseio.com",
-    projectId: "twitter-database-a9d09",
-    storageBucket: "twitter-database-a9d09.appspot.com",
-    messagingSenderId: "211773134489",
-    appId: "1:211773134489:web:7fec9611ca83be06400a08",
-    measurementId: "G-12873YS1ZY",
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
   interface IUser {
     email: string;
     uid: string;
   }
 
   const [user, setUser] = useState({});
-  // try {
-  //   const docRef = addDoc(collection(db, "tweets"), {
-  //     tweetContent: tweetContent,
-  //   });
-  // } catch (e) {
-  //   console.log("error");
-  // }
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -94,7 +68,7 @@ function App() {
           <AuthGoogle auth={firebase.auth()} />
         )}
       </BrowserRouter>
-      <AuthGoogle auth={firebase.auth()} />
+      {/* <AuthGoogle auth={firebase.auth()} /> */}
     </div>
   );
 }

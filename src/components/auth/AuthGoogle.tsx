@@ -1,22 +1,11 @@
 import React, { useEffect } from "react";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
-import firebase from "firebase/compat/app";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../firebase";
+import firebase from "../../firebase";
 interface Props {
   auth: any;
 }
 function AuthGoogle({ auth }: Props) {
-  // try {
-  //   //create an user collection
-  //   const docRef = addDoc(collection(db, "users"), {
-  //     uid: user.uid,
-  //     email: user.email,
-  //   });
-  // } catch (e) {
-  //   console.log("error");
-  // }
   useEffect(() => {
     const ui =
       firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
