@@ -9,6 +9,9 @@ import {
 import { db } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import UserContext from "../store/UserContext";
+import Avatar from "@mui/material/Avatar";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 interface ButtonProps {
   onFetch: () => void;
 }
@@ -33,6 +36,33 @@ function TweetBox({ onFetch }: ButtonProps) {
   function changeHandler(e: React.FormEvent<HTMLInputElement>) {
     setTweetContent(e.currentTarget.value);
   }
+  //set image
+  const [image, setImage] = useState(null);
+  const [url, setUrl] = useState(null);
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = () => {
+    const imageRef = ref(storage, "image");
+    uploadBytes(imageRef, image)
+      .then(() => {
+        getDownloadURL(imageRef)
+          .then((url) => {
+            setUrl(url);
+          })
+          .catch((error) => {
+            console.log(error.message, "error getting the image url");
+          });
+        setImage(null);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
 
   return (
     <div className="flex space-x-2 p-5">
@@ -50,9 +80,14 @@ function TweetBox({ onFetch }: ButtonProps) {
             type="text"
             placeholder="What's Happening?"
           />
+
           <div>
-            <input type="file" />
+            <Avatar src={url} sx={{ width: 150, height: 150 }} />
+            <input type="file" onChange={handleImageChange} />
           </div>
+          {/* <div>
+            <input type="file" />
+          </div> */}
           <div className="flex items-center">
             <div className=" flex flex-1 space-x-2 text-twitter">
               <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />

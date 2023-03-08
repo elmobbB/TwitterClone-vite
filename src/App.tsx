@@ -22,15 +22,14 @@ import { db } from "./firebase";
 // ];
 const App = () => {
   const [user, setUser] = useState({});
-
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user?.email) {
         setUser({
           email: user?.email,
           uid: user?.uid,
-          nickname: user?.displayName,
-          photoURL: user?.photoURL,
+          // nickname: user?.displayName,
+          // photoURL: user?.photoURL,
         });
 
         // try {

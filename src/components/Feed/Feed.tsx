@@ -6,6 +6,7 @@ import { getDocs, collection } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import AddPosts from "./AddPosts";
 import UserContext from "../store/UserContext";
+
 const Feed = () => {
   const ctx = useContext(UserContext);
   const [tweets, setTweets] = useState<
