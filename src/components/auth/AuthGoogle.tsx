@@ -43,7 +43,17 @@ function AuthGoogle({ auth, setUser }: Props) {
           requireDisplayName: false,
         },
       ],
-      signInSuccessUrl: "/authenticated",
+      callbacks: {
+        signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+          console.log(authResult);
+          setUser({
+            email: authResult.user.email,
+            uid: authResult.user.uid,
+          });
+          return false;
+        },
+      },
+      // signInSuccessUrl: "/",
       privacyPolicyUrl: "<your-privacy-policy-url>",
     });
     //create user collection failed

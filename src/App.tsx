@@ -21,7 +21,10 @@ import { db } from "./firebase";
 //   },
 // ];
 const App = () => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<{ email: string; uid: string }>({
+    email: "",
+    uid: "",
+  });
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user?.email) {
@@ -41,12 +44,14 @@ const App = () => {
         //   console.log("error");
         // }
       } else {
-        setUser({});
+        setUser({
+          email: "",
+          uid: "",
+        });
       }
     });
   }, []);
 
-  console.log(user);
   return (
     <div>
       <BrowserRouter>
@@ -64,10 +69,10 @@ const App = () => {
             }
           />
         </Routes> */}
-        {user.email ? (
-          <Routes>
+        <Routes>
+          {user.email && user.email !== "" ? (
             <Route
-              path="/authenticated"
+              path="/"
               element={
                 <UserContext.Provider value={user}>
                   <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
@@ -78,10 +83,14 @@ const App = () => {
                 </UserContext.Provider>
               }
             />
-          </Routes>
-        ) : (
-          <AuthGoogle setUser={setUser} auth={firebase.auth()} />
-        )}
+          ) : (
+            <Route
+              index
+              path="/"
+              element={<AuthGoogle setUser={setUser} auth={firebase.auth()} />}
+            />
+          )}
+        </Routes>
       </BrowserRouter>
       {/* <AuthGoogle auth={firebase.auth()} /> */}
     </div>

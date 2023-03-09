@@ -2,13 +2,11 @@ import React, { useEffect, useState, useCallback, useContext } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import TweetBox from "./TweetBox";
 import Posts from "./Posts";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, doc } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import AddPosts from "./AddPosts";
-import UserContext from "../store/UserContext";
 
 const Feed = () => {
-  const ctx = useContext(UserContext);
   const [tweets, setTweets] = useState<
     {
       // key: string;
@@ -99,6 +97,7 @@ const Feed = () => {
         id: string;
         tweetContent: string;
         email: string;
+        image: [];
       }
       const loadedPostedTweets: myType[] = [];
 
@@ -107,7 +106,9 @@ const Feed = () => {
           email: tweet.data().email,
           id: tweet.id,
           tweetContent: tweet.data().tweetContent,
+          image: tweet.data().image[0],
         });
+        console.log(tweet.data().image[0]);
       });
       setPostedTweets(loadedPostedTweets);
       setIsloading(false);

@@ -1,32 +1,53 @@
 import React, { useState } from "react";
-import Modal from "../../UI/Modal";
-import avatar from "./../../../img/avatar.svg";
+import { getStorage, ref, uploadString } from "firebase/storage";
+import Avatar from "react-avatar-edit";
+
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import Avatar from "react-avatar-edit";
-import { profile } from "console";
+
 import { BookmarkIcon } from "@heroicons/react/24/outline";
+
+import Modal from "../../UI/Modal";
+import { profile } from "console";
+import { storageRef, storage } from "../../../firebase";
+
+import avatar from "./../../../img/avatar.svg";
 interface Props {
   onClose: () => void;
-  imgCrop: boolean;
-  onPassImage: any;
+  imgCrop: string | boolean;
+  storeImg: string | boolean;
+  onPassImage: (image: any) => void;
 }
+
 function SetIcon({ onClose, onPassImage }: Props) {
-  const [dialogs, setdialogs] = useState(false);
-  const [imgCrop, setImgCrop] = useState(false);
-  const [storeImg, setStoreImg] = useState([]);
+  const [imgCrop, setImgCrop] = useState("");
+  const [storeImg, setStoreImg] = useState<
+    {
+      imgCrop: string;
+      storeImg: string;
+    }[]
+  >([]);
   const [saveMessage, setSaveMessage] = useState("Save");
   const onCrop = (view) => {
+    console.log("on crop");
     setImgCrop(view);
   };
   const onClose2 = () => {
-    setImgCrop(null);
+    console.log("on close");
+    setImgCrop(""); //null?
   };
 
   const saveImg = () => {
+    const uploadRef = ref(storage, "upload.png");
+    uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
+      console.log("Uploaded a data_url string!");
+      console.log(snapshot);
+    });
+    // storageRef.putString(imgCrop, "data_url").then((snapshot) => {
+    //   console.log("Uploaded a data_url string!");
+    // });
     setStoreImg([...storeImg, { imgCrop }]);
     setSaveMessage("Save✅");
-    setdialogs(false);
   };
 
   onPassImage(storeImg);
@@ -43,18 +64,17 @@ function SetIcon({ onClose, onPassImage }: Props) {
             <Avatar
               width={400}
               height={300}
-              onClose={onClose2}
+              onFileLoad={(file) => {
+                console.log(file);
+              }}
               onCrop={onCrop}
+              onClose={onClose2}
             />
           )}
 
           <img
             className=" first-letter:w-60 h-60 rounded-full  object-cover"
             src={profileImgShow.length ? profileImgShow : ""}
-            // alt="avatar"
-            onClick={() => {
-              setdialogs(true);
-            }}
           />
         </div>
         <button className="text-2xl font-semibold textColor">

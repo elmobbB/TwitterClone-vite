@@ -4,5 +4,5 @@ import { createContext } from "react";
 interface Type {
   value: {};
 }
-const UserContext = createContext(null);
+const UserContext = createContext({ email: "", uid: "" });
 export default UserContext;

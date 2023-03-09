@@ -10,7 +10,7 @@ import { db } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import UserContext from "../store/UserContext";
 import Avatar from "@mui/material/Avatar";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
 
 interface ButtonProps {
   onFetch: () => void;
@@ -18,15 +18,33 @@ interface ButtonProps {
 function TweetBox({ onFetch }: ButtonProps) {
   const ctx = useContext(UserContext);
   const [tweetContent, setTweetContent] = useState("");
+  //set image
+  const [selectedImage, setSelectedImage] = useState([]);
+
+  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files;
+    const selectedFileArray = Array.from(selectedFile);
+
+    const imageArray = selectedFileArray.map((file) => {
+      return URL.createObjectURL(file);
+    });
+
+    setSelectedImage(imageArray);
+  };
+  //////push image to firebase✊🏼✊🏼✊🏼✊🏼✊🏼✊🏼✊🏼✊🏼✊🏼✊🏼
+
+  ////////////
   function submitHandler(e: React.SyntheticEvent) {
     e.preventDefault();
     setTweetContent("");
-
+    setSelectedImage([]);
     //send data to database
+
     try {
       const docRef = addDoc(collection(db, "tweets"), {
         tweetContent: tweetContent,
         email: ctx.email,
+        image: selectedImage,
       });
     } catch (e) {
       console.log("error");
@@ -36,33 +54,6 @@ function TweetBox({ onFetch }: ButtonProps) {
   function changeHandler(e: React.FormEvent<HTMLInputElement>) {
     setTweetContent(e.currentTarget.value);
   }
-  //set image
-  const [image, setImage] = useState(null);
-  const [url, setUrl] = useState(null);
-
-  const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
-
-  const handleSubmit = () => {
-    const imageRef = ref(storage, "image");
-    uploadBytes(imageRef, image)
-      .then(() => {
-        getDownloadURL(imageRef)
-          .then((url) => {
-            setUrl(url);
-          })
-          .catch((error) => {
-            console.log(error.message, "error getting the image url");
-          });
-        setImage(null);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  };
 
   return (
     <div className="flex space-x-2 p-5">
@@ -81,13 +72,42 @@ function TweetBox({ onFetch }: ButtonProps) {
             placeholder="What's Happening?"
           />
 
-          <div>
-            <Avatar src={url} sx={{ width: 150, height: 150 }} />
-            <input type="file" onChange={handleImageChange} />
+          <div className="border border-black rounded-lg max-w-fit">
+            <label htmlFor="image" className="items-center  max-w-fit ">
+              + Add Images
+              <br />
+              <input
+                type="file"
+                name="image"
+                onChange={onSelectFile}
+                multiple
+                accept="image/jpeg, image/png, image/webp, image/svg"
+              />
+            </label>
           </div>
-          {/* <div>
-            <input type="file" />
-          </div> */}
+
+          <div>
+            {selectedImage &&
+              selectedImage.map((image, index) => {
+                return (
+                  <div key={image}>
+                    <img src={image} height="200" alt="uploaded image" />
+                    <button
+                      onClick={() => {
+                        setSelectedImage(
+                          selectedImage.filter((e) => {
+                            e !== image;
+                          })
+                        );
+                      }}
+                    >
+                      delete image
+                    </button>
+                  </div>
+                );
+              })}
+          </div>
+
           <div className="flex items-center">
             <div className=" flex flex-1 space-x-2 text-twitter">
               <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />

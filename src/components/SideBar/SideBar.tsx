@@ -19,17 +19,21 @@ import SetIcon from "./modal/SetIcon";
 import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
-// interface SidebarRowProps {
-//   Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-//   title: string;
-// }
+
+interface SidebarRowProps {}
 const SideBar = () => {
   const ctx = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
-  const [userIcon, setUserIcon] = useState(avatar);
+  const [userIcon, setUserIcon] =
+    useState<React.ComponentType<React.SVGProps<SVGSVGElement>>>(avatar);
 
   const signoutHandler = () => {
-    firebase.auth().signOut();
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log("sign Out");
+      });
   };
 
   const showModalHandler = () => {
@@ -48,6 +52,7 @@ const SideBar = () => {
     console.log(image, "🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿");
     setUserIcon(image[0]);
   };
+  console.log(userIcon);
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
       <img
@@ -81,7 +86,7 @@ const SideBar = () => {
 
       <TweetButton />
       <div className="static hidden lg:block">
-        <div className="flex text-center items-center my-60">
+        <div className="flex text-center items-center my-40">
           <div>
             <img
               className="h-14 w-14 rounded-full object-cover"
