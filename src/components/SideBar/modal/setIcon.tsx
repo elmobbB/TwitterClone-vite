@@ -1,32 +1,49 @@
-import React, { useState } from "react";
-import { getStorage, ref, uploadString } from "firebase/storage";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import Avatar from "react-avatar-edit";
 
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
-
-import { BookmarkIcon } from "@heroicons/react/24/outline";
-
+import {
+  getStorage,
+  ref,
+  uploadString,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db, getDb } from "../../../firebase";
 import Modal from "../../UI/Modal";
-import { profile } from "console";
-import { storageRef, storage } from "../../../firebase";
 
 import avatar from "./../../../img/avatar.svg";
+import UserContext from "../../store/UserContext";
+import UserImageConText from "../../store/UserImageContext";
+import "./Spinner.css";
 interface Props {
   onClose: () => void;
   imgCrop: string | boolean;
   storeImg: string | boolean;
-  onPassImage: (image: any) => void;
+  passImageUrl: (url: string) => void;
+}
+interface myType {
+  email: any;
+  uid: any;
+  id: string;
+  // imageName: string;
+  imageUrl: string;
 }
 
-function SetIcon({ onClose, onPassImage }: Props) {
+function SetIcon({ onClose, passImageUrl }: Props) {
+  const ctx = useContext(UserContext);
+  const { imageUrl, setImageUrl } = useContext(UserImageConText);
+
   const [imgCrop, setImgCrop] = useState("");
-  const [storeImg, setStoreImg] = useState<
-    {
-      imgCrop: string;
-      storeImg: string;
-    }[]
-  >([]);
+  const [storeImg, setStoreImg] = useState(""); //the view
+  const [imageName, setImageName] = useState("");
+  const [loading, setLoading] = useState(false);
+  // const [storeImg, setStoreImg] = useState<
+  //   {
+  //     imgCrop: string;
+  //     storeImg: string;
+  //   }[]
+  // >([]);
   const [saveMessage, setSaveMessage] = useState("Save");
   const onCrop = (view) => {
     console.log("on crop");
@@ -37,61 +54,167 @@ function SetIcon({ onClose, onPassImage }: Props) {
     setImgCrop(""); //null?
   };
 
-  const saveImg = () => {
-    const uploadRef = ref(storage, "upload.png");
-    uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
-      console.log("Uploaded a data_url string!");
-      console.log(snapshot);
-    });
-    // storageRef.putString(imgCrop, "data_url").then((snapshot) => {
-    //   console.log("Uploaded a data_url string!");
-    // });
-    setStoreImg([...storeImg, { imgCrop }]);
+  const randomId = Math.random().toString(36).substring(2, 9) + "";
+  const saveImg = async () => {
+    setLoading(true);
+    //import image to storage
+    const storage = getStorage();
+
+    const uploadRef = ref(storage, `images/${randomId}.png`);
+
+    console.log(randomId);
+    try {
+      uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
+        console.log("Uploaded a data_url string!");
+        console.log(snapshot);
+        setStoreImg(imgCrop);
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+
+    try {
+      //push image info to cloud storage, including uid, email, imageUrl
+      setImageName(`${randomId}.png`);
+      const docRef = await addDoc(collection(db, "userIcon"), {
+        imageName: `${randomId}.png`,
+        uid: ctx.uid,
+        email: ctx.email,
+      });
+      console.log(`${randomId}.png`, " ✌🏽");
+
+      //get imageUrl
+      const storage = getStorage();
+      const singleRef = ref(storage, `images/${randomId}.png`);
+      console.log(singleRef, "singleRef", "imageName: ", `${randomId}.png`);
+      getDownloadURL(singleRef).then((url) => {
+        console.log("got single:🎃 ", url);
+        localStorage.setItem("myImage", url);
+        setImageUrl(url);
+      });
+    } catch (e) {
+      console.log("error");
+    }
+
+    // setStoreImg([...storeImg, { imgCrop }]);
+    setLoading(false);
     setSaveMessage("Save✅");
+
+    console.log("save");
+
+    console.log("fetch 😺");
+    console.log(imageName, "imagename");
   };
 
-  onPassImage(storeImg);
+  //get icon from firebase'
 
-  // console.log(imgCrop);
-  // console.log(storeImg);
-  const profileImgShow = storeImg.map((item) => item.imgCrop);
+  // useEffect(() => {
+  //   const storage = getStorage();
+  //   const image = `images/${storeImg}`;
+  //   const singleRef = ref(storage, image);
+  //   getDownloadURL(singleRef).then((url) => {
+  //     console.log("single: ", url);
+  //     setImageUrl(url);
+  //   });
+  //   ////list all blob/file
+  //   // const listRef = ref(storage, "images/");
+  //   // listAll(listRef)
+  //   //   .then((res) => {
+  //   //     res.items.forEach((itemRef) => {
+  //   //       getDownloadURL(itemRef).then((url) => {
+  //   //         // setImage((prev) => [...prev, url]);
+  //   //         setImage(url);
+  //   //       });
+  //   //     });
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     alert(error);
+  //   //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   //get imageUrl
+  //   const storage = getStorage();
+
+  //   // const singleRef = ref(storage, "images/7ef29md.png");
+  //   const singleRef = ref(storage, `images${imageName}`);
+  //   getDownloadURL(singleRef).then((url) => {
+  //     console.log("single:🎃 ", url);
+  //     setImageUrl(url);
+  //   });
+  // }, []);
+
+  // const fetchimage = useCallback(async () => {
+  //   console.log("when run? 😺");
+  //   try {
+  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
+
+  //     const loadedIcon: myType[] = [];
+
+  //     doc_refs.forEach((userIcon) => {
+  //       loadedIcon.push({
+  //         imageUrl: imageUrl,
+  //         imageName: userIcon.data().imageName,
+  //         email: userIcon.data().email,
+  //         uid: userIcon.data().uid,
+  //         id: userIcon.id,
+  //       });
+  //     });
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       console.log(error.message);
+  //     } else {
+  //       console.log("Unexpected error", error);
+  //     }
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchimage();
+  // }, [fetchimage]);
 
   return (
     <Modal className="p-10" onClose={onClose}>
-      <div className="profile-img text-center p-4">
-        <div className="div flex justify-center items-center">
-          {profileImgShow.length <= 0 && (
-            <Avatar
-              width={400}
-              height={300}
-              onFileLoad={(file) => {
-                console.log(file);
-              }}
-              onCrop={onCrop}
-              onClose={onClose2}
+      {loading && (
+        <div className="mb-30 inset-0 flex items-center justify-center">
+          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+        </div>
+      )}
+      {!loading && (
+        <div className="profile-img text-center p-4">
+          <div className="div flex justify-center items-center">
+            {!storeImg && (
+              <Avatar
+                width={400}
+                height={300}
+                onFileLoad={(file) => {
+                  // console.log(file);
+                }}
+                onCrop={onCrop}
+                onClose={onClose2}
+              />
+            )}
+
+            <img
+              className=" first-letter:w-60 h-60 rounded-full  object-cover"
+              src={storeImg ? storeImg : ""}
             />
-          )}
-
-          <img
-            className=" first-letter:w-60 h-60 rounded-full  object-cover"
-            src={profileImgShow.length ? profileImgShow : ""}
-          />
-        </div>
-        <button className="text-2xl font-semibold textColor">
-          Update Profile
-        </button>
-        <div className="text-center">
-          <button
-            disabled={!imgCrop}
-            onClick={saveImg}
-            type="button"
-            className="text-white lg:pr-20 lg:pl-20  disabled:opacity-40 bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
-          >
-            {saveMessage}
+          </div>
+          <button className="text-2xl font-semibold textColor">
+            Update Profile
           </button>
+          <div className="text-center">
+            <button
+              disabled={!imgCrop || saveMessage != "Save"}
+              onClick={saveImg}
+              type="button"
+              className="text-white lg:pr-20 lg:pl-20  disabled:opacity-40 bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
+            >
+              {saveMessage}
+            </button>
+          </div>
         </div>
-      </div>
-
+      )}
       <div className="text-center">
         <button
           onClick={onClose}
@@ -104,63 +227,5 @@ function SetIcon({ onClose, onPassImage }: Props) {
     </Modal>
   );
 }
-
-// function SetIcon() {
-//   const [dialogs, setdialogs] = useState(false);
-//   const [imgCrop, setImgCrop] = useState(false);
-//   // const [storeImg, setStoreImg] = useState([]);
-
-//   const onCrop = (view) => {
-//     setImgCrop(view);
-//   };
-//   const onClose2 = () => {
-//     setImgCrop(null);
-//   };
-
-//   // const saveImg = () => {
-//   //   setStoreImg([...storeImg, { imgCrop }]);
-//   //   setdialogs(false);
-//   // };
-
-//   // const profileImgShow = storeImg.map((item) => item.imgCrop);
-//   return (
-//     <div>
-//       <div className="profile-img text-center p-4">
-//         <div className="div">
-//           <img
-//             className=" first-letter:w-60 h-60 rounded-full  object-cover"
-//             src={avatar}
-//             // src={profileImgShow.length ? profile : avatar}
-//             alt="avatar"
-//             onClick={() => {
-//               setdialogs(true);
-//             }}
-//           />
-//           <Dialog
-//             visible={dialogs}
-//             onHide={() => {
-//               setdialogs(false);
-//             }}
-//           >
-//             <div className="confirmation-content flex flex-column align-items-">
-//               <div className="flex  flex-column align-items-center mt-5 w-12">
-//                 <div className="flex justify-content-around w-12 mt-4">
-//                   <Avatar
-//                     width={400}
-//                     height={300}
-//                     onClose={onClose2}
-//                     onCrop={onCrop}
-//                   />
-//                   {/* <Button onClick={saveImg} label="Save" icon={BookmarkIcon} /> */}
-//                   <Button label="Save" icon={BookmarkIcon} />
-//                 </div>
-//               </div>
-//             </div>
-//           </Dialog>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
 
 export default SetIcon;

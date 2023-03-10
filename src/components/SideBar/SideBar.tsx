@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   BellIcon,
   HashtagIcon,
@@ -9,7 +9,6 @@ import {
   EllipsisHorizontalIcon,
   ClipboardDocumentCheckIcon,
   ArrowLeftOnRectangleIcon,
-  IdentificationIcon,
 } from "@heroicons/react/24/outline";
 import SideBarRow from "./SideBarRow";
 import TweetButton from "./TweetButton";
@@ -20,13 +19,27 @@ import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
 
-interface SidebarRowProps {}
-const SideBar = () => {
+import {
+  getStorage,
+  ref,
+  uploadString,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+import { getDb } from "../../firebase";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import UserImageConText from "../store/UserImageContext";
+interface SidebarRowProps {
+  onPassIcon: (icon: string) => void;
+}
+
+const SideBar = ({ onPassIcon }: SidebarRowProps) => {
   const ctx = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [userIcon, setUserIcon] =
     useState<React.ComponentType<React.SVGProps<SVGSVGElement>>>(avatar);
-
+  const [imageUrl, setImageUrl] = useState("");
+  const imgCtx = useContext(UserImageConText);
   const signoutHandler = () => {
     firebase
       .auth()
@@ -47,12 +60,46 @@ const SideBar = () => {
   const email = ctx.email;
   const name = email.substring(0, email.lastIndexOf("@"));
 
-  const imageHandler = (image) => {
-    console.log(image[0], "😁😁😁😁😁😁😁😁😁");
-    console.log(image, "🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿🤏🏿");
-    setUserIcon(image[0]);
+  const imageUrlHandler = (url) => {
+    setImageUrl(url);
   };
-  console.log(userIcon);
+  console.log(imgCtx.imageUrl, "😾");
+
+  // //push image info to cloud storage, including uid, email, imageUrl
+  // const docRef = await addDoc(collection(db, "userIcon"), {
+  //   imageName: `${randomId}.png`,
+  //   uid: ctx.uid,
+  //   email: ctx.email,
+  // });
+  // console.log(`${randomId}.png`, " ✌🏽");
+  // const fetchimage = useCallback(async () => {
+  //   console.log("when run? 😺");
+  //   try {
+  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
+
+  //     const loadedIcon: myType[] = [];
+
+  //     doc_refs.forEach((userIcon) => {
+  //       loadedIcon.push({
+  //         imageUrl: imageUrl,
+  //         imageName: userIcon.data().imageName,
+  //         email: userIcon.data().email,
+  //         uid: userIcon.data().uid,
+  //         id: userIcon.id,
+  //       });
+  //     });
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       console.log(error.message);
+  //     } else {
+  //       console.log("Unexpected error", error);
+  //     }
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchimage();
+  // }, [fetchimage]);
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
       <img
@@ -71,7 +118,7 @@ const SideBar = () => {
         <SideBarRow Icon={UserIcon} title="profile" />
       </button>
       {showModal && (
-        <SetIcon onPassImage={imageHandler} onClose={hideModalHandler} />
+        <SetIcon passImageUrl={imageUrlHandler} onClose={hideModalHandler} />
       )}
 
       <button
@@ -89,10 +136,26 @@ const SideBar = () => {
         <div className="flex text-center items-center my-40">
           <div>
             <img
+              key={Math.random().toString(36).substring(2, 9)}
               className="h-14 w-14 rounded-full object-cover"
               alt="profile pic"
-              src={userIcon}
+              // src={imgCtx.imageUrl ? imgCtx.imageUrl : avatar}
+              src={
+                localStorage.getItem("myImage") //make changes later
+                  ? localStorage.getItem("myImage")
+                  : avatar
+              }
             />
+            {/* {image.length > 0
+              ? image.map((url) => (
+                  <img
+                    key={Math.random().toString(36).substring(2, 9)}
+                    className="h-14 w-14 rounded-full object-cover"
+                    alt="profile pic"
+                    src={url}
+                  />
+                ))
+              : userIcon} */}
           </div>
           <div className="pl-4">
             <h2>{name}</h2>

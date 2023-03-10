@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserContext from "./components/store/UserContext";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "./firebase";
+import { ImageContextProvider } from "./components/store/UserImageContext";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -21,7 +22,11 @@ import { db } from "./firebase";
 //   },
 // ];
 const App = () => {
-  const [user, setUser] = useState<{ email: string; uid: string }>({
+  // const [icon, setIcon] = useState();
+  const [user, setUser] = useState<{
+    email: string;
+    uid: string;
+  }>({
     email: "",
     uid: "",
   });
@@ -47,11 +52,12 @@ const App = () => {
         setUser({
           email: "",
           uid: "",
+          icon: "",
         });
       }
     });
   }, []);
-
+  console.log(user.email);
   return (
     <div>
       <BrowserRouter>
@@ -74,13 +80,15 @@ const App = () => {
             <Route
               path="/"
               element={
-                <UserContext.Provider value={user}>
-                  <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
-                    <SideBar />
-                    <Feed />
-                    {/* <Widgets /> */}
-                  </div>
-                </UserContext.Provider>
+                <ImageContextProvider>
+                  <UserContext.Provider value={user}>
+                    <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
+                      <SideBar />
+                      <Feed />
+                      {/* <Widgets /> */}
+                    </div>
+                  </UserContext.Provider>
+                </ImageContextProvider>
               }
             />
           ) : (

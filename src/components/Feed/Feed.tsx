@@ -91,8 +91,6 @@ const Feed = () => {
     try {
       const doc_refs = await getDocs(collection(getDb(), "tweets"));
 
-      console.log();
-
       interface myType {
         id: string;
         tweetContent: string;
@@ -108,7 +106,6 @@ const Feed = () => {
           tweetContent: tweet.data().tweetContent,
           image: tweet.data().image[0],
         });
-        console.log(tweet.data().image[0]);
       });
       setPostedTweets(loadedPostedTweets);
       setIsloading(false);
