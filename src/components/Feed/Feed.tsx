@@ -96,6 +96,7 @@ const Feed = () => {
         tweetContent: string;
         email: string;
         image: [];
+        url: [];
       }
       const loadedPostedTweets: myType[] = [];
 
@@ -105,6 +106,7 @@ const Feed = () => {
           id: tweet.id,
           tweetContent: tweet.data().tweetContent,
           image: tweet.data().image[0],
+          url: tweet.data().url,
         });
       });
       setPostedTweets(loadedPostedTweets);
@@ -149,6 +151,7 @@ const Feed = () => {
                 key={post.id}
                 id={post.id}
                 tweetContent={post.tweetContent}
+                url={post.url}
               />
             );
           })}

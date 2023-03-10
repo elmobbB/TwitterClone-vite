@@ -16,6 +16,7 @@ interface Props {
   imgPath: string;
   email: string;
   image: any;
+  url: [];
 }
 function AddPosts({
   image,
@@ -25,31 +26,22 @@ function AddPosts({
   tweetContent,
   imgPath,
   email,
+  url,
 }: Props) {
   const tweetName = email.substring(0, email.lastIndexOf("@"));
   const ctx = useContext(UserContext);
-  // const myRequest = new Request(image);
 
-  // const blobToImage = (blob) => {
-  //   return new Promise((resolve) => {
-  //     const url = URL.createObjectURL(blob);
-  //     let img = new Image();
-  //     img.onload = () => {
-  //       URL.revokeObjectURL(url);
-  //       resolve(img);
-  //     };
-  //     img.src = url;
-  //   });
-  // };
-  // const newImage = blobToImage(image);
-  // console.log(newImage);
-  // console.log(image);
+  console.log(url);
   return (
     <li className="flex space-x-2 p-5 border">
       <img
         className="h-14 w-14 rounded-full object-cover mt-4"
         alt="profile image"
-        src={ctx.icon ? ctx.icon : avatar}
+        src={
+          localStorage.getItem("myImage")
+            ? localStorage.getItem("myImage")
+            : avatar
+        }
       />
       <div className="w-11/12 ">
         <div className="flex w-11/12 ">
@@ -59,11 +51,11 @@ function AddPosts({
         </div>
         <div className="mb-4 w-11/12  ">{tweetContent}</div>
         <div className="mb-4">
-          {image && (
+          {url && (
             <img
               className="object-cover sm:object-scale-down"
               alt="uploaded picture"
-              src={image}
+              src={url}
             />
           )}
         </div>

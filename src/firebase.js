@@ -2,6 +2,7 @@ import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getStorage, ref } from "firebase/storage";
+
 // import "firebase/storage";
 
 const firebaseConfig = {

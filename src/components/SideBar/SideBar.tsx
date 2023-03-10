@@ -65,41 +65,6 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
   };
   console.log(imgCtx.imageUrl, "😾");
 
-  // //push image info to cloud storage, including uid, email, imageUrl
-  // const docRef = await addDoc(collection(db, "userIcon"), {
-  //   imageName: `${randomId}.png`,
-  //   uid: ctx.uid,
-  //   email: ctx.email,
-  // });
-  // console.log(`${randomId}.png`, " ✌🏽");
-  // const fetchimage = useCallback(async () => {
-  //   console.log("when run? 😺");
-  //   try {
-  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
-
-  //     const loadedIcon: myType[] = [];
-
-  //     doc_refs.forEach((userIcon) => {
-  //       loadedIcon.push({
-  //         imageUrl: imageUrl,
-  //         imageName: userIcon.data().imageName,
-  //         email: userIcon.data().email,
-  //         uid: userIcon.data().uid,
-  //         id: userIcon.id,
-  //       });
-  //     });
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       console.log(error.message);
-  //     } else {
-  //       console.log("Unexpected error", error);
-  //     }
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchimage();
-  // }, [fetchimage]);
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
       <img
@@ -141,8 +106,8 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
               alt="profile pic"
               // src={imgCtx.imageUrl ? imgCtx.imageUrl : avatar}
               src={
-                localStorage.getItem("myImage") //make changes later
-                  ? localStorage.getItem("myImage")
+                imageUrl //make changes later
+                  ? imageUrl
                   : avatar
               }
             />

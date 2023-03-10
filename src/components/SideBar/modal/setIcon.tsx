@@ -36,14 +36,12 @@ function SetIcon({ onClose, passImageUrl }: Props) {
 
   const [imgCrop, setImgCrop] = useState("");
   const [storeImg, setStoreImg] = useState(""); //the view
-  const [imageName, setImageName] = useState("");
+  // const [imageName, setImageName] = useState("");
+
+  const [url, setUrl] = useState("");
+
   const [loading, setLoading] = useState(false);
-  // const [storeImg, setStoreImg] = useState<
-  //   {
-  //     imgCrop: string;
-  //     storeImg: string;
-  //   }[]
-  // >([]);
+
   const [saveMessage, setSaveMessage] = useState("Save");
   const onCrop = (view) => {
     console.log("on crop");
@@ -53,130 +51,68 @@ function SetIcon({ onClose, passImageUrl }: Props) {
     console.log("on close");
     setImgCrop(""); //null?
   };
+  const fetchIconImage = useCallback(async () => {
+    try {
+      const doc_refs = await getDocs(collection(getDb(), "userIcon"));
 
+      const urls = [];
+      doc_refs.forEach((doc) => {
+        urls.unshift({
+          url: doc.data().url,
+          imageName: doc.data().imageName,
+          email: doc.data().email,
+          uid: doc.data().uid,
+          id: doc.id,
+        });
+      });
+      setUrl(urls);
+      console.log(urls, "ds");
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }, []); //
+
+  useEffect(() => {
+    fetchIconImage();
+  }, []);
   const randomId = Math.random().toString(36).substring(2, 9) + "";
   const saveImg = async () => {
     setLoading(true);
-    //import image to storage
+    //import image to storage and get url
     const storage = getStorage();
 
     const uploadRef = ref(storage, `images/${randomId}.png`);
 
-    console.log(randomId);
-    try {
-      uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
-        console.log("Uploaded a data_url string!");
-        console.log(snapshot);
-        setStoreImg(imgCrop);
+    uploadString(uploadRef, imgCrop).then(() => {
+      // Get the file's download URL
+
+      getDownloadURL(uploadRef).then((url: any) => {
+        setUrl(url);
+
+        // Store the file's URL in Firestore
+        try {
+          console.log("add doc , push to data base");
+          const docRef = addDoc(collection(db, "userIcon"), {
+            imageName: `${randomId}.png`,
+            url: url,
+            uid: ctx.uid,
+            email: ctx.email,
+          });
+        } catch (e) {
+          console.log("error");
+        }
       });
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
 
-    try {
-      //push image info to cloud storage, including uid, email, imageUrl
-      setImageName(`${randomId}.png`);
-      const docRef = await addDoc(collection(db, "userIcon"), {
-        imageName: `${randomId}.png`,
-        uid: ctx.uid,
-        email: ctx.email,
-      });
-      console.log(`${randomId}.png`, " ✌🏽");
-
-      //get imageUrl
-      const storage = getStorage();
-      const singleRef = ref(storage, `images/${randomId}.png`);
-      console.log(singleRef, "singleRef", "imageName: ", `${randomId}.png`);
-      getDownloadURL(singleRef).then((url) => {
-        console.log("got single:🎃 ", url);
-        localStorage.setItem("myImage", url);
-        setImageUrl(url);
-      });
-    } catch (e) {
-      console.log("error");
-    }
-
-    // setStoreImg([...storeImg, { imgCrop }]);
-    setLoading(false);
-    setSaveMessage("Save✅");
-
-    console.log("save");
-
-    console.log("fetch 😺");
-    console.log(imageName, "imagename");
+      setLoading(false);
+      setSaveMessage("Save✅");
+    });
   };
 
-  //get icon from firebase'
-
-  // useEffect(() => {
-  //   const storage = getStorage();
-  //   const image = `images/${storeImg}`;
-  //   const singleRef = ref(storage, image);
-  //   getDownloadURL(singleRef).then((url) => {
-  //     console.log("single: ", url);
-  //     setImageUrl(url);
-  //   });
-  //   ////list all blob/file
-  //   // const listRef = ref(storage, "images/");
-  //   // listAll(listRef)
-  //   //   .then((res) => {
-  //   //     res.items.forEach((itemRef) => {
-  //   //       getDownloadURL(itemRef).then((url) => {
-  //   //         // setImage((prev) => [...prev, url]);
-  //   //         setImage(url);
-  //   //       });
-  //   //     });
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     alert(error);
-  //   //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   //get imageUrl
-  //   const storage = getStorage();
-
-  //   // const singleRef = ref(storage, "images/7ef29md.png");
-  //   const singleRef = ref(storage, `images${imageName}`);
-  //   getDownloadURL(singleRef).then((url) => {
-  //     console.log("single:🎃 ", url);
-  //     setImageUrl(url);
-  //   });
-  // }, []);
-
-  // const fetchimage = useCallback(async () => {
-  //   console.log("when run? 😺");
-  //   try {
-  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
-
-  //     const loadedIcon: myType[] = [];
-
-  //     doc_refs.forEach((userIcon) => {
-  //       loadedIcon.push({
-  //         imageUrl: imageUrl,
-  //         imageName: userIcon.data().imageName,
-  //         email: userIcon.data().email,
-  //         uid: userIcon.data().uid,
-  //         id: userIcon.id,
-  //       });
-  //     });
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       console.log(error.message);
-  //     } else {
-  //       console.log("Unexpected error", error);
-  //     }
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchimage();
-  // }, [fetchimage]);
-
+  passImageUrl(url);
   return (
     <Modal className="p-10" onClose={onClose}>
       {loading && (
-        <div className="mb-30 inset-0 flex items-center justify-center">
+        <div className="mb-3 inset-0 flex items-center justify-center">
           <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
         </div>
       )}

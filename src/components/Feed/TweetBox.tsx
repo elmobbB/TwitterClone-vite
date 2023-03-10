@@ -1,4 +1,10 @@
-import React, { useContext, useRef, useState } from "react";
+import React, {
+  useContext,
+  useRef,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   PhotoIcon,
   GifIcon,
@@ -18,15 +24,20 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import avatar from "../../img/avatar.svg";
+import firebase from "../../firebase";
 
 interface ButtonProps {
   onFetch: () => void;
 }
+
 function TweetBox({ onFetch }: ButtonProps) {
   const ctx = useContext(UserContext);
   const [tweetContent, setTweetContent] = useState("");
   //set image
   const [selectedImage, setSelectedImage] = useState([]);
+
+  const [url, setUrl] = useState<string[]>([]);
+  const [images, setImages] = useState([]);
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files;
@@ -38,35 +49,42 @@ function TweetBox({ onFetch }: ButtonProps) {
 
     setSelectedImage(imageArray);
   };
-  //////push image to firestore
 
-  ////////////
   function submitHandler(e: React.SyntheticEvent) {
     e.preventDefault();
     setTweetContent("");
     setSelectedImage([]);
 
-    try {
-      const docRef = addDoc(collection(db, "tweets"), {
-        tweetContent: tweetContent,
-        email: ctx.email,
-        image: selectedImage,
+    const randomIdForTweetsImage =
+      Math.random().toString(36).substring(2, 9) + "";
+
+    //import image to storage
+    const storage = getStorage();
+    // const imageRef = storageRef.child(
+    //   `tweetsImage/${randomIdForTweetsImage}.png`
+    // );
+    const imageRef = ref(storage, `tweetsImage/${randomIdForTweetsImage}.png`);
+
+    uploadBytes(imageRef, selectedImage).then(() => {
+      // Get the file's download URL
+
+      getDownloadURL(imageRef).then((url: any) => {
+        setUrl(url);
+
+        // Store the file's URL in Firestore
+        try {
+          console.log("add doc , push to data base");
+          const docRef = addDoc(collection(db, "tweets"), {
+            tweetContent: tweetContent,
+            email: ctx.email,
+            image: selectedImage,
+            url: url,
+          });
+        } catch (e) {
+          console.log("error");
+        }
       });
-    } catch (e) {
-      console.log("error");
-    }
-
-    const randomId = Math.random().toString(36).substring(2, 9) + "";
-
-    ///push image to fb storage
-    // const storage = getStorage();
-
-    // const uploadRef = ref(storage, `tweetImages/${randomId}.png`);
-
-    // uploadString(uploadRef, selectedImage[0], "data_url").then((snapshot) => {
-    //   console.log("Uploaded a data_url string!");
-    //   console.log(snapshot);
-    // });
+    });
   }
 
   function changeHandler(e: React.FormEvent<HTMLInputElement>) {
