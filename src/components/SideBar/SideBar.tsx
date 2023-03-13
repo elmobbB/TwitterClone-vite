@@ -29,15 +29,22 @@ import {
 import { getDb } from "../../firebase";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import UserImageConText from "../store/UserImageContext";
+import Message from "./message/Message";
 interface SidebarRowProps {
   onPassIcon: (icon: string) => void;
 }
-
+interface myType {
+  id: string;
+  email: string;
+  imageName: [];
+  url: [];
+}
 const SideBar = ({ onPassIcon }: SidebarRowProps) => {
   const ctx = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
-  const [userIcon, setUserIcon] =
-    useState<React.ComponentType<React.SVGProps<SVGSVGElement>>>(avatar);
+  const [messageShowModal, setMessageShowModal] = useState(false);
+  // const [userIcon, setUserIcon] =
+  //   useState<React.ComponentType<React.SVGProps<SVGSVGElement>>>(avatar);
   const [imageUrl, setImageUrl] = useState("");
   const imgCtx = useContext(UserImageConText);
   const signoutHandler = () => {
@@ -57,13 +64,44 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
     setShowModal(false);
   };
 
+  const showMessageModalHandler = () => {
+    setMessageShowModal(true);
+  };
+
+  const hideMessageModalHandler = () => {
+    setMessageShowModal(false);
+  };
+
   const email = ctx.email;
   const name = email.substring(0, email.lastIndexOf("@"));
 
-  const imageUrlHandler = (url) => {
+  const imageUrlHandler = (url: any) => {
     setImageUrl(url);
   };
-  console.log(imgCtx.imageUrl, "😾");
+
+  // const fetchIcon = useCallback(async () => {
+  //   try {
+  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
+
+  //     const loadIcon: myType[] = [];
+
+  //     doc_refs.forEach((icon) => {
+  //       loadIcon.unshift({
+  //         email: icon.data().email,
+  //         id: icon.id,
+  //         imageName: icon.data().imageName,
+  //         url: icon.data().url,
+  //       });
+  //     });
+  //     console.log(loadIcon);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // }, []); //
+
+  // useEffect(() => {
+  //   fetchIcon();
+  // }, []);
 
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
@@ -72,12 +110,24 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
         src="https://links.papareact.com/drq"
         alt="twiiter icon"
       />
-      <SideBarRow Icon={HomeIcon} title="home" />
+      <button
+        onClick={() => {
+          window.location.reload();
+        }}
+      >
+        <SideBarRow Icon={HomeIcon} title="home" />
+      </button>
       <SideBarRow Icon={HashtagIcon} title="explore" />
       <SideBarRow Icon={BellIcon} title="notification" />
-      <SideBarRow Icon={EnvelopeIcon} title="message" />
+
+      <button onClick={showMessageModalHandler}>
+        <SideBarRow Icon={EnvelopeIcon} title="message" />
+      </button>
+      {messageShowModal && <Message onClose={hideMessageModalHandler} />}
+
       <SideBarRow Icon={BookmarkIcon} title="bookmarks" />
       <SideBarRow Icon={ClipboardDocumentCheckIcon} title="lists" />
+
       <SideBarRow Icon={EllipsisHorizontalIcon} title="more" />
       <button onClick={showModalHandler}>
         <SideBarRow Icon={UserIcon} title="profile" />
@@ -85,7 +135,6 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
       {showModal && (
         <SetIcon passImageUrl={imageUrlHandler} onClose={hideModalHandler} />
       )}
-
       <button
         onClick={signoutHandler}
         className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
@@ -95,7 +144,6 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
           Sign Out
         </p>
       </button>
-
       <TweetButton />
       <div className="static hidden lg:block">
         <div className="flex text-center items-center my-40">
@@ -106,8 +154,8 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
               alt="profile pic"
               // src={imgCtx.imageUrl ? imgCtx.imageUrl : avatar}
               src={
-                imageUrl //make changes later
-                  ? imageUrl
+                localStorage.getItem("myUrl") //make changes later
+                  ? localStorage.getItem("myUrl")
                   : avatar
               }
             />

@@ -5,8 +5,9 @@ import Posts from "./Posts";
 import { getDocs, collection, doc } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import AddPosts from "./AddPosts";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
-const Feed = () => {
+const Feed = ({}) => {
   const [tweets, setTweets] = useState<
     {
       // key: string;
@@ -30,10 +31,10 @@ const Feed = () => {
   >([]);
   const [isLoading, setIsloading] = useState(false);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   //fake data
   const fetchTweets = useCallback(async () => {
-    setIsloading(true);
     setError(null);
 
     try {
@@ -43,7 +44,6 @@ const Feed = () => {
       const responseData = await response.json();
 
       if (!response.ok) {
-        setIsloading(false);
         throw new Error(`${responseData.message} (${responseData.status})`);
       }
 
@@ -68,7 +68,6 @@ const Feed = () => {
       }
 
       setTweets(loadedTweets);
-      setIsloading(false);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -78,15 +77,14 @@ const Feed = () => {
     }
   }, []); //
   useEffect(() => {
-    setIsloading(false);
     fetchTweets();
   }, []);
   ////
 
   //user post tweets
   const fetchPostedTweets = useCallback(async () => {
-    setIsloading(true);
     setError(null);
+    setLoading(true);
 
     try {
       const doc_refs = await getDocs(collection(getDb(), "tweets"));
@@ -97,6 +95,7 @@ const Feed = () => {
         email: string;
         image: [];
         url: [];
+        likes: number;
       }
       const loadedPostedTweets: myType[] = [];
 
@@ -105,12 +104,12 @@ const Feed = () => {
           email: tweet.data().email,
           id: tweet.id,
           tweetContent: tweet.data().tweetContent,
-          image: tweet.data().image[0],
+          image: tweet.data().image,
           url: tweet.data().url,
+          likes: tweet.data().likes,
         });
       });
       setPostedTweets(loadedPostedTweets);
-      setIsloading(false);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -118,10 +117,12 @@ const Feed = () => {
         console.log("Unexpected error", error);
       }
     }
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   }, []); //
 
   useEffect(() => {
-    setIsloading(false);
     fetchPostedTweets();
   }, []);
   const clickrefreshHandler = () => {
@@ -138,6 +139,11 @@ const Feed = () => {
           <ArrowPathIcon className="h-8 w-8  mr-5 mt-5 cursor-pointer text-twitter transition-all duration-500 ease-out hover:rotate-180 active:scale-125" />
         </button>
       </div>
+      {loading && (
+        <div className="mb-3 inset-0 flex items-center justify-center">
+          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+        </div>
+      )}
       <TweetBox onFetch={fetchPostedTweets} />
 
       <ul>
@@ -152,6 +158,7 @@ const Feed = () => {
                 id={post.id}
                 tweetContent={post.tweetContent}
                 url={post.url}
+                likes={post.likes}
               />
             );
           })}

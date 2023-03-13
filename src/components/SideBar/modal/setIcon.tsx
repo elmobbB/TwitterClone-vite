@@ -5,7 +5,6 @@ import {
   getStorage,
   ref,
   uploadString,
-  uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
 import { addDoc, collection, getDocs } from "firebase/firestore";
@@ -26,8 +25,8 @@ interface myType {
   email: any;
   uid: any;
   id: string;
-  // imageName: string;
-  imageUrl: string;
+  url: string;
+  imageName: string;
 }
 
 function SetIcon({ onClose, passImageUrl }: Props) {
@@ -43,7 +42,7 @@ function SetIcon({ onClose, passImageUrl }: Props) {
   const [loading, setLoading] = useState(false);
 
   const [saveMessage, setSaveMessage] = useState("Save");
-  const onCrop = (view) => {
+  const onCrop = (view: any) => {
     console.log("on crop");
     setImgCrop(view);
   };
@@ -51,11 +50,13 @@ function SetIcon({ onClose, passImageUrl }: Props) {
     console.log("on close");
     setImgCrop(""); //null?
   };
+
+  ////////////////should not be an array of objects, cuz i only need to render one single icon picture
   const fetchIconImage = useCallback(async () => {
     try {
       const doc_refs = await getDocs(collection(getDb(), "userIcon"));
 
-      const urls = [];
+      const urls: myType[] = [];
       doc_refs.forEach((doc) => {
         urls.unshift({
           url: doc.data().url,
@@ -65,7 +66,7 @@ function SetIcon({ onClose, passImageUrl }: Props) {
           id: doc.id,
         });
       });
-      setUrl(urls);
+      // setUrl(urls);
       console.log(urls, "ds");
     } catch (error: any) {
       console.log(error.message);
@@ -83,12 +84,11 @@ function SetIcon({ onClose, passImageUrl }: Props) {
 
     const uploadRef = ref(storage, `images/${randomId}.png`);
 
-    uploadString(uploadRef, imgCrop).then(() => {
-      // Get the file's download URL
-
+    uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
       getDownloadURL(uploadRef).then((url: any) => {
         setUrl(url);
-
+        setImageUrl(url);
+        localStorage.setItem("myUrl", url);
         // Store the file's URL in Firestore
         try {
           console.log("add doc , push to data base");

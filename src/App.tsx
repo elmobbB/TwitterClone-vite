@@ -52,7 +52,7 @@ const App = () => {
         setUser({
           email: "",
           uid: "",
-          icon: "",
+          // icon: "",
         });
       }
     });

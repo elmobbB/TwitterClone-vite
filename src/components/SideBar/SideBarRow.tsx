@@ -12,6 +12,7 @@ import React, { SVGProps } from "react";
 interface SidebarRowProps {
   Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   title: string;
+  // onClick: () => void;
 }
 const SideBarRow: React.FC<SidebarRowProps> = ({ Icon, title }) => {
   return (
