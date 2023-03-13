@@ -15,14 +15,7 @@ import { getDocs } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import firebase from "../../firebase";
 import Retweet from "./retweet/Retweet";
-interface myType {
-  id: string;
-  tweetContent: string;
-  email: string;
-  image: [];
-  url: [];
-  likes: number;
-}
+
 interface Props {
   id: string;
   name: string;
@@ -54,16 +47,6 @@ function AddPosts({
   const [filled, setFilled] = useState<boolean>(
     localStorage.getItem(`isLiked-${id}`) === "true" || false
   );
-  const [postedtweets, setPostedTweets] = useState<
-    {
-      id: string;
-      email: string;
-      tweetContent: string;
-      image: string;
-      url: string;
-      likes: number;
-    }[]
-  >([]);
 
   let tweetId = "";
   const [showModal, setShowModal] = useState(false);
@@ -75,6 +58,7 @@ function AddPosts({
 
   const handleClick = async () => {
     tweetId = id;
+    console.log(tweetId);
     // setFilled(!filled);
     // setNumberOfLikes(numberOfLikes === 0 ? 1 : 0);
 
@@ -94,29 +78,6 @@ function AddPosts({
     setShowModal(false);
   };
 
-  const retweetHandler = async () => {
-    tweetId = id;
-    console.log("0fs");
-    // try {
-    //   const doc_refs = await getDocs(collection(getDb(), "tweets"));
-
-    //   const loadedPostedTweets: myType[] = [];
-
-    //   doc_refs.forEach((tweet) => {
-    //     loadedPostedTweets.unshift({
-    //       email: tweet.data().email,
-    //       id: tweet.id,
-    //       tweetContent: tweet.data().tweetContent,
-    //       image: tweet.data().image,
-    //       url: tweet.data().url,
-    //       likes: tweet.data().likes,
-    //     });
-    //   });
-    //   setPostedTweets(loadedPostedTweets);
-    // } catch (error: any) {
-    //   console.log(error.message);
-    // }
-  };
   return (
     <li className="flex space-x-2 p-5 border">
       <img
@@ -144,14 +105,15 @@ function AddPosts({
         </div>
         <div className="flex flex-1 sm:space-x-2 lg:space-x-6 md:space-x-2  w-10/12  ">
           <PostIcon Icon={ChatBubbleOvalLeftIcon} title="3777" />
-          <PostIcon Icon={ShareIcon} title="10.9K" />
           <button
             onClick={() => {
-              retweetHandler;
-              showModalHandler;
+              // retweetHandler();
+              showModalHandler();
             }}
-          ></button>
-          {showModal && <Retweet onClose={hideModalHandler} />}
+          >
+            <PostIcon Icon={ShareIcon} title="10.9K" />
+          </button>
+          {showModal && <Retweet id={id} onClose={hideModalHandler} />}
           <div
             onClick={handleClick}
             className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
