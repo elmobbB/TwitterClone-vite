@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Modal from "../../UI/Modal";
 import { getDocs } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { getDb } from "../../../firebase";
+import { addDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
+import UserContext from "../../store/UserContext";
 interface Props {
   onClose: () => void;
   retweet: () => void;
@@ -18,6 +21,7 @@ interface myType {
 }
 
 const Retweet = ({ onClose, id }: Props) => {
+  const ctx = useContext(UserContext);
   const [postedtweets, setPostedTweets] = useState<
     {
       id: string;
@@ -46,6 +50,37 @@ const Retweet = ({ onClose, id }: Props) => {
           likes: tweet.data().likes,
         });
       });
+      const tweetObj = loadedPostedTweets.filter((tweet) => {
+        return id === tweet.id;
+      });
+
+      if (tweetObj[0].image) {
+        try {
+          console.log("add doc , push to data base");
+          const docRef = addDoc(collection(db, "tweets"), {
+            tweetContent: tweetObj[0].tweetContent,
+            email: ctx.email,
+            image: tweetObj[0].image,
+            url: tweetObj[0].url,
+            likes: 0,
+            retweetFrom: tweetObj[0].email,
+          });
+        } catch (e) {
+          console.log("error");
+        }
+      } else {
+        try {
+          console.log("add doc , push to data base");
+          const docRef = addDoc(collection(db, "tweets"), {
+            tweetContent: tweetObj[0].tweetContent,
+            email: ctx.email,
+            likes: 0,
+            retweetFrom: tweetObj[0].email,
+          });
+        } catch (e) {
+          console.log("error");
+        }
+      }
 
       console.log(
         loadedPostedTweets.filter((tweet) => {
@@ -53,7 +88,7 @@ const Retweet = ({ onClose, id }: Props) => {
         })
       );
       //   const sharedPost = loadedPostedTweets.filter((tweet) => {});
-      setPostedTweets(loadedPostedTweets);
+      //   setPostedTweets(tweetObj);
     } catch (error: any) {
       console.log(error.message);
     }

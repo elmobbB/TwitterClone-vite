@@ -7,7 +7,7 @@ interface Type {
 }
 const UserImageConText = createContext<Type>({
   imageUrl: "",
-  setMyData: () => {},
+  setImageUrl: () => {},
 });
 
 export const ImageContextProvider: React.FC = ({ children }: any) => {

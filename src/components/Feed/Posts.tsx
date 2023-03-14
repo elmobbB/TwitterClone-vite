@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChatBubbleOvalLeftIcon,
   ShareIcon,
   HeartIcon,
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
+import Retweet from "./retweet/Retweet";
 import PostIcon from "./PostIcon";
 interface Props {
   id: string;
@@ -16,6 +17,43 @@ interface Props {
 }
 
 function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
+  const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
+    +localStorage.getItem(`likes-${id}`) || 0
+  );
+  const [filled, setFilled] = useState<boolean>(
+    localStorage.getItem(`isLiked-${id}`) === "true" || false
+  );
+
+  let tweetId = "";
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(`likes-${id}`, numberOfLikes);
+    localStorage.setItem(`isLiked-${id}`, filled);
+  }, [numberOfLikes, filled]);
+
+  const handleClick = async () => {
+    tweetId = id;
+    console.log(tweetId);
+    // setFilled(!filled);
+    // setNumberOfLikes(numberOfLikes === 0 ? 1 : 0);
+
+    if (!filled) {
+      setNumberOfLikes(numberOfLikes + 1);
+      setFilled(true);
+    } else {
+      setNumberOfLikes(numberOfLikes - 1);
+      setFilled(false);
+    }
+  };
+
+  const showModalHandler = () => {
+    setShowModal(true);
+  };
+
+  const hideModalHandler = () => {
+    setShowModal(false);
+  };
   return (
     <li className="flex space-x-2 p-5 border">
       <img
@@ -41,8 +79,28 @@ function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
         </div>
         <div className="flex flex-1 sm:space-x-2 lg:space-x-6 md:space-x-2  w-10/12  ">
           <PostIcon Icon={ChatBubbleOvalLeftIcon} title="3777" />
-          <PostIcon Icon={ShareIcon} title="10.9K" />
-          <PostIcon Icon={HeartIcon} title="88.4K" />
+          <button
+            onClick={() => {
+              // retweetHandler();
+              showModalHandler();
+            }}
+          >
+            <PostIcon Icon={ShareIcon} title="10.9K" />
+          </button>
+          {showModal && <Retweet id={id} onClose={hideModalHandler} />}
+          <div
+            onClick={handleClick}
+            className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
+          >
+            {filled ? (
+              <HeartIcon className="h-6 w-6 fill-red-400" />
+            ) : (
+              <HeartIcon className="h-6 w-6" />
+            )}
+            <p className=" group-hover:text-twitter  text-base ">
+              {numberOfLikes}
+            </p>
+          </div>
           <PostIcon Icon={ChartBarIcon} title="9.1M" />
         </div>
       </div>

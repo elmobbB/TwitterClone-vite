@@ -6,7 +6,15 @@ import { getDocs, collection, doc } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import AddPosts from "./AddPosts";
 import { faL } from "@fortawesome/free-solid-svg-icons";
-
+interface myType {
+  id: string;
+  tweetContent: string;
+  email: string;
+  image: [];
+  url: [];
+  likes: number;
+  retweetFrom: string;
+}
 const Feed = ({}) => {
   const [tweets, setTweets] = useState<
     {
@@ -26,6 +34,7 @@ const Feed = ({}) => {
       // name: string;
       // postDate: string;
       tweetContent: string;
+      retweetFrom: string;
       // imgPath: string;
     }[]
   >([]);
@@ -89,14 +98,6 @@ const Feed = ({}) => {
     try {
       const doc_refs = await getDocs(collection(getDb(), "tweets"));
 
-      interface myType {
-        id: string;
-        tweetContent: string;
-        email: string;
-        image: [];
-        url: [];
-        likes: number;
-      }
       const loadedPostedTweets: myType[] = [];
 
       doc_refs.forEach((tweet) => {
@@ -107,6 +108,7 @@ const Feed = ({}) => {
           image: tweet.data().image,
           url: tweet.data().url,
           likes: tweet.data().likes,
+          retweetFrom: tweet.data().retweetFrom,
         });
       });
       setPostedTweets(loadedPostedTweets);
@@ -159,6 +161,7 @@ const Feed = ({}) => {
                 tweetContent={post.tweetContent}
                 url={post.url}
                 likes={post.likes}
+                retweetFrom={post.retweetFrom}
               />
             );
           })}

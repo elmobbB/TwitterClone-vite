@@ -26,6 +26,7 @@ interface Props {
   image: any;
   url: string;
   likes: number;
+  retweetFrom: string;
 }
 function AddPosts({
   image,
@@ -37,6 +38,7 @@ function AddPosts({
   email,
   url,
   likes,
+  retweetFrom,
 }: Props) {
   // const [numberOfLikes, setNumberOfLikes] = useState(0);
   const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
@@ -93,6 +95,12 @@ function AddPosts({
           <h2 className="text-gray-500 pr-2">@{tweetName}</h2>
           <h2 className="text-gray-500">{postDate}</h2>
         </div>
+        {retweetFrom && (
+          <div className="text-l font-semibold text-blue-600/100 dark:text-blue-500/100">
+            Retweet from:@
+            {retweetFrom.substring(0, retweetFrom.lastIndexOf("@"))}
+          </div>
+        )}
         <div className="mb-4 w-11/12  ">{tweetContent}</div>
         <div className="mb-4">
           {url && (

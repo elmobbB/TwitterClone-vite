@@ -121,7 +121,8 @@ function TweetBox({ onFetch, isLoading }: ButtonProps) {
     setLoading(false);
   }
 
-  const handleDeleteImage = () => {
+  const handleDeleteImage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setImageData("");
   };
   function changeHandler(e: React.FormEvent<HTMLInputElement>) {
@@ -170,7 +171,8 @@ function TweetBox({ onFetch, isLoading }: ButtonProps) {
             </div>
             <div>
               <button
-                className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5"
+                disabled={!imageData}
+                className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
                 onClick={handleDeleteImage}
               >
                 Delete image
@@ -212,7 +214,7 @@ function TweetBox({ onFetch, isLoading }: ButtonProps) {
                 <button
                   onClick={onFetch}
                   type="submit"
-                  disabled={!tweetContent}
+                  disabled={tweetContent.trim().length === 0}
                   className="bg-twitter rounded-full px-5 py-2 font-bold text-white disabled:opacity-40"
                 >
                   Tweet
