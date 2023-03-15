@@ -2,11 +2,18 @@ import React, { useEffect, useState, useCallback, useContext } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import TweetBox from "./TweetBox";
 import Posts from "./Posts";
-import { getDocs, collection, doc, updateDoc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  doc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { getDb } from "../../firebase";
 import AddPosts from "./AddPosts";
 import { db } from "../../firebase";
-import { orderBy } from "firebase/firestore";
+import { orderBy, query } from "firebase/firestore";
+
 interface myType {
   id: string;
   tweetContent: string;
@@ -15,6 +22,7 @@ interface myType {
   url: "";
   likes: number;
   retweetFrom: string;
+  timestamp: any;
 }
 const Feed = ({}) => {
   const [tweets, setTweets] = useState<
@@ -37,6 +45,7 @@ const Feed = ({}) => {
       tweetContent: string;
       retweetFrom: string;
       // imgPath: string;
+      timestamp: any;
     }[]
   >([]);
   const [isLoading, setIsloading] = useState(false);
@@ -96,28 +105,21 @@ const Feed = ({}) => {
     setError(null);
     setLoading(true);
 
+    //  get doc according to timestamp
     try {
-      const doc_refs = await getDocs(collection(getDb(), "tweets"));
+      const doc_refs = query(
+        collection(db, "tweets"),
+        orderBy("timestamp", "asc")
+      );
 
-      /////////
+      onSnapshot(doc_refs, (snapshot) => {
+        const loadedPostedTweets: myType[] = [];
 
-      // get doc according to timestamp
-      ////////
-
-      const loadedPostedTweets: myType[] = [];
-
-      doc_refs.forEach((tweet) => {
-        loadedPostedTweets.push({
-          email: tweet.data().email,
-          id: tweet.id,
-          tweetContent: tweet.data().tweetContent,
-          image: tweet.data().image,
-          url: tweet.data().url,
-          likes: tweet.data().likes,
-          retweetFrom: tweet.data().retweetFrom,
+        snapshot.docs.forEach((doc) => {
+          loadedPostedTweets.push({ ...doc.data(), id: doc.id });
         });
+        setPostedTweets(loadedPostedTweets);
       });
-      setPostedTweets(loadedPostedTweets);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -125,6 +127,32 @@ const Feed = ({}) => {
         console.log("Unexpected error", error);
       }
     }
+
+    // try {
+    //   const doc_refs = await getDocs(collection(getDb(), "tweets"));
+
+    //   const loadedPostedTweets: myType[] = [];
+
+    //   doc_refs.forEach((tweet) => {
+    //     loadedPostedTweets.push({
+    //       email: tweet.data().email,
+    //       id: tweet.id,
+    //       tweetContent: tweet.data().tweetContent,
+    //       image: tweet.data().image,
+    //       url: tweet.data().url,
+    //       likes: tweet.data().likes,
+    //       retweetFrom: tweet.data().retweetFrom,
+    //       timestamp: tweet.data().timestamp,
+    //     });
+    //   });
+    //   setPostedTweets(loadedPostedTweets);
+    // } catch (error) {
+    //   if (error instanceof Error) {
+    //     console.log(error.message);
+    //   } else {
+    //     console.log("Unexpected error", error);
+    //   }
+    // }
     setLoading(false);
     // setTimeout(() => {
     // }, 2000);

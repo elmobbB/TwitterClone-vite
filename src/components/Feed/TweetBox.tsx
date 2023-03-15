@@ -13,7 +13,7 @@ import {
   MapIcon,
 } from "@heroicons/react/24/outline";
 import { db } from "../../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import UserContext from "../store/UserContext";
 import Avatar from "@mui/material/Avatar";
 import {
@@ -100,6 +100,7 @@ function TweetBox({ onFetch }: ButtonProps) {
               url: url,
               likes: 0,
               likeBy: [],
+              timestamp: serverTimestamp(),
             });
           } catch (e) {
             console.log("error");
@@ -114,6 +115,7 @@ function TweetBox({ onFetch }: ButtonProps) {
           email: ctx.email,
           likes: 0,
           likeBy: [],
+          timestamp: serverTimestamp(),
         });
       } catch (e) {
         console.log("error");
