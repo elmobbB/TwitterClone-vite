@@ -8,7 +8,7 @@ import {
 import PostIcon from "./PostIcon";
 import UserContext from "../store/UserContext";
 import avatar from "../../img/avatar.svg";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { collection } from "firebase/firestore";
 import { getDocs } from "firebase/firestore";
@@ -50,58 +50,63 @@ const AddPosts = ({
   const [showModal, setShowModal] = useState(false);
 
   /////////
+  useEffect(() => {
+    localStorage.setItem(`isLiked-${id}`, `${filled}`);
+  }, [filled]);
+  const handleClick = async () => {
+    tweetId = id;
+    if (!filled) {
+      setFilled(true);
+      const updateRef = doc(db, "tweets", `${id}`);
+
+      await updateDoc(updateRef, {
+        // likeBy: ctx.uid,
+        likes: increment(1),
+      });
+      console.log("+1");
+      // setNumberOfLikes(numberOfLikes + 1);
+    } else {
+      setFilled(false);
+      const updateRef = doc(db, "tweets", `${id}`);
+
+      await updateDoc(updateRef, {
+        // likeBy: ctx.uid,
+        likes: increment(-1),
+      });
+      console.log("-1");
+      // setNumberOfLikes(numberOfLikes - 1);
+    }
+  };
+
+  //whenever the state changes, the localstorage's value will change as well
+  // useEffect(() => {
+  //   localStorage.setItem(`likes-${id}`, `${numberOfLikes}`);
+  //   localStorage.setItem(`isLiked-${id}`, `${filled}`);
+  // }, [numberOfLikes, filled]);
 
   // const handleClick = async () => {
   //   tweetId = id;
+  //   console.log(tweetId);
+
   //   if (!filled) {
-  //     setNumberOfLikes(numberOfLikes + 1);
+  //     setNumberOfLikes((prevNumberOfLikes) => {
+  //       if (prevNumberOfLikes === null) {
+  //         return null;
+  //       }
+  //       return prevNumberOfLikes + 1;
+  //     });
+
   //     setFilled(true);
   //   } else {
-  //     setNumberOfLikes(numberOfLikes - 1);
+  //     setNumberOfLikes((prevNumberOfLikes) => {
+  //       if (prevNumberOfLikes === null || prevNumberOfLikes === 0) {
+  //         return null;
+  //       }
+  //       return prevNumberOfLikes - 1;
+  //     });
   //     setFilled(false);
   //   }
-  //   try {
-  //     const updateRef = doc(db, "tweets", `${id}`);
-
-  //     // Set the "capital" field of the city 'DC'
-  //     await updateDoc(updateRef, {
-  //       likeBy: ctx.uid,
-  //       likes: 0,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
   // };
-
-  //whenever the state changes, the localstorage's value will change as well
-  useEffect(() => {
-    localStorage.setItem(`likes-${id}`, `${numberOfLikes}`);
-    localStorage.setItem(`isLiked-${id}`, `${filled}`);
-  }, [numberOfLikes, filled]);
-
-  const handleClick = async () => {
-    tweetId = id;
-    console.log(tweetId);
-
-    if (!filled) {
-      setNumberOfLikes((prevNumberOfLikes) => {
-        if (prevNumberOfLikes === null) {
-          return null;
-        }
-        return prevNumberOfLikes + 1;
-      });
-
-      setFilled(true);
-    } else {
-      setNumberOfLikes((prevNumberOfLikes) => {
-        if (prevNumberOfLikes === null || prevNumberOfLikes === 0) {
-          return null;
-        }
-        return prevNumberOfLikes - 1;
-      });
-      setFilled(false);
-    }
-  };
   const showModalHandler = () => {
     setShowModal(true);
   };
@@ -161,7 +166,8 @@ const AddPosts = ({
               <HeartIcon className="h-6 w-6" />
             )}
             <p className=" group-hover:text-twitter  text-base ">
-              {numberOfLikes}
+              {/* {numberOfLikes} */}
+              {likes}
             </p>
           </div>
           {/* <PostIcon Icon={ChartBarIcon} title="9.1M" /> */}
