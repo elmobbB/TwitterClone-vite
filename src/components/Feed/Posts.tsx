@@ -13,10 +13,10 @@ interface Props {
   postDate: string;
   tweetContent: string;
   imgPath: string;
-  email: string;
+  onFetch: () => {};
 }
 
-function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
+function Posts({ id, name, postDate, tweetContent, imgPath, onFetch }: Props) {
   const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
     +localStorage.getItem(`likes-${id}`) || 0
   );
@@ -28,8 +28,8 @@ function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(`likes-${id}`, numberOfLikes);
-    localStorage.setItem(`isLiked-${id}`, filled);
+    localStorage.setItem(`likes-${id}`, `${numberOfLikes}`);
+    localStorage.setItem(`isLiked-${id}`, `${filled}`);
   }, [numberOfLikes, filled]);
 
   const handleClick = async () => {
@@ -39,10 +39,21 @@ function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
     // setNumberOfLikes(numberOfLikes === 0 ? 1 : 0);
 
     if (!filled) {
-      setNumberOfLikes(numberOfLikes + 1);
+      setNumberOfLikes((prevNumberOfLikes) => {
+        if (prevNumberOfLikes === null) {
+          return null;
+        }
+        return prevNumberOfLikes + 1;
+      });
+
       setFilled(true);
     } else {
-      setNumberOfLikes(numberOfLikes - 1);
+      setNumberOfLikes((prevNumberOfLikes) => {
+        if (prevNumberOfLikes === null || prevNumberOfLikes === 0) {
+          return null;
+        }
+        return prevNumberOfLikes - 1;
+      });
       setFilled(false);
     }
   };
@@ -87,7 +98,9 @@ function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
           >
             <PostIcon Icon={ShareIcon} title="10.9K" />
           </button>
-          {showModal && <Retweet id={id} onClose={hideModalHandler} />}
+          {showModal && (
+            <Retweet onFetch={onFetch} id={id} onClose={hideModalHandler} />
+          )}
           <div
             onClick={handleClick}
             className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
@@ -101,7 +114,7 @@ function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
               {numberOfLikes}
             </p>
           </div>
-          <PostIcon Icon={ChartBarIcon} title="9.1M" />
+          {/* <PostIcon Icon={ChartBarIcon} title="9.1M" /> */}
         </div>
       </div>
     </li>

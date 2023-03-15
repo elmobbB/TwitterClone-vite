@@ -6,10 +6,11 @@ import { getDb } from "../../../firebase";
 import { addDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import UserContext from "../../store/UserContext";
+import { doc, getDoc } from "firebase/firestore";
 interface Props {
   onClose: () => void;
-  retweet: () => void;
   id: string;
+  onFetch: () => {};
 }
 interface myType {
   id: string;
@@ -20,7 +21,7 @@ interface myType {
   likes: number;
 }
 
-const Retweet = ({ onClose, id }: Props) => {
+const Retweet = ({ onClose, id, onFetch }: Props) => {
   const ctx = useContext(UserContext);
   const [postedtweets, setPostedTweets] = useState<
     {
@@ -36,62 +37,44 @@ const Retweet = ({ onClose, id }: Props) => {
     let tweetId = id;
     console.log(tweetId);
     try {
-      const doc_refs = await getDocs(collection(getDb(), "tweets"));
+      const docRef = doc(db, "tweets", tweetId);
+      const docSnap = await getDoc(docRef);
 
-      const loadedPostedTweets: myType[] = [];
-
-      doc_refs.forEach((tweet: any) => {
-        loadedPostedTweets.unshift({
-          email: tweet.data().email,
-          id: tweet.id,
-          tweetContent: tweet.data().tweetContent,
-          image: tweet.data().image,
-          url: tweet.data().url,
-          likes: tweet.data().likes,
-        });
-      });
-      const tweetObj = loadedPostedTweets.filter((tweet) => {
-        return id === tweet.id;
-      });
-
-      if (tweetObj[0].image) {
-        try {
-          console.log("add doc , push to data base");
-          const docRef = addDoc(collection(db, "tweets"), {
-            tweetContent: tweetObj[0].tweetContent,
-            email: ctx.email,
-            image: tweetObj[0].image,
-            url: tweetObj[0].url,
-            likes: 0,
-            retweetFrom: tweetObj[0].email,
-          });
-        } catch (e) {
-          console.log("error");
+      if (docSnap.exists()) {
+        if (docSnap.data().image) {
+          try {
+            console.log("add doc , push to data base");
+            const docRef = await addDoc(collection(db, "tweets"), {
+              tweetContent: docSnap.data().tweetContent,
+              email: ctx.email,
+              image: docSnap.data().image,
+              url: docSnap.data().url,
+              likes: 0,
+              retweetFrom: docSnap.data().email,
+            });
+          } catch (e) {
+            console.log("error");
+          }
+        } else {
+          try {
+            console.log("add doc , push to data base");
+            const docRef = await addDoc(collection(db, "tweets"), {
+              tweetContent: docSnap.data().tweetContent,
+              email: ctx.email,
+              likes: 0,
+              retweetFrom: docSnap.data().email,
+            });
+          } catch (e) {
+            console.log("error");
+          }
         }
       } else {
-        try {
-          console.log("add doc , push to data base");
-          const docRef = addDoc(collection(db, "tweets"), {
-            tweetContent: tweetObj[0].tweetContent,
-            email: ctx.email,
-            likes: 0,
-            retweetFrom: tweetObj[0].email,
-          });
-        } catch (e) {
-          console.log("error");
-        }
+        console.log("No such document!");
       }
-
-      console.log(
-        loadedPostedTweets.filter((tweet) => {
-          return id === tweet.id;
-        })
-      );
-      //   const sharedPost = loadedPostedTweets.filter((tweet) => {});
-      //   setPostedTweets(tweetObj);
     } catch (error: any) {
       console.log(error.message);
     }
+    onFetch();
   };
 
   return (

@@ -13,13 +13,11 @@ import Modal from "../../UI/Modal";
 
 import avatar from "./../../../img/avatar.svg";
 import UserContext from "../../store/UserContext";
-import UserImageConText from "../../store/UserImageContext";
 import "./Spinner.css";
 interface Props {
   onClose: () => void;
-  imgCrop: string | boolean;
-  storeImg: string | boolean;
-  passImageUrl: (url: string) => void;
+  // imgCrop: string | boolean;
+  // storeImg: string | boolean;
 }
 interface myType {
   email: any;
@@ -29,9 +27,9 @@ interface myType {
   imageName: string;
 }
 
-function SetIcon({ onClose, passImageUrl }: Props) {
+function SetIcon({ onClose }: Props) {
   const ctx = useContext(UserContext);
-  const { imageUrl, setImageUrl } = useContext(UserImageConText);
+  // const { user, setUser } = useContext(UserContext);
 
   const [imgCrop, setImgCrop] = useState("");
   const [storeImg, setStoreImg] = useState(""); //the view
@@ -87,7 +85,7 @@ function SetIcon({ onClose, passImageUrl }: Props) {
     uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
       getDownloadURL(uploadRef).then((url: any) => {
         setUrl(url);
-        setImageUrl(url);
+        // setUser((prevUser: any) => ({ ...prevUser, imageUrl: url }));
         localStorage.setItem("myUrl", url);
         // Store the file's URL in Firestore
         try {
@@ -108,7 +106,6 @@ function SetIcon({ onClose, passImageUrl }: Props) {
     });
   };
 
-  passImageUrl(url);
   return (
     <Modal className="p-10" onClose={onClose}>
       {loading && (

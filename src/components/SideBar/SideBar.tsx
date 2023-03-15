@@ -18,7 +18,7 @@ import SetIcon from "./modal/SetIcon";
 import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
-
+import ChatRoom from "./chatRoom/ChatRoom";
 import {
   getStorage,
   ref,
@@ -29,7 +29,6 @@ import {
 import { getDb } from "../../firebase";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import UserImageConText from "../store/UserImageContext";
-import Message from "./message/Message";
 interface SidebarRowProps {
   onPassIcon: (icon: string) => void;
 }
@@ -39,14 +38,12 @@ interface myType {
   imageName: [];
   url: [];
 }
-const SideBar = ({ onPassIcon }: SidebarRowProps) => {
+const SideBar = () => {
   const ctx = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [messageShowModal, setMessageShowModal] = useState(false);
   // const [userIcon, setUserIcon] =
   //   useState<React.ComponentType<React.SVGProps<SVGSVGElement>>>(avatar);
-  const [imageUrl, setImageUrl] = useState("");
-  const imgCtx = useContext(UserImageConText);
   const signoutHandler = () => {
     firebase
       .auth()
@@ -72,36 +69,8 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
     setMessageShowModal(false);
   };
 
-  const email = ctx.email;
+  const email = ctx?.email;
   const name = email.substring(0, email.lastIndexOf("@"));
-
-  const imageUrlHandler = (url: any) => {
-    setImageUrl(url);
-  };
-
-  // const fetchIcon = useCallback(async () => {
-  //   try {
-  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
-
-  //     const loadIcon: myType[] = [];
-
-  //     doc_refs.forEach((icon) => {
-  //       loadIcon.unshift({
-  //         email: icon.data().email,
-  //         id: icon.id,
-  //         imageName: icon.data().imageName,
-  //         url: icon.data().url,
-  //       });
-  //     });
-  //     console.log(loadIcon);
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // }, []); //
-
-  // useEffect(() => {
-  //   fetchIcon();
-  // }, []);
 
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
@@ -123,7 +92,7 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
       <button onClick={showMessageModalHandler}>
         <SideBarRow Icon={EnvelopeIcon} title="message" />
       </button>
-      {messageShowModal && <Message onClose={hideMessageModalHandler} />}
+      {messageShowModal && <ChatRoom onClose={hideMessageModalHandler} />}
 
       <SideBarRow Icon={BookmarkIcon} title="bookmarks" />
       <SideBarRow Icon={ClipboardDocumentCheckIcon} title="lists" />
@@ -132,9 +101,7 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
       <button onClick={showModalHandler}>
         <SideBarRow Icon={UserIcon} title="profile" />
       </button>
-      {showModal && (
-        <SetIcon passImageUrl={imageUrlHandler} onClose={hideModalHandler} />
-      )}
+      {showModal && <SetIcon onClose={hideModalHandler} />}
       <button
         onClick={signoutHandler}
         className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
@@ -152,11 +119,10 @@ const SideBar = ({ onPassIcon }: SidebarRowProps) => {
               key={Math.random().toString(36).substring(2, 9)}
               className="h-14 w-14 rounded-full object-cover"
               alt="profile pic"
-              // src={imgCtx.imageUrl ? imgCtx.imageUrl : avatar}
+              // src={ctx.imageUrl ? ctx.imageUrl : avatar}
               src={
-                localStorage.getItem("myUrl") //make changes later
-                  ? localStorage.getItem("myUrl")
-                  : avatar
+                localStorage.getItem("myUrl") || //make changes later
+                avatar
               }
             />
             {/* {image.length > 0

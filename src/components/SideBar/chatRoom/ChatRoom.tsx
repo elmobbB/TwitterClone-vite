@@ -3,7 +3,7 @@ import Modal from "../../UI/Modal";
 interface Props {
   onClose: () => void;
 }
-const Message = ({ onClose }: Props) => {
+const ChatRoom = ({ onClose }: Props) => {
   return (
     <Modal className="p-10" onClose={onClose}>
       <div className="text-center">
@@ -19,4 +19,4 @@ const Message = ({ onClose }: Props) => {
   );
 };
 
-export default Message;
+export default ChatRoom;

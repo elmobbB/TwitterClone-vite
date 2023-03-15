@@ -2,16 +2,17 @@ import React, { useEffect, useState, useCallback, useContext } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import TweetBox from "./TweetBox";
 import Posts from "./Posts";
-import { getDocs, collection, doc } from "firebase/firestore";
+import { getDocs, collection, doc, updateDoc } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import AddPosts from "./AddPosts";
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import { db } from "../../firebase";
+import { orderBy } from "firebase/firestore";
 interface myType {
   id: string;
   tweetContent: string;
   email: string;
   image: [];
-  url: [];
+  url: "";
   likes: number;
   retweetFrom: string;
 }
@@ -98,10 +99,15 @@ const Feed = ({}) => {
     try {
       const doc_refs = await getDocs(collection(getDb(), "tweets"));
 
+      /////////
+
+      // get doc according to timestamp
+      ////////
+
       const loadedPostedTweets: myType[] = [];
 
       doc_refs.forEach((tweet) => {
-        loadedPostedTweets.unshift({
+        loadedPostedTweets.push({
           email: tweet.data().email,
           id: tweet.id,
           tweetContent: tweet.data().tweetContent,
@@ -119,9 +125,9 @@ const Feed = ({}) => {
         console.log("Unexpected error", error);
       }
     }
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    setLoading(false);
+    // setTimeout(() => {
+    // }, 2000);
   }, []); //
 
   useEffect(() => {
@@ -155,12 +161,13 @@ const Feed = ({}) => {
           .map((post) => {
             return (
               <AddPosts
+                onFetch={fetchPostedTweets}
                 email={post.email}
                 key={post.id}
                 id={post.id}
                 tweetContent={post.tweetContent}
-                url={post.url}
-                likes={post.likes}
+                url={post?.url}
+                likes={post?.likes}
                 retweetFrom={post.retweetFrom}
               />
             );
@@ -174,6 +181,7 @@ const Feed = ({}) => {
           {tweets.map((post) => {
             return (
               <Posts
+                onFetch={fetchPostedTweets}
                 key={post.id}
                 id={post.id}
                 name={post.name}

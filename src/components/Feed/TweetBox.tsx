@@ -28,10 +28,9 @@ import firebase from "../../firebase";
 import "./Spinner.css";
 interface ButtonProps {
   onFetch: () => void;
-  isLoading: any;
 }
 
-function TweetBox({ onFetch, isLoading }: ButtonProps) {
+function TweetBox({ onFetch }: ButtonProps) {
   const ctx = useContext(UserContext);
   const [tweetContent, setTweetContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -100,6 +99,7 @@ function TweetBox({ onFetch, isLoading }: ButtonProps) {
               image: `${randomIdForTweetsImage}.png`,
               url: url,
               likes: 0,
+              likeBy: [],
             });
           } catch (e) {
             console.log("error");
@@ -113,16 +113,18 @@ function TweetBox({ onFetch, isLoading }: ButtonProps) {
           tweetContent: tweetContent,
           email: ctx.email,
           likes: 0,
+          likeBy: [],
         });
       } catch (e) {
         console.log("error");
       }
     }
     setLoading(false);
+    onFetch();
+    console.log("onfetch");
   }
 
-  const handleDeleteImage = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleDeleteImage = () => {
     setImageData("");
   };
   function changeHandler(e: React.FormEvent<HTMLInputElement>) {
@@ -140,11 +142,7 @@ function TweetBox({ onFetch, isLoading }: ButtonProps) {
         <img
           className="h-14 w-14 rounded-full object-cover mt-4"
           alt="profile pic"
-          src={
-            localStorage.getItem("myUrl")
-              ? localStorage.getItem("myUrl")
-              : avatar
-          }
+          src={localStorage.getItem("myUrl") || avatar}
         />
 
         <div className="flex flex-1 items-center pl-2">
@@ -204,15 +202,15 @@ function TweetBox({ onFetch, isLoading }: ButtonProps) {
             <div className="flex items-center">
               <div className=" flex flex-1 space-x-2 text-twitter">
                 <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />
-                <GifIcon className="h-5 w-5" />
+
+                {/* <GifIcon className="h-5 w-5" />
                 <PhotoIcon className="h-5 w-5" />
                 <FaceSmileIcon className="h-5 w-5" />
                 <CalendarIcon className="h-5 w-5" />
-                <MapIcon className="h-5 w-5" />
+                <MapIcon className="h-5 w-5" /> */}
               </div>
               <div>
                 <button
-                  onClick={onFetch}
                   type="submit"
                   disabled={tweetContent.trim().length === 0}
                   className="bg-twitter rounded-full px-5 py-2 font-bold text-white disabled:opacity-40"

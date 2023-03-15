@@ -71,15 +71,15 @@ const App = () => {
             <Route
               path="/"
               element={
-                <ImageContextProvider>
-                  <UserContext.Provider value={user}>
-                    <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
-                      <SideBar />
-                      <Feed />
-                      {/* <Widgets /> */}
-                    </div>
-                  </UserContext.Provider>
-                </ImageContextProvider>
+                // <ImageContextProvider>
+                <UserContext.Provider value={user}>
+                  <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
+                    <SideBar />
+                    <Feed />
+                    {/* <Widgets /> */}
+                  </div>
+                </UserContext.Provider>
+                // </ImageContextProvider>
               }
             />
           ) : (
