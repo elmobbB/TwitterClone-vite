@@ -7,9 +7,6 @@ import firebase from "./firebase";
 import AuthGoogle from "./components/auth/AuthGoogle";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserContext from "./components/store/UserContext";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "./firebase";
-import { ImageContextProvider } from "./components/store/UserImageContext";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",

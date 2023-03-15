@@ -1,12 +1,17 @@
 import React, { useContext, useState } from "react";
 import Modal from "../../UI/Modal";
-import { getDocs } from "firebase/firestore";
-import { collection } from "firebase/firestore";
-import { getDb } from "../../../firebase";
-import { addDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 import UserContext from "../../store/UserContext";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  serverTimestamp,
+  addDoc,
+  collection,
+} from "firebase/firestore";
+import firebase from "../../../firebase";
+import { FieldValue, setDoc, increment } from "firebase/firestore";
 interface Props {
   onClose: () => void;
   id: string;
@@ -33,7 +38,13 @@ const Retweet = ({ onClose, id, onFetch }: Props) => {
       likes: number;
     }[]
   >([]);
+  const [loading, setLoading] = useState(false);
+  const [retweetsIncrement, setRetweetsIncrement] = useState(0);
+
   const fetchPostFromOthers = async () => {
+    setLoading(true);
+
+    await setRetweetsIncrement((prev) => prev++);
     let tweetId = id;
     console.log(tweetId);
     try {
@@ -45,12 +56,15 @@ const Retweet = ({ onClose, id, onFetch }: Props) => {
           try {
             console.log("add doc , push to data base");
             const docRef = await addDoc(collection(db, "tweets"), {
-              tweetContent: docSnap.data().tweetContent,
-              email: ctx.email,
-              image: docSnap.data().image,
-              url: docSnap.data().url,
-              likes: 0,
-              retweetFrom: docSnap.data().email,
+              ...docSnap.data(),
+              // tweetContent: docSnap.data().tweetContent,
+              // email: ctx.email,
+              // image: docSnap.data().image,
+              // url: docSnap.data().url,
+              // likes: 0,
+              // retweetFrom: docSnap.data().email,
+              // timestamp: serverTimestamp(),
+              // retweetTimes: 0,
             });
           } catch (e) {
             console.log("error");
@@ -63,6 +77,8 @@ const Retweet = ({ onClose, id, onFetch }: Props) => {
               email: ctx.email,
               likes: 0,
               retweetFrom: docSnap.data().email,
+              timestamp: serverTimestamp(),
+              retweetTimes: 0,
             });
           } catch (e) {
             console.log("error");
@@ -71,35 +87,57 @@ const Retweet = ({ onClose, id, onFetch }: Props) => {
       } else {
         console.log("No such document!");
       }
+
+      ////change the retweetTimes, increment by 1
+
+      try {
+        const updateRef = doc(db, "tweets", `${id}`);
+
+        // Set the "capital" field of the city 'DC'
+
+        await updateDoc(updateRef, {
+          retweetTimes: increment(1),
+        });
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error: any) {
       console.log(error.message);
     }
     onFetch();
+    setLoading(false);
   };
 
   return (
-    <Modal onClose={onClose}>
-      <div className="text-center my-2">Confirm Retweet?</div>
-      <div className="text-center">
-        <button
-          onClick={() => {
-            onClose();
-            fetchPostFromOthers();
-          }}
-          type="button"
-          className="text-white lg:pr-20 lg:pl-20  bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
-        >
-          Confirm
-        </button>
-        <button
-          onClick={onClose}
-          type="button"
-          className="text-white lg:pr-20 lg:pl-20  bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
-        >
-          Cancel
-        </button>
-      </div>
-    </Modal>
+    <div>
+      {loading && (
+        <div className="mb-3 inset-0 flex items-center justify-center">
+          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+        </div>
+      )}
+      <Modal onClose={onClose}>
+        <div className="text-center my-2">Confirm Retweet?</div>
+        <div className="text-center">
+          <button
+            onClick={() => {
+              onClose();
+              fetchPostFromOthers();
+            }}
+            type="button"
+            className="text-white lg:pr-20 lg:pl-20  bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
+          >
+            Confirm
+          </button>
+          <button
+            onClick={onClose}
+            type="button"
+            className="text-white lg:pr-20 lg:pl-20  bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
+          >
+            Cancel
+          </button>
+        </div>
+      </Modal>
+    </div>
   );
 };
 

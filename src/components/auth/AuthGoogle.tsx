@@ -2,9 +2,6 @@ import React, { useCallback, useEffect, useContext } from "react";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
 import firebase from "../../firebase";
-import { db } from "../../firebase";
-import { addDoc, collection } from "firebase/firestore";
-import UserContext from "../store/UserContext";
 
 interface Props {
   //user, use ctx
@@ -56,15 +53,6 @@ function AuthGoogle({ auth, setUser }: Props) {
       // signInSuccessUrl: "/",
       privacyPolicyUrl: "<your-privacy-policy-url>",
     });
-    //create user collection failed
-    // try {
-    //   const docRef = addDoc(collection(db, "users"), {
-    //     email: ctx.email,
-    //     uid: ctx.uid,
-    //   });
-    // } catch (e) {
-    //   console.log("error");
-    // }
   }, [auth]);
   return (
     <div>

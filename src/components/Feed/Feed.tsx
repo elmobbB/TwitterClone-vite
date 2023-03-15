@@ -23,6 +23,7 @@ interface myType {
   likes: number;
   retweetFrom: string;
   timestamp: any;
+  retweetTimes: number;
 }
 const Feed = ({}) => {
   const [tweets, setTweets] = useState<
@@ -46,6 +47,7 @@ const Feed = ({}) => {
       retweetFrom: string;
       // imgPath: string;
       timestamp: any;
+      retweetTimes: number;
     }[]
   >([]);
   const [isLoading, setIsloading] = useState(false);
@@ -197,6 +199,7 @@ const Feed = ({}) => {
                 url={post?.url}
                 likes={post?.likes}
                 retweetFrom={post.retweetFrom}
+                retweetTimes={post.retweetTimes}
               />
             );
           })}

@@ -24,6 +24,7 @@ interface Props {
   url?: string | null;
   likes?: number | null;
   onFetch: () => {};
+  retweetTimes: number;
 }
 const AddPosts = ({
   id,
@@ -34,6 +35,7 @@ const AddPosts = ({
   likes,
   retweetFrom,
   onFetch,
+  retweetTimes,
 }: Props) => {
   const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
     +localStorage.getItem(`likes-${id}`) || 0
@@ -144,7 +146,7 @@ const AddPosts = ({
               showModalHandler();
             }}
           >
-            <PostIcon Icon={ShareIcon} title="10.9K" />
+            <PostIcon Icon={ShareIcon} title={retweetTimes} />
           </button>
           {showModal && (
             <Retweet onFetch={onFetch} id={id} onClose={hideModalHandler} />

@@ -67,7 +67,7 @@ function TweetBox({ onFetch }: ButtonProps) {
     }
   };
 
-  function submitHandler(e: React.SyntheticEvent) {
+  const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setTweetContent("");
     // setSelectedImage([]);
@@ -85,46 +85,40 @@ function TweetBox({ onFetch }: ButtonProps) {
         `tweetsImage/${randomIdForTweetsImage}.png`
       );
 
-      uploadString(imageRef, imageData, "data_url").then((snapshot) => {
+      await uploadString(imageRef, imageData, "data_url").then((snapshot) => {
         // Get the file's download URL
         getDownloadURL(imageRef).then((url: any) => {
           setUrl(url);
           // Store the file's URL in Firestore
 
-          try {
-            console.log("add doc , push to data base");
-            const docRef = addDoc(collection(db, "tweets"), {
-              tweetContent: tweetContent,
-              email: ctx.email,
-              image: `${randomIdForTweetsImage}.png`,
-              url: url,
-              likes: 0,
-              likeBy: [],
-              timestamp: serverTimestamp(),
-            });
-          } catch (e) {
-            console.log("error");
-          }
+          console.log("add doc , push to data base");
+          const docRef = addDoc(collection(db, "tweets"), {
+            tweetContent: tweetContent,
+            email: ctx.email,
+            image: `${randomIdForTweetsImage}.png`,
+            url: url,
+            likes: 0,
+            likeBy: [],
+            timestamp: serverTimestamp(),
+            retweetTimes: 0,
+          });
         });
       });
     } else {
-      try {
-        console.log("add doc , push to data base");
-        const docRef = addDoc(collection(db, "tweets"), {
-          tweetContent: tweetContent,
-          email: ctx.email,
-          likes: 0,
-          likeBy: [],
-          timestamp: serverTimestamp(),
-        });
-      } catch (e) {
-        console.log("error");
-      }
+      console.log("add doc , push to data base");
+      const docRef = addDoc(collection(db, "tweets"), {
+        tweetContent: tweetContent,
+        email: ctx.email,
+        likes: 0,
+        likeBy: [],
+        timestamp: serverTimestamp(),
+        retweetTimes: 0,
+      });
     }
     setLoading(false);
     onFetch();
     console.log("onfetch");
-  }
+  };
 
   const handleDeleteImage = () => {
     setImageData("");

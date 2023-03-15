@@ -19,16 +19,7 @@ import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
 import ChatRoom from "./chatRoom/ChatRoom";
-import {
-  getStorage,
-  ref,
-  uploadString,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-import { getDb } from "../../firebase";
-import { addDoc, collection, getDocs } from "firebase/firestore";
-import UserImageConText from "../store/UserImageContext";
+
 interface SidebarRowProps {
   onPassIcon: (icon: string) => void;
 }
