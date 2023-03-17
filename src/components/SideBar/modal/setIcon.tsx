@@ -7,7 +7,12 @@ import {
   uploadString,
   getDownloadURL,
 } from "firebase/storage";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db, getDb } from "../../../firebase";
 import Modal from "../../UI/Modal";
 
@@ -74,9 +79,11 @@ function SetIcon({ onClose }: Props) {
   useEffect(() => {
     fetchIconImage();
   }, []);
+
   const randomId = Math.random().toString(36).substring(2, 9) + "";
   const saveImg = async () => {
     setLoading(true);
+    setStoreImg(imgCrop); //render the image after saving
     //import image to storage and get url
     const storage = getStorage();
 
@@ -95,6 +102,7 @@ function SetIcon({ onClose }: Props) {
             url: url,
             uid: ctx.uid,
             email: ctx.email,
+            timestamp: serverTimestamp(),
           });
         } catch (e) {
           console.log("error");

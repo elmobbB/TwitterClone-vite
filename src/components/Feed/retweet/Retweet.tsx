@@ -79,6 +79,7 @@ const Retweet = ({ onClose, id, onFetch }: Props) => {
               retweetFrom: docSnap.data().email,
               timestamp: serverTimestamp(),
               retweetTimes: 0,
+              userIcon: ctx.photoURL,
             });
           } catch (e) {
             console.log("error");

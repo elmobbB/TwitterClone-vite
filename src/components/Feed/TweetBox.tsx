@@ -101,6 +101,7 @@ function TweetBox({ onFetch }: ButtonProps) {
             likeBy: [],
             timestamp: serverTimestamp(),
             retweetTimes: 0,
+            userIcon: ctx.photoURL,
           });
         });
       });
@@ -113,6 +114,7 @@ function TweetBox({ onFetch }: ButtonProps) {
         likeBy: [],
         timestamp: serverTimestamp(),
         retweetTimes: 0,
+        userIcon: ctx.photoURL,
       });
     }
     setLoading(false);
@@ -138,11 +140,12 @@ function TweetBox({ onFetch }: ButtonProps) {
         <img
           className="h-14 w-14 rounded-full object-cover mt-4"
           alt="profile pic"
-          src={localStorage.getItem("myUrl") || avatar}
+          src={ctx.photoURL || avatar}
         />
 
         <div className="flex flex-1 items-center pl-2">
           <form className="flex flex-1 flex-col" onSubmit={submitHandler}>
+            {/* <input type="submit" /> */}
             <input
               value={tweetContent}
               onChange={changeHandler}

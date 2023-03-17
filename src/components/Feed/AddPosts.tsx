@@ -25,6 +25,7 @@ interface Props {
   likes?: number | null;
   onFetch: () => {};
   retweetTimes: number;
+  userIcon: "";
 }
 const AddPosts = ({
   id,
@@ -36,6 +37,7 @@ const AddPosts = ({
   retweetFrom,
   onFetch,
   retweetTimes,
+  userIcon,
 }: Props) => {
   const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
     +localStorage.getItem(`likes-${id}`) || 0
@@ -77,7 +79,6 @@ const AddPosts = ({
       // setNumberOfLikes(numberOfLikes - 1);
     }
   };
-
   //whenever the state changes, the localstorage's value will change as well
   // useEffect(() => {
   //   localStorage.setItem(`likes-${id}`, `${numberOfLikes}`);
@@ -120,7 +121,8 @@ const AddPosts = ({
       <img
         className="h-14 w-14 rounded-full object-cover mt-4"
         alt="profile image"
-        src={localStorage.getItem("myUrl") || avatar}
+        // src={ctx.photoURL || avatar}
+        src={userIcon || avatar}
       />
       <div className="w-11/12 ">
         <div className="flex w-11/12 ">

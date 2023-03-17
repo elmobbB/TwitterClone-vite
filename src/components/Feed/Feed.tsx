@@ -2,18 +2,12 @@ import React, { useEffect, useState, useCallback, useContext } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import TweetBox from "./TweetBox";
 import Posts from "./Posts";
-import {
-  getDocs,
-  collection,
-  doc,
-  updateDoc,
-  onSnapshot,
-} from "firebase/firestore";
+import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import AddPosts from "./AddPosts";
 import { db } from "../../firebase";
-import { orderBy, query } from "firebase/firestore";
-
+import { collection, query, orderBy, where, getDocs } from "firebase/firestore";
+import UserContext from "../store/UserContext";
 interface myType {
   id: string;
   tweetContent: string;
@@ -25,7 +19,9 @@ interface myType {
   timestamp: any;
   retweetTimes: number;
 }
-const Feed = ({}) => {
+
+const Feed = () => {
+  const ctx = useContext(UserContext);
   const [tweets, setTweets] = useState<
     {
       // key: string;
@@ -103,13 +99,50 @@ const Feed = ({}) => {
   ////
 
   //user post tweets
+
+  const updateicon = useCallback(async () => {
+    const q = await query(
+      collection(db, "tweets"),
+      where("email", "==", ctx.email)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      updateDoc(doc.ref, {
+        userIcon: ctx.photoURL,
+      });
+      console.log(doc.id, " => ", doc.data());
+    });
+  }, []);
+
+  useEffect(() => {
+    updateicon();
+  }, []);
+
   const fetchPostedTweets = useCallback(async () => {
     setError(null);
     setLoading(true);
 
+    ////by the time the icon is fetched, the uploaded icon cant be updated
+    // const q = await query(
+    //   collection(db, "tweets"),
+    //   where("email", "==", ctx.email)
+    // );
+
+    // const querySnapshot = await getDocs(q);
+
+    // querySnapshot.forEach((doc) => {
+    //   updateDoc(doc.ref, {
+    //     photoUrl: ctx.photoURL,
+    //   });
+    //   console.log(doc.id, " => ", doc.data());
+    // });
+
+    ///////////////
     //  get doc according to timestamp
     try {
-      const doc_refs = query(
+      const doc_refs = await query(
         collection(db, "tweets"),
         orderBy("timestamp", "asc")
       );
@@ -156,8 +189,6 @@ const Feed = ({}) => {
     //   }
     // }
     setLoading(false);
-    // setTimeout(() => {
-    // }, 2000);
   }, []); //
 
   useEffect(() => {
@@ -200,6 +231,7 @@ const Feed = ({}) => {
                 likes={post?.likes}
                 retweetFrom={post.retweetFrom}
                 retweetTimes={post.retweetTimes}
+                userIcon={post.userIcon}
               />
             );
           })}

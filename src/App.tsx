@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // import "./App.css";
 import Feed from "./components/Feed/Feed";
 import Widgets from "./components/Widgets/Widgets";
@@ -6,7 +6,12 @@ import SideBar from "./components/SideBar/SideBar";
 import firebase from "./firebase";
 import AuthGoogle from "./components/auth/AuthGoogle";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { db } from "./firebase";
 import UserContext from "./components/store/UserContext";
+import { doc, getDoc } from "firebase/firestore";
+import { orderBy, query, onSnapshot } from "firebase/firestore";
+import { collection } from "firebase/firestore";
+import { limit } from "firebase/firestore";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -24,28 +29,70 @@ const App = () => {
   const [user, setUser] = useState<{
     email: string;
     uid: string;
+    photoURL: string | null;
   }>({
     email: "",
     uid: "",
+    photoURL: "",
   });
+
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user?.email) {
+        /////////
+
+        //...
+        try {
+          //get the latest image uploaded
+          const doc_refs = query(
+            collection(db, "userIcon"),
+            orderBy("timestamp", "desc"),
+            limit(1)
+          );
+
+          onSnapshot(doc_refs, (snapshot) => {
+            // console.log(snapshot.docs[0].data());
+
+            // console.log(snapshot.docs[0].data());
+
+            // console.log(snapshot.docs[0].data().uid === user.uid);
+            if (snapshot.docs[0].data().uid === user.uid) {
+              user
+                .updateProfile({
+                  photoURL: snapshot.docs[0].data().url,
+                })
+                .then(() => {
+                  // Profile image updated successfully
+                })
+                .catch((error) => {
+                  console.error("Error updating user profile:", error);
+                });
+            } else {
+              return;
+            }
+          });
+        } catch (error) {
+          console.log("Unexpected error", error);
+        }
+
         setUser({
           email: user?.email,
           uid: user?.uid,
           // nickname: user?.displayName,
-          // photoURL: user?.photoURL,
+          photoURL: user?.photoURL,
         });
       } else {
         setUser({
           email: "",
           uid: "",
+          photoURL: "",
         });
       }
     });
-  }, []);
+  }, [user.photoURL]);
+
   console.log(user.email);
+  // console.log(user.photoURL, "user photourl");
   return (
     <div>
       <BrowserRouter>

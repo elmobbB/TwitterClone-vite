@@ -112,7 +112,7 @@ const SideBar = () => {
               alt="profile pic"
               // src={ctx.imageUrl ? ctx.imageUrl : avatar}
               src={
-                localStorage.getItem("myUrl") || //make changes later
+                ctx.photoURL || //make changes later
                 avatar
               }
             />
