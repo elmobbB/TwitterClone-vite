@@ -17,8 +17,8 @@ const ModalOverlay = (props: any) => {
     </div>
   );
 };
-
-const portalElement = document.getElementById("overlays");
+// add a null-check "!"
+const portalElement = document.getElementById("overlays")!;
 
 const Modal = (props: any) => {
   return (

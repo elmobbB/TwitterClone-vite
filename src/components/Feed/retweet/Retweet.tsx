@@ -15,7 +15,6 @@ import { FieldValue, setDoc, increment } from "firebase/firestore";
 interface Props {
   onClose: () => void;
   id: string;
-  onFetch: () => {};
 }
 interface myType {
   id: string;
@@ -26,7 +25,7 @@ interface myType {
   likes: number;
 }
 
-const Retweet = ({ onClose, id, onFetch }: Props) => {
+const Retweet = ({ onClose, id }: Props) => {
   const ctx = useContext(UserContext);
   const [postedtweets, setPostedTweets] = useState<
     {
@@ -62,8 +61,8 @@ const Retweet = ({ onClose, id, onFetch }: Props) => {
               // image: docSnap.data().image,
               // url: docSnap.data().url,
               // likes: 0,
-              // retweetFrom: docSnap.data().email,
-              // timestamp: serverTimestamp(),
+              retweetFrom: docSnap.data().email,
+              timestamp: serverTimestamp(),
               // retweetTimes: 0,
             });
           } catch (e) {
@@ -105,7 +104,6 @@ const Retweet = ({ onClose, id, onFetch }: Props) => {
     } catch (error: any) {
       console.log(error.message);
     }
-    onFetch();
     setLoading(false);
   };
 

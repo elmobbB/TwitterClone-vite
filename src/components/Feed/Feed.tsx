@@ -109,14 +109,15 @@ const Feed = () => {
 
       const querySnapshot = await getDocs(q);
 
-      querySnapshot.forEach((doc) => {
+      const unsubscribe = querySnapshot.forEach((doc) => {
         updateDoc(doc.ref, {
           userIcon: ctx.photoURL || null,
         });
       });
+      return unsubscribe;
     };
     updateicon();
-  }, []);
+  }, [db]);
 
   const fetchPostedTweets = useCallback(async () => {
     setError(null);
@@ -143,7 +144,6 @@ const Feed = () => {
         console.log("Unexpected error", error);
       }
     }
-
     setLoading(false);
   }, []); //
 
@@ -152,7 +152,6 @@ const Feed = () => {
   }, [ctx.photoURL]);
 
   const clickrefreshHandler = () => {
-    fetchPostedTweets();
     window.location.reload();
   };
 
@@ -170,13 +169,12 @@ const Feed = () => {
           <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
         </div>
       )}
-      <TweetBox onFetch={fetchPostedTweets} />
+      <TweetBox />
 
       <ul>
         {postedTweets.map((post) => {
           return (
             <AddPosts
-              onFetch={fetchPostedTweets}
               email={post.email}
               key={post.id}
               id={post.id}
@@ -198,7 +196,6 @@ const Feed = () => {
           {tweets.map((post) => {
             return (
               <Posts
-                onFetch={fetchPostedTweets}
                 key={post.id}
                 id={post.id}
                 name={post.name}

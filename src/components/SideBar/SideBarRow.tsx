@@ -10,7 +10,8 @@ import React, { SVGProps } from "react";
 //   title: string;
 // }
 interface SidebarRowProps {
-  Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>> | JSX.Element;
+  // Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>> | JSX.Element;
+  Icon?: any;
   title: string;
   // onClick: () => void;
 }

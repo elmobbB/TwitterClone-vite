@@ -13,10 +13,9 @@ interface Props {
   postDate: string;
   tweetContent: string;
   imgPath: string;
-  onFetch: () => {};
 }
 
-function Posts({ id, name, postDate, tweetContent, imgPath, onFetch }: Props) {
+function Posts({ id, name, postDate, tweetContent, imgPath }: Props) {
   const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
     +localStorage.getItem(`likes-${id}`) || 0
   );
@@ -98,9 +97,7 @@ function Posts({ id, name, postDate, tweetContent, imgPath, onFetch }: Props) {
           >
             <PostIcon Icon={ShareIcon} title="10.9K" />
           </button>
-          {showModal && (
-            <Retweet onFetch={onFetch} id={id} onClose={hideModalHandler} />
-          )}
+          {showModal && <Retweet id={id} onClose={hideModalHandler} />}
           <div
             onClick={handleClick}
             className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"

@@ -23,7 +23,6 @@ interface Props {
   retweetFrom: string;
   url?: string | null;
   likes?: number | null;
-  onFetch: () => {};
   retweetTimes: number;
   userIcon: string;
 }
@@ -34,7 +33,6 @@ const AddPosts = ({
   url,
   likes,
   retweetFrom,
-  onFetch,
   retweetTimes,
   userIcon,
 }: Props) => {
@@ -125,9 +123,7 @@ const AddPosts = ({
           >
             <PostIcon Icon={ShareIcon} title={retweetTimes} />
           </button>
-          {showModal && (
-            <Retweet onFetch={onFetch} id={id} onClose={hideModalHandler} />
-          )}
+          {showModal && <Retweet id={id} onClose={hideModalHandler} />}
           <div
             onClick={handleClick}
             className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"

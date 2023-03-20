@@ -26,11 +26,8 @@ import {
 import avatar from "../../img/avatar.svg";
 import firebase from "../../firebase";
 import "./Spinner.css";
-interface ButtonProps {
-  onFetch: () => void;
-}
 
-function TweetBox({ onFetch }: ButtonProps) {
+function TweetBox() {
   const ctx = useContext(UserContext);
   const [tweetContent, setTweetContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -120,8 +117,6 @@ function TweetBox({ onFetch }: ButtonProps) {
       });
     }
     setLoading(false);
-    onFetch();
-    console.log("onfetch");
   };
 
   const handleDeleteImage = () => {

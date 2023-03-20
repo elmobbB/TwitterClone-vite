@@ -13,7 +13,7 @@ import { orderBy, query, onSnapshot } from "firebase/firestore";
 import { collection, where } from "firebase/firestore";
 import { limit } from "firebase/firestore";
 import { getDocs } from "firebase/firestore";
-import avatar from "./img/avatar.svg";
+
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -27,6 +27,7 @@ import avatar from "./img/avatar.svg";
 // ];
 
 const App = () => {
+  const [userIcon, setUserIcon] = useState<string>("");
   // const [icon, setIcon] = useState();
   const [user, setUser] = useState<{
     email: string | null;
@@ -42,7 +43,7 @@ const App = () => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (_user) => {
       if (_user) {
         try {
-          const doc_refs = collection(db, "userIcon");
+          const doc_refs = await collection(db, "userIcon");
           const q = query(
             doc_refs,
             where("email", "==", _user.email),
@@ -50,11 +51,11 @@ const App = () => {
             limit(1)
           );
           const querySnapshot = await getDocs(q);
-          onSnapshot(q, (snapshot) => {
-            console.log(snapshot?.docs[0].data());
-            _user
+          onSnapshot(q, async (snapshot) => {
+            console.log(snapshot?.docs[0]?.data());
+            await _user
               ?.updateProfile({
-                photoURL: snapshot ? snapshot.docs[0].data().url : avatar,
+                photoURL: snapshot?.docs[0]?.data()?.url,
               })
               .then(() => {
                 // Profile image updated successfully
@@ -84,7 +85,7 @@ const App = () => {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [db]);
 
   console.log(user.email);
   console.log(user.photoURL, "user.photo/url");
@@ -112,7 +113,6 @@ const App = () => {
             <Route
               path="/"
               element={
-                // <ImageContextProvider>
                 <UserContext.Provider value={user}>
                   <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
                     <SideBar />
@@ -120,7 +120,6 @@ const App = () => {
                     {/* <Widgets /> */}
                   </div>
                 </UserContext.Provider>
-                // </ImageContextProvider>
               }
             />
           ) : (

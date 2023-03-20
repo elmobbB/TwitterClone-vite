@@ -1,23 +1,34 @@
 import React from "react";
 import { createContext } from "react";
+import { useContext } from "react";
+// interface Type {
+//   userIcon: string;
+//   setUserIcon: React.Dispatch<React.SetStateAction<string>>;
+// }
+// interface ChildrenType {
+//   children?: JSX.Element | JSX.Element[];
+// }
+// const UserImageConText = createContext<Type>({
+//   imageUrl: "",
+//   setImageUrl: () => {},
+// });
 
-interface Type {
-  imageUrl: string;
-  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
-}
-const UserImageConText = createContext<Type>({
-  imageUrl: "",
-  setImageUrl: () => {},
-});
+// export const ImageContextProvider: React.FC = ({ children }: ChildrenType) => {
+//   const [imageUrl, setImageUrl] = React.useState("");
 
-export const ImageContextProvider: React.FC = ({ children }: any) => {
-  const [imageUrl, setImageUrl] = React.useState("");
+//   return (
+//     <UserImageConText.Provider value={{ imageUrl, setImageUrl }}>
+//       {children}
+//     </UserImageConText.Provider>
+//   );
+// };
 
-  return (
-    <UserImageConText.Provider value={{ imageUrl, setImageUrl }}>
-      {children}
-    </UserImageConText.Provider>
-  );
+export type GlobalContent = {
+  userIcon: string;
+  setUserIcon: (c: string) => void;
 };
-
-export default UserImageConText;
+export const MyGlobalContext = createContext<GlobalContent>({
+  userIcon: "Hello World", // set a default value
+  setUserIcon: () => {},
+});
+export const UserImageConText = () => useContext(MyGlobalContext);

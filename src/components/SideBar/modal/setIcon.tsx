@@ -21,6 +21,7 @@ import UserContext from "../../store/UserContext";
 import "./Spinner.css";
 import { orderBy, query, onSnapshot } from "firebase/firestore";
 import { limit } from "firebase/firestore";
+import { UserImageConText } from "../../store/UserImageContext";
 interface Props {
   onClose: () => void;
   // imgCrop: string | boolean;
@@ -36,13 +37,22 @@ interface myType {
 
 function SetIcon({ onClose }: Props) {
   const ctx = useContext(UserContext);
+  // const { userIcon, setUserIcon } = UserImageConText();
   // const { user, setUser } = useContext(UserContext);
 
   const [imgCrop, setImgCrop] = useState("");
   const [storeImg, setStoreImg] = useState(""); //the view
   // const [imageName, setImageName] = useState("");
 
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState<
+    {
+      email: any;
+      uid: any;
+      id: string;
+      url: string;
+      imageName: string;
+    }[]
+  >([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -57,28 +67,30 @@ function SetIcon({ onClose }: Props) {
   };
 
   ////////////////should not be an array of objects, cuz i only need to render one single icon picture
-  const fetchIconImage = useCallback(async () => {
-    try {
-      const doc_refs = await getDocs(collection(getDb(), "userIcon"));
+  // const fetchIconImage = useCallback(async () => {
+  //   try {
+  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
 
-      const urls: myType[] = [];
-      doc_refs.forEach((doc) => {
-        urls.unshift({
-          url: doc.data().url,
-          imageName: doc.data().imageName,
-          email: doc.data().email,
-          uid: doc.data().uid,
-          id: doc.id,
-        });
-      });
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  }, []); //
+  //     const urls: myType[] = [];
+  //     doc_refs.forEach((doc) => {
+  //       urls.unshift({
+  //         url: doc.data().url,
+  //         imageName: doc.data().imageName,
+  //         email: doc.data().email,
+  //         uid: doc.data().uid,
+  //         id: doc.id,
+  //       });
+  //     });
+  //     setUrl(urls);
+  //   } catch (error: any) {
+  //     console.log(error.message);
+  //   }
+  // }, []);
+  // console.log(url);
 
-  useEffect(() => {
-    fetchIconImage();
-  }, []);
+  // useEffect(() => {
+  //   fetchIconImage();
+  // }, []);
 
   const randomId = Math.random().toString(36).substring(2, 9) + "";
   const saveImg = async () => {
@@ -91,8 +103,11 @@ function SetIcon({ onClose }: Props) {
 
     uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
       getDownloadURL(uploadRef).then(async (url: any) => {
-        setUrl(url);
         // setUser((prevUser: any) => ({ ...prevUser, imageUrl: url }));
+        // setUserIcon(url);
+
+        //////
+
         localStorage.setItem("myUrl", url);
         // Store the file's URL in Firestore
         try {
@@ -114,6 +129,7 @@ function SetIcon({ onClose }: Props) {
     });
   };
 
+  // console.log(userIcon);
   return (
     <Modal className="p-10" onClose={onClose}>
       {loading && (
