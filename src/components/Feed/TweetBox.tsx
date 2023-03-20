@@ -95,6 +95,7 @@ function TweetBox({ onFetch }: ButtonProps) {
           const docRef = addDoc(collection(db, "tweets"), {
             tweetContent: tweetContent,
             email: ctx.email,
+            uid: ctx.uid,
             image: `${randomIdForTweetsImage}.png`,
             url: url,
             likes: 0,
@@ -110,6 +111,7 @@ function TweetBox({ onFetch }: ButtonProps) {
       const docRef = addDoc(collection(db, "tweets"), {
         tweetContent: tweetContent,
         email: ctx.email,
+        uid: ctx.uid,
         likes: 0,
         likeBy: [],
         timestamp: serverTimestamp(),

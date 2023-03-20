@@ -13,7 +13,7 @@ interface myType {
   tweetContent: string;
   email: string;
   image: [];
-  url: "";
+  url: string;
   likes: number;
   retweetFrom: string;
   timestamp: any;
@@ -96,7 +96,6 @@ const Feed = () => {
   useEffect(() => {
     fetchTweets();
   }, []);
-  ////
 
   //user post tweets
 
@@ -124,23 +123,6 @@ const Feed = () => {
     setError(null);
     setLoading(true);
 
-    ////by the time the icon is fetched, the uploaded icon cant be updated
-    // const q = await query(
-    //   collection(db, "tweets"),
-    //   where("email", "==", ctx.email)
-    // );
-
-    // const querySnapshot = await getDocs(q);
-
-    // querySnapshot.forEach((doc) => {
-    //   updateDoc(doc.ref, {
-    //     photoUrl: ctx.photoURL,
-    //   });
-    //   console.log(doc.id, " => ", doc.data());
-    // });
-
-    ///////////////
-    //  get doc according to timestamp
     try {
       const doc_refs = await query(
         collection(db, "tweets"),
@@ -163,37 +145,13 @@ const Feed = () => {
       }
     }
 
-    // try {
-    //   const doc_refs = await getDocs(collection(getDb(), "tweets"));
-
-    //   const loadedPostedTweets: myType[] = [];
-
-    //   doc_refs.forEach((tweet) => {
-    //     loadedPostedTweets.push({
-    //       email: tweet.data().email,
-    //       id: tweet.id,
-    //       tweetContent: tweet.data().tweetContent,
-    //       image: tweet.data().image,
-    //       url: tweet.data().url,
-    //       likes: tweet.data().likes,
-    //       retweetFrom: tweet.data().retweetFrom,
-    //       timestamp: tweet.data().timestamp,
-    //     });
-    //   });
-    //   setPostedTweets(loadedPostedTweets);
-    // } catch (error) {
-    //   if (error instanceof Error) {
-    //     console.log(error.message);
-    //   } else {
-    //     console.log("Unexpected error", error);
-    //   }
-    // }
     setLoading(false);
   }, []); //
 
   useEffect(() => {
     fetchPostedTweets();
-  }, []);
+  }, [ctx.photoURL]);
+
   const clickrefreshHandler = () => {
     fetchPostedTweets();
     window.location.reload();

@@ -10,8 +10,9 @@ import { db } from "./firebase";
 import UserContext from "./components/store/UserContext";
 import { doc, getDoc } from "firebase/firestore";
 import { orderBy, query, onSnapshot } from "firebase/firestore";
-import { collection } from "firebase/firestore";
+import { collection, where } from "firebase/firestore";
 import { limit } from "firebase/firestore";
+import { getDocs } from "firebase/firestore";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -27,7 +28,7 @@ import { limit } from "firebase/firestore";
 const App = () => {
   // const [icon, setIcon] = useState();
   const [user, setUser] = useState<{
-    email: string;
+    email: string | null;
     uid: string;
     photoURL: string | null;
   }>({
@@ -37,50 +38,42 @@ const App = () => {
   });
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user?.email) {
-        /////////
-
-        //...
+    const unsubscribe = firebase.auth().onAuthStateChanged(async (_user) => {
+      if (_user) {
         try {
-          //get the latest image uploaded
-          const doc_refs = query(
-            collection(db, "userIcon"),
-            orderBy("timestamp", "desc"),
-            limit(1)
+          const doc_refs = collection(db, "userIcon");
+          const q = query(
+            doc_refs,
+            where("email", "==", _user.email),
+            orderBy("timestamp", "desc")
+            // limit(1)
           );
 
-          onSnapshot(doc_refs, (snapshot) => {
-            // console.log(snapshot.docs[0].data());
-
-            // console.log(snapshot.docs[0].data());
-
-            // console.log(snapshot.docs[0].data().uid === user.uid);
-            if (snapshot.docs[0].data().uid === user.uid) {
-              user
-                .updateProfile({
-                  photoURL: snapshot.docs[0].data().url,
-                })
-                .then(() => {
-                  // Profile image updated successfully
-                })
-                .catch((error) => {
-                  console.error("Error updating user profile:", error);
-                });
-            } else {
-              return;
-            }
+          const querySnapshot = await getDocs(q);
+          onSnapshot(q, (snapshot) => {
+            _user
+              ?.updateProfile({
+                photoURL: snapshot.docs[0].data().url,
+              })
+              .then(() => {
+                // Profile image updated successfully
+              })
+              .catch((error) => {
+                console.error("Error updating user profile:", error);
+              });
           });
         } catch (error) {
           console.log("Unexpected error", error);
         }
 
         setUser({
-          email: user?.email,
-          uid: user?.uid,
+          email: _user?.email,
+          uid: _user?.uid,
           // nickname: user?.displayName,
-          photoURL: user?.photoURL,
+          photoURL: _user?.photoURL,
         });
+
+        console.log(_user?.photoURL);
       } else {
         setUser({
           email: "",
@@ -89,7 +82,8 @@ const App = () => {
         });
       }
     });
-  }, [user.photoURL]);
+    return () => unsubscribe();
+  }, []);
 
   console.log(user.email);
   // console.log(user.photoURL, "user photourl");

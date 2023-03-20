@@ -12,7 +12,7 @@ import React, { SVGProps } from "react";
 
 interface SidebarRowProps {
   Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  title: string;
+  title: number | string;
 }
 const PostIcon: React.FC<SidebarRowProps> = ({ Icon, title }) => {
   return (

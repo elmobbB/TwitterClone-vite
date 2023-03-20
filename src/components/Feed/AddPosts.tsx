@@ -15,9 +15,9 @@ import { getDocs } from "firebase/firestore";
 import { getDb } from "../../firebase";
 import firebase from "../../firebase";
 import Retweet from "./retweet/Retweet";
+import useDebounce from "../hooks/useDebounce";
 interface Props {
   id: string;
-  // postDate: any;
   tweetContent: string;
   email: string;
   retweetFrom: string;
@@ -25,11 +25,10 @@ interface Props {
   likes?: number | null;
   onFetch: () => {};
   retweetTimes: number;
-  userIcon: "";
+  userIcon: string;
 }
 const AddPosts = ({
   id,
-  // postDate,
   tweetContent,
   email,
   url,
@@ -55,6 +54,7 @@ const AddPosts = ({
   useEffect(() => {
     localStorage.setItem(`isLiked-${id}`, `${filled}`);
   }, [filled]);
+
   const handleClick = async () => {
     tweetId = id;
     if (!filled) {
@@ -62,7 +62,6 @@ const AddPosts = ({
       const updateRef = doc(db, "tweets", `${id}`);
 
       await updateDoc(updateRef, {
-        // likeBy: ctx.uid,
         likes: increment(1),
       });
       console.log("+1");
@@ -72,42 +71,13 @@ const AddPosts = ({
       const updateRef = doc(db, "tweets", `${id}`);
 
       await updateDoc(updateRef, {
-        // likeBy: ctx.uid,
         likes: increment(-1),
       });
       console.log("-1");
       // setNumberOfLikes(numberOfLikes - 1);
     }
   };
-  //whenever the state changes, the localstorage's value will change as well
-  // useEffect(() => {
-  //   localStorage.setItem(`likes-${id}`, `${numberOfLikes}`);
-  //   localStorage.setItem(`isLiked-${id}`, `${filled}`);
-  // }, [numberOfLikes, filled]);
 
-  // const handleClick = async () => {
-  //   tweetId = id;
-  //   console.log(tweetId);
-
-  //   if (!filled) {
-  //     setNumberOfLikes((prevNumberOfLikes) => {
-  //       if (prevNumberOfLikes === null) {
-  //         return null;
-  //       }
-  //       return prevNumberOfLikes + 1;
-  //     });
-
-  //     setFilled(true);
-  //   } else {
-  //     setNumberOfLikes((prevNumberOfLikes) => {
-  //       if (prevNumberOfLikes === null || prevNumberOfLikes === 0) {
-  //         return null;
-  //       }
-  //       return prevNumberOfLikes - 1;
-  //     });
-  //     setFilled(false);
-  //   }
-  // };
   const showModalHandler = () => {
     setShowModal(true);
   };
@@ -121,8 +91,8 @@ const AddPosts = ({
       <img
         className="h-14 w-14 rounded-full object-cover mt-4"
         alt="profile image"
-        // src={ctx.photoURL || avatar}
-        src={userIcon || avatar}
+        src={ctx.photoURL || avatar}
+        // src={userIcon || avatar}
       />
       <div className="w-11/12 ">
         <div className="flex w-11/12 ">

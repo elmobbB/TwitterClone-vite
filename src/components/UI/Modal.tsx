@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 
 import classes from "./Modal.module.css";
 
+interface Type {
+  portalElement: Element | DocumentFragment;
+}
 const Backdrop = (props: any) => {
   return <div className={classes.backdrop} onClick={props.onClose} />;
 };
