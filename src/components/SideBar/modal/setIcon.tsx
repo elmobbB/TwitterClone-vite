@@ -91,40 +91,6 @@ function SetIcon({ onClose }: Props) {
 
     uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
       getDownloadURL(uploadRef).then(async (url: any) => {
-        // //////////////updateprofile
-        // try {
-        //   //get the latest image uploaded
-        //   const doc_refs = query(
-        //     collection(db, "userIcon"),
-        //     orderBy("timestamp", "desc"),
-        //     limit(1)
-        //   );
-
-        //   onSnapshot(doc_refs, (snapshot) => {
-        //     // console.log(snapshot.docs[0].data());
-
-        //     // console.log(snapshot.docs[0].data());
-
-        //     console.log(snapshot.docs[0].data().uid === ctx.uid);
-        //     if (snapshot.docs[0].data().uid === ctx.uid) {
-        //       ctx
-        //         .updateProfile({
-        //           photoURL: snapshot.docs[0].data().url,
-        //         })
-        //         .then(() => {
-        //           // Profile image updated successfully
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error updating user profile:", error);
-        //         });
-        //     } else {
-        //       return;
-        //     }
-        //   });
-        // } catch (error) {
-        //   console.log("Unexpected error", error);
-        // }
-
         setUrl(url);
         // setUser((prevUser: any) => ({ ...prevUser, imageUrl: url }));
         localStorage.setItem("myUrl", url);

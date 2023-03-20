@@ -10,6 +10,7 @@ import {
   ClipboardDocumentCheckIcon,
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+
 import SideBarRow from "./SideBarRow";
 import TweetButton from "./TweetButton";
 import firebase from "firebase/compat/app";
@@ -61,7 +62,7 @@ const SideBar = () => {
   };
 
   const email = ctx?.email;
-  const name = email.substring(0, email.lastIndexOf("@"));
+  const name = email?.substring(0, email.lastIndexOf("@"));
 
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
@@ -111,10 +112,8 @@ const SideBar = () => {
               className="h-14 w-14 rounded-full object-cover"
               alt="profile pic"
               // src={ctx.imageUrl ? ctx.imageUrl : avatar}
-              src={
-                ctx.photoURL || //make changes later
-                avatar
-              }
+              src={ctx.photoURL || avatar}
+              // src={ctx.photoURL || avatar}
             />
             {/* {image.length > 0
               ? image.map((url) => (

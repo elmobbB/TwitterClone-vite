@@ -38,9 +38,9 @@ const AddPosts = ({
   retweetTimes,
   userIcon,
 }: Props) => {
-  const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
-    +localStorage.getItem(`likes-${id}`) || 0
-  );
+  // const [numberOfLikes, setNumberOfLikes] = useState<number | null>(
+  //   +localStorage.getItem(`likes-${id}`) || 0
+  // );
   const tweetName = email.substring(0, email.lastIndexOf("@"));
   const ctx = useContext(UserContext);
   const [filled, setFilled] = useState<boolean>(
@@ -91,8 +91,8 @@ const AddPosts = ({
       <img
         className="h-14 w-14 rounded-full object-cover mt-4"
         alt="profile image"
-        src={ctx.photoURL || avatar}
-        // src={userIcon || avatar}
+        // src={ctx.photoURL || avatar}
+        src={userIcon || avatar}
       />
       <div className="w-11/12 ">
         <div className="flex w-11/12 ">

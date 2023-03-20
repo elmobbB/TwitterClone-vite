@@ -2,8 +2,8 @@ import React from "react";
 import { createContext } from "react";
 
 interface Type {
-  email: string;
-  uid: string;
+  email: string | null;
+  uid: string | null;
   photoURL: string | null;
 }
 const UserContext = createContext<Type>({

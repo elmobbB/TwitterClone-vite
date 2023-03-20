@@ -13,6 +13,7 @@ import { orderBy, query, onSnapshot } from "firebase/firestore";
 import { collection, where } from "firebase/firestore";
 import { limit } from "firebase/firestore";
 import { getDocs } from "firebase/firestore";
+import avatar from "./img/avatar.svg";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -45,15 +46,15 @@ const App = () => {
           const q = query(
             doc_refs,
             where("email", "==", _user.email),
-            orderBy("timestamp", "desc")
-            // limit(1)
+            orderBy("timestamp", "desc"),
+            limit(1)
           );
-
           const querySnapshot = await getDocs(q);
           onSnapshot(q, (snapshot) => {
+            console.log(snapshot?.docs[0].data());
             _user
               ?.updateProfile({
-                photoURL: snapshot.docs[0].data().url,
+                photoURL: snapshot ? snapshot.docs[0].data().url : avatar,
               })
               .then(() => {
                 // Profile image updated successfully
@@ -86,6 +87,8 @@ const App = () => {
   }, []);
 
   console.log(user.email);
+  console.log(user.photoURL, "user.photo/url");
+
   // console.log(user.photoURL, "user photourl");
   return (
     <div>

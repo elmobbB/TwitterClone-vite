@@ -18,6 +18,7 @@ interface myType {
   retweetFrom: string;
   timestamp: any;
   retweetTimes: number;
+  userIcon: string;
 }
 
 const Feed = () => {
@@ -34,14 +35,13 @@ const Feed = () => {
   >([]);
   const [postedTweets, setPostedTweets] = useState<
     {
-      // key: string;
       id: string;
       email: string;
-      // name: string;
-      // postDate: string;
+      likes: number;
       tweetContent: string;
       retweetFrom: string;
-      // imgPath: string;
+      userIcon: string;
+      url: string;
       timestamp: any;
       retweetTimes: number;
     }[]
@@ -64,7 +64,7 @@ const Feed = () => {
         throw new Error(`${responseData.message} (${responseData.status})`);
       }
 
-      interface myType {
+      interface Type {
         id: string;
         name: string;
         postDate: string;
@@ -72,7 +72,7 @@ const Feed = () => {
         imgPath: string;
       }
 
-      const loadedTweets: myType[] = [];
+      const loadedTweets: Type[] = [];
 
       for (const key in responseData) {
         loadedTweets.push({
@@ -99,23 +99,22 @@ const Feed = () => {
 
   //user post tweets
 
-  const updateicon = useCallback(async () => {
-    const q = await query(
-      collection(db, "tweets"),
-      where("email", "==", ctx.email)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    querySnapshot.forEach((doc) => {
-      updateDoc(doc.ref, {
-        userIcon: ctx.photoURL,
-      });
-      console.log(doc.id, " => ", doc.data());
-    });
-  }, []);
-
   useEffect(() => {
+    const updateicon = async () => {
+      //change all the document's usericon into the latest one
+      const q = await query(
+        collection(db, "tweets"),
+        where("email", "==", ctx.email)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        updateDoc(doc.ref, {
+          userIcon: ctx.photoURL || null,
+        });
+      });
+    };
     updateicon();
   }, []);
 
@@ -126,13 +125,13 @@ const Feed = () => {
     try {
       const doc_refs = await query(
         collection(db, "tweets"),
-        orderBy("timestamp", "asc")
+        orderBy("timestamp", "desc")
       );
 
       onSnapshot(doc_refs, (snapshot) => {
         const loadedPostedTweets: myType[] = [];
 
-        snapshot.docs.forEach((doc) => {
+        snapshot.docs.forEach((doc: any) => {
           loadedPostedTweets.push({ ...doc.data(), id: doc.id });
         });
         setPostedTweets(loadedPostedTweets);
@@ -174,25 +173,22 @@ const Feed = () => {
       <TweetBox onFetch={fetchPostedTweets} />
 
       <ul>
-        {postedTweets
-          .slice(0)
-          .reverse()
-          .map((post) => {
-            return (
-              <AddPosts
-                onFetch={fetchPostedTweets}
-                email={post.email}
-                key={post.id}
-                id={post.id}
-                tweetContent={post.tweetContent}
-                url={post?.url}
-                likes={post?.likes}
-                retweetFrom={post.retweetFrom}
-                retweetTimes={post.retweetTimes}
-                userIcon={post.userIcon}
-              />
-            );
-          })}
+        {postedTweets.map((post) => {
+          return (
+            <AddPosts
+              onFetch={fetchPostedTweets}
+              email={post.email}
+              key={post.id}
+              id={post.id}
+              tweetContent={post.tweetContent}
+              url={post?.url}
+              likes={post?.likes}
+              retweetFrom={post.retweetFrom}
+              retweetTimes={post.retweetTimes}
+              userIcon={post.userIcon}
+            />
+          );
+        })}
       </ul>
       {isLoading ? (
         <ul className=" text-center"></ul>
