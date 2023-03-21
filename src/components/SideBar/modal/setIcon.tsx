@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState } from "react";
 import Avatar from "react-avatar-edit";
 
 import {
@@ -20,8 +20,8 @@ import avatar from "./../../../img/avatar.svg";
 import UserContext from "../../store/UserContext";
 import "./Spinner.css";
 import { orderBy, query, onSnapshot } from "firebase/firestore";
-import { limit } from "firebase/firestore";
-import { UserImageConText } from "../../store/UserImageContext";
+import { where } from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
 interface Props {
   onClose: () => void;
   // imgCrop: string | boolean;
@@ -34,10 +34,12 @@ interface myType {
   url: string;
   imageName: string;
 }
-
+interface UserContextType {
+  userIcon: string;
+  setUserIcon: (icon: string) => void;
+}
 function SetIcon({ onClose }: Props) {
-  const ctx = useContext(UserContext);
-  // const { userIcon, setUserIcon } = UserImageConText();
+  const { user, setUser } = useContext(UserContext);
   // const { user, setUser } = useContext(UserContext);
 
   const [imgCrop, setImgCrop] = useState("");
@@ -66,70 +68,54 @@ function SetIcon({ onClose }: Props) {
     setImgCrop(""); //null?
   };
 
-  ////////////////should not be an array of objects, cuz i only need to render one single icon picture
-  // const fetchIconImage = useCallback(async () => {
-  //   try {
-  //     const doc_refs = await getDocs(collection(getDb(), "userIcon"));
-
-  //     const urls: myType[] = [];
-  //     doc_refs.forEach((doc) => {
-  //       urls.unshift({
-  //         url: doc.data().url,
-  //         imageName: doc.data().imageName,
-  //         email: doc.data().email,
-  //         uid: doc.data().uid,
-  //         id: doc.id,
-  //       });
-  //     });
-  //     setUrl(urls);
-  //   } catch (error: any) {
-  //     console.log(error.message);
-  //   }
-  // }, []);
-  // console.log(url);
-
-  // useEffect(() => {
-  //   fetchIconImage();
-  // }, []);
-
   const randomId = Math.random().toString(36).substring(2, 9) + "";
+
+  const updateicon = async (email: string, url: string) => {
+    const querySnapshot = await getDocs(
+      query(collection(db, "tweets"), where("email", "==", email))
+    );
+    querySnapshot.forEach((doc) => {
+      updateDoc(doc.ref, {
+        userIcon: url,
+      });
+    });
+  };
+
   const saveImg = async () => {
     setLoading(true);
     setStoreImg(imgCrop); //render the image after saving
     //import image to storage and get url
     const storage = getStorage();
-
     const uploadRef = ref(storage, `images/${randomId}.png`);
-
     uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
       getDownloadURL(uploadRef).then(async (url: any) => {
-        // setUser((prevUser: any) => ({ ...prevUser, imageUrl: url }));
-        // setUserIcon(url);
-
-        //////
-
-        localStorage.setItem("myUrl", url);
         // Store the file's URL in Firestore
         try {
-          console.log("add doc , push to data base");
           const docRef = await addDoc(collection(db, "userIcon"), {
             imageName: `${randomId}.png`,
             url: url,
-            uid: ctx.uid,
-            email: ctx.email,
+            uid: user.uid,
+            email: user.email,
             timestamp: serverTimestamp(),
           });
+          if (docRef) {
+            if (user.email && url) {
+              // update all tweet of the user with the user icon if upload success
+              updateicon(user.email, url);
+              setUser({
+                ...user,
+                userIcon: url,
+              });
+            }
+          }
         } catch (e) {
-          console.log("error");
+          console.log("error", e);
         }
       });
-
       setLoading(false);
       setSaveMessage("Save✅");
     });
   };
-
-  // console.log(userIcon);
   return (
     <Modal className="p-10" onClose={onClose}>
       {loading && (

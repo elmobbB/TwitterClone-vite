@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import TweetBox from "./TweetBox";
-import Posts from "./Posts";
-import { doc, updateDoc, onSnapshot } from "firebase/firestore";
-import { getDb } from "../../firebase";
+// import Posts from "./Posts";
+import { onSnapshot } from "firebase/firestore";
 import AddPosts from "./AddPosts";
 import { db } from "../../firebase";
-import { collection, query, orderBy, where, getDocs } from "firebase/firestore";
-import UserContext from "../store/UserContext";
+import { collection, query, orderBy } from "firebase/firestore";
+
 interface myType {
   id: string;
   tweetContent: string;
@@ -22,17 +21,6 @@ interface myType {
 }
 
 const Feed = () => {
-  const ctx = useContext(UserContext);
-  const [tweets, setTweets] = useState<
-    {
-      // key: string;
-      id: string;
-      name: string;
-      postDate: string;
-      tweetContent: string;
-      imgPath: string;
-    }[]
-  >([]);
   const [postedTweets, setPostedTweets] = useState<
     {
       id: string;
@@ -46,81 +34,10 @@ const Feed = () => {
       retweetTimes: number;
     }[]
   >([]);
-  const [isLoading, setIsloading] = useState(false);
-  const [error, setError] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
-  //fake data
-  const fetchTweets = useCallback(async () => {
-    setError(null);
-
-    try {
-      const response = await fetch(
-        "https://twitterclone-f51ff-default-rtdb.firebaseio.com/tweets.json"
-      );
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        throw new Error(`${responseData.message} (${responseData.status})`);
-      }
-
-      interface Type {
-        id: string;
-        name: string;
-        postDate: string;
-        tweetContent: string;
-        imgPath: string;
-      }
-
-      const loadedTweets: Type[] = [];
-
-      for (const key in responseData) {
-        loadedTweets.push({
-          id: responseData[key].id,
-          name: responseData[key].name,
-          postDate: responseData[key].postDate,
-          tweetContent: responseData[key].tweetContent,
-          imgPath: responseData[key].imgPath,
-        });
-      }
-
-      setTweets(loadedTweets);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      } else {
-        console.log("Unexpected error", error);
-      }
-    }
-  }, []); //
-  useEffect(() => {
-    fetchTweets();
-  }, []);
-
-  //user post tweets
-
-  useEffect(() => {
-    const updateicon = async () => {
-      //change all the document's usericon into the latest one
-      const q = await query(
-        collection(db, "tweets"),
-        where("email", "==", ctx.email)
-      );
-
-      const querySnapshot = await getDocs(q);
-
-      const unsubscribe = querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, {
-          userIcon: ctx.photoURL || null,
-        });
-      });
-      return unsubscribe;
-    };
-    updateicon();
-  }, [db]);
-
   const fetchPostedTweets = useCallback(async () => {
-    setError(null);
     setLoading(true);
 
     try {
@@ -149,7 +66,7 @@ const Feed = () => {
 
   useEffect(() => {
     fetchPostedTweets();
-  }, [ctx.photoURL]);
+  }, []);
 
   const clickrefreshHandler = () => {
     window.location.reload();
@@ -188,11 +105,10 @@ const Feed = () => {
           );
         })}
       </ul>
-      {isLoading ? (
+      {/* {isLoading ? (
         <ul className=" text-center"></ul>
       ) : (
         <ul>
-          {/* rmb to add return -_- */}
           {tweets.map((post) => {
             return (
               <Posts
@@ -206,8 +122,7 @@ const Feed = () => {
             );
           })}
         </ul>
-      )}
-      {!isLoading && error && <p>{error}</p>}
+      )} */}
     </div>
   );
 };

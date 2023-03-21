@@ -20,7 +20,7 @@ import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
 import ChatRoom from "./chatRoom/ChatRoom";
-
+import { UserIconContext } from "../store/UserImageContext";
 interface SidebarRowProps {
   onPassIcon: (icon: string) => void;
 }
@@ -30,10 +30,13 @@ interface myType {
   imageName: [];
   url: [];
 }
+
 const SideBar = () => {
-  const ctx = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [messageShowModal, setMessageShowModal] = useState(false);
+
+  const ctxUserIcon = useContext(UserIconContext);
   // const [userIcon, setUserIcon] =
   //   useState<React.ComponentType<React.SVGProps<SVGSVGElement>>>(avatar);
   const signoutHandler = () => {
@@ -61,9 +64,11 @@ const SideBar = () => {
     setMessageShowModal(false);
   };
 
-  const email = ctx?.email;
+  const email = user?.email;
+  console.log("siodeL ", email);
   const name = email?.substring(0, email.lastIndexOf("@"));
 
+  console.log("compnoent: ", user.photoURL);
   return (
     <div className="col-span-2 items-center px-4 md:items-start">
       <img
@@ -111,25 +116,11 @@ const SideBar = () => {
               key={Math.random().toString(36).substring(2, 9)}
               className="h-14 w-14 rounded-full object-cover"
               alt="profile pic"
-              // src={ctx.imageUrl ? ctx.imageUrl : avatar}
-              src={ctx.photoURL || avatar}
-              // src={ctx.photoURL || avatar}
+              src={user.userIcon || avatar}
             />
-            {/* {image.length > 0
-              ? image.map((url) => (
-                  <img
-                    key={Math.random().toString(36).substring(2, 9)}
-                    className="h-14 w-14 rounded-full object-cover"
-                    alt="profile pic"
-                    src={url}
-                  />
-                ))
-              : userIcon} */}
           </div>
           <div className="pl-4">
             <h2>{name}</h2>
-            {/* <h2>{ctx.name}</h2> */}
-            {/* <h3>{ctx.uid}</h3> */}
           </div>
         </div>
       </div>

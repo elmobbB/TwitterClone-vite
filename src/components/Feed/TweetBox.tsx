@@ -1,21 +1,8 @@
-import React, {
-  useContext,
-  useRef,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  PhotoIcon,
-  GifIcon,
-  FaceSmileIcon,
-  CalendarIcon,
-  MapIcon,
-} from "@heroicons/react/24/outline";
+import React, { useContext, useState } from "react";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { db } from "../../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import UserContext from "../store/UserContext";
-import Avatar from "@mui/material/Avatar";
 import {
   ref,
   uploadBytes,
@@ -24,11 +11,10 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import avatar from "../../img/avatar.svg";
-import firebase from "../../firebase";
 import "./Spinner.css";
-
+import { UserIconContext } from "../store/UserImageContext";
 function TweetBox() {
-  const ctx = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [tweetContent, setTweetContent] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -38,6 +24,7 @@ function TweetBox() {
   const [url, setUrl] = useState<string[]>([]);
   const [images, setImages] = useState([]);
   const [imageData, setImageData] = useState<string | null>(null);
+  const ctxUserIcon = useContext(UserIconContext);
 
   const onSelectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     //e: React.ChangeEvent<HTMLInputElement>
@@ -91,15 +78,15 @@ function TweetBox() {
           console.log("add doc , push to data base");
           const docRef = addDoc(collection(db, "tweets"), {
             tweetContent: tweetContent,
-            email: ctx.email,
-            uid: ctx.uid,
+            email: user.email,
+            uid: user.uid,
             image: `${randomIdForTweetsImage}.png`,
             url: url,
             likes: 0,
             likeBy: [],
             timestamp: serverTimestamp(),
             retweetTimes: 0,
-            userIcon: ctx.photoURL,
+            userIcon: user.photoURL,
           });
         });
       });
@@ -107,13 +94,13 @@ function TweetBox() {
       console.log("add doc , push to data base");
       const docRef = addDoc(collection(db, "tweets"), {
         tweetContent: tweetContent,
-        email: ctx.email,
-        uid: ctx.uid,
+        email: user.email,
+        uid: user.uid,
         likes: 0,
         likeBy: [],
         timestamp: serverTimestamp(),
         retweetTimes: 0,
-        userIcon: ctx.photoURL,
+        userIcon: user.photoURL,
       });
     }
     setLoading(false);
@@ -137,7 +124,8 @@ function TweetBox() {
         <img
           className="h-14 w-14 rounded-full object-cover mt-4"
           alt="profile pic"
-          src={ctx.photoURL || avatar}
+          src={user.userIcon || avatar}
+          // src={ctxUserIcon.userIcon || avatar}
         />
 
         <div className="flex flex-1 items-center pl-2">

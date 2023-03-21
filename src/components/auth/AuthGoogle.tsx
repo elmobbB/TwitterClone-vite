@@ -46,6 +46,7 @@ function AuthGoogle({ auth, setUser }: Props) {
           setUser({
             email: authResult.user.email,
             uid: authResult.user.uid,
+            userIcon: authResult.user.photoUrl,
           });
           return false;
         },

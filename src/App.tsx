@@ -13,7 +13,8 @@ import { orderBy, query, onSnapshot } from "firebase/firestore";
 import { collection, where } from "firebase/firestore";
 import { limit } from "firebase/firestore";
 import { getDocs } from "firebase/firestore";
-
+import { useContext } from "react";
+import { UserImageContext } from "./components/store/UserImageContext";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -27,20 +28,24 @@ import { getDocs } from "firebase/firestore";
 // ];
 
 const App = () => {
-  const [userIcon, setUserIcon] = useState<string>("");
-  // const [icon, setIcon] = useState();
+  const [userIcon, setUserIcon] = useState("");
+  const ctx = useContext(UserContext);
+
   const [user, setUser] = useState<{
     email: string | null;
-    uid: string;
+    uid: string | null;
     photoURL: string | null;
+    userIcon: string | null;
   }>({
     email: "",
     uid: "",
     photoURL: "",
+    userIcon: "",
   });
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (_user) => {
+      console.log(_user, "auth");
       if (_user) {
         try {
           const doc_refs = await collection(db, "userIcon");
@@ -53,7 +58,7 @@ const App = () => {
           const querySnapshot = await getDocs(q);
           onSnapshot(q, async (snapshot) => {
             console.log(snapshot?.docs[0]?.data());
-            await _user
+            _user
               ?.updateProfile({
                 photoURL: snapshot?.docs[0]?.data()?.url,
               })
@@ -63,6 +68,7 @@ const App = () => {
               .catch((error) => {
                 console.error("Error updating user profile:", error);
               });
+            await _user.reload();
           });
         } catch (error) {
           console.log("Unexpected error", error);
@@ -73,6 +79,7 @@ const App = () => {
           uid: _user?.uid,
           // nickname: user?.displayName,
           photoURL: _user?.photoURL,
+          userIcon: _user?.photoURL,
         });
 
         console.log(_user?.photoURL);
@@ -81,6 +88,7 @@ const App = () => {
           email: "",
           uid: "",
           photoURL: "",
+          userIcon: "",
         });
       }
     });
@@ -113,13 +121,15 @@ const App = () => {
             <Route
               path="/"
               element={
-                <UserContext.Provider value={user}>
-                  <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
-                    <SideBar />
-                    <Feed />
-                    {/* <Widgets /> */}
-                  </div>
-                </UserContext.Provider>
+                <UserImageContext>
+                  <UserContext.Provider value={{ user, setUser }}>
+                    <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
+                      <SideBar />
+                      <Feed />
+                      {/* <Widgets /> */}
+                    </div>
+                  </UserContext.Provider>
+                </UserImageContext>
               }
             />
           ) : (
