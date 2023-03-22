@@ -21,7 +21,8 @@ import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
 import ChatRoom from "./chatRoom/ChatRoom";
 import { UserIconContext } from "../store/UserImageContext";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Router, Link } from "react-router-dom"; //use routes instead of switch
+
 interface SidebarRowProps {
   onPassIcon: (icon: string) => void;
 }
@@ -38,8 +39,6 @@ const SideBar = () => {
   const [messageShowModal, setMessageShowModal] = useState(false);
 
   const ctxUserIcon = useContext(UserIconContext);
-  // const [userIcon, setUserIcon] =
-  //   useState<React.ComponentType<React.SVGProps<SVGSVGElement>>>(avatar);
   const signoutHandler = () => {
     firebase
       .auth()
@@ -57,16 +56,17 @@ const SideBar = () => {
     setShowModal(false);
   };
 
-  const showMessageModalHandler = () => {
-    setMessageShowModal(true);
-  };
+  // const showMessageModalHandler = () => {
+  //   setMessageShowModal(true);
+  // };
 
-  const hideMessageModalHandler = () => {
-    setMessageShowModal(false);
-  };
+  // const hideMessageModalHandler = () => {
+  //   setMessageShowModal(false);
+  // };
+
+  // console.log("siodeL ", user.email, user.userIcon);
 
   const email = user?.email;
-  console.log("siodeL ", email);
   const name = email?.substring(0, email.lastIndexOf("@"));
 
   console.log("compnoent: ", user.photoURL);
@@ -77,22 +77,26 @@ const SideBar = () => {
         src="https://links.papareact.com/drq"
         alt="twiiter icon"
       />
-      <button
+      <Link to="/">
+        <SideBarRow Icon={HomeIcon} title="home" />
+      </Link>
+
+      {/* <button
         onClick={() => {
           window.location.reload();
         }}
       >
         <SideBarRow Icon={HomeIcon} title="home" />
-      </button>
+      </button> */}
       <SideBarRow Icon={HashtagIcon} title="explore" />
       <SideBarRow Icon={BellIcon} title="notification" />
-
-      <Link to="/chatroom">
-        <button onClick={showMessageModalHandler}>
-          <SideBarRow Icon={EnvelopeIcon} title="message" />
-        </button>
-      </Link>
+      {/* <button onClick={showMessageModalHandler}>
+        <SideBarRow Icon={EnvelopeIcon} title="message" />
+      </button> */}
       {/* {messageShowModal && <ChatRoom onClose={hideMessageModalHandler} />} */}
+      <Link to="/chatroom">
+        <SideBarRow Icon={EnvelopeIcon} title="message" />
+      </Link>
 
       <SideBarRow Icon={BookmarkIcon} title="bookmarks" />
       <SideBarRow Icon={ClipboardDocumentCheckIcon} title="lists" />

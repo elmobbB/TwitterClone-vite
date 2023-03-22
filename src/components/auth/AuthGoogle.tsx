@@ -19,21 +19,6 @@ function AuthGoogle({ auth, setUser }: Props) {
     const ui =
       firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
     ui.start(".firebase-auth-container", {
-      // //create user collection after signin
-      // callbacks: {
-      //   signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-      //     const user = authResult.user;
-      //     if (user) {
-      //       const userUid = user.uid;
-      //       const email = user.email;
-      //       const displayName = user.displayName;
-      //       const photoURL = user.photoURL;
-      //       setUser(userUid, email, displayName, photoURL);
-      //     }
-      //     return user != null;
-      //   },
-      // },
-      /////
       signInOptions: [
         {
           provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,

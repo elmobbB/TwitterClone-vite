@@ -40,11 +40,9 @@ interface UserContextType {
 }
 function SetIcon({ onClose }: Props) {
   const { user, setUser } = useContext(UserContext);
-  // const { user, setUser } = useContext(UserContext);
 
   const [imgCrop, setImgCrop] = useState("");
   const [storeImg, setStoreImg] = useState(""); //the view
-  // const [imageName, setImageName] = useState("");
 
   const [url, setUrl] = useState<
     {

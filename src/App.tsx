@@ -5,7 +5,7 @@ import Widgets from "./components/Widgets/Widgets";
 import SideBar from "./components/SideBar/SideBar";
 import firebase from "./firebase";
 import AuthGoogle from "./components/auth/AuthGoogle";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Router } from "react-router-dom"; //use routes instead of switch
 import { db } from "./firebase";
 import UserContext from "./components/store/UserContext";
 import { doc, getDoc } from "firebase/firestore";
@@ -15,6 +15,7 @@ import { limit } from "firebase/firestore";
 import { getDocs } from "firebase/firestore";
 import { useContext } from "react";
 import { UserImageContext } from "./components/store/UserImageContext";
+import ChatRoom from "./components/SideBar/chatRoom/ChatRoom";
 // const tweets = [
 //   {
 //     id: "Mr.Tweet",
@@ -57,7 +58,7 @@ const App = () => {
           );
           const querySnapshot = await getDocs(q);
           onSnapshot(q, async (snapshot) => {
-            console.log(snapshot?.docs[0]?.data());
+            // console.log(snapshot?.docs[0]?.data());
             _user
               ?.updateProfile({
                 photoURL: snapshot?.docs[0]?.data()?.url,
@@ -100,36 +101,25 @@ const App = () => {
 
   // console.log(user.photoURL, "user photourl");
   return (
-    <div>
+    <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
       <BrowserRouter>
-        {/* <Routes>
-          <Route
-            path="/authenticated"
-            element={
-              <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
-                <UserContext.Provider value={user}>
-                  <SideBar />
-                  <Feed />
-                  <Widgets />
-                </UserContext.Provider>
-              </div>
-            }
-          />
-        </Routes> */}
+        {user.email && user.email !== "" ? (
+          <UserContext.Provider value={{ user, setUser }}>
+            <SideBar />
+          </UserContext.Provider>
+        ) : (
+          ""
+        )}
+
         <Routes>
           {user.email && user.email !== "" ? (
             <Route
               path="/"
               element={
-                <UserImageContext>
-                  <UserContext.Provider value={{ user, setUser }}>
-                    <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
-                      <SideBar />
-                      <Feed />
-                      {/* <Widgets /> */}
-                    </div>
-                  </UserContext.Provider>
-                </UserImageContext>
+                <UserContext.Provider value={{ user, setUser }}>
+                  <Feed />
+                  <Widgets />
+                </UserContext.Provider>
               }
             />
           ) : (
@@ -139,9 +129,9 @@ const App = () => {
               element={<AuthGoogle setUser={setUser} auth={firebase.auth()} />}
             />
           )}
+          <Route path="/chatroom" element={<ChatRoom />} />
         </Routes>
       </BrowserRouter>
-      {/* <AuthGoogle auth={firebase.auth()} /> */}
     </div>
   );
 };
