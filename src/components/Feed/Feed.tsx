@@ -105,24 +105,6 @@ const Feed = () => {
           );
         })}
       </ul>
-      {/* {isLoading ? (
-        <ul className=" text-center"></ul>
-      ) : (
-        <ul>
-          {tweets.map((post) => {
-            return (
-              <Posts
-                key={post.id}
-                id={post.id}
-                name={post.name}
-                postDate={post.postDate}
-                imgPath={post.imgPath}
-                tweetContent={post.tweetContent}
-              />
-            );
-          })}
-        </ul>
-      )} */}
     </div>
   );
 };

@@ -44,6 +44,26 @@ const App = () => {
     userIcon: "",
   });
 
+  // const listAllUsers = (nextPageToken: any) => {
+  //   // List batch of users, 1000 at a time.
+  //   getAuth()
+  //     .listUsers(1000, nextPageToken)
+  //     .then((listUsersResult: any) => {
+  //       listUsersResult.users.forEach((userRecord) => {
+  //         console.log("user", userRecord.toJSON());
+  //       });
+  //       if (listUsersResult.pageToken) {
+  //         // List next batch of users.
+  //         listAllUsers(listUsersResult.pageToken);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error listing users:", error);
+  //     });
+  // };
+  // Start listing users from the beginning, 1000 at a time.
+  // listAllUsers();
+
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (_user) => {
       console.log(_user, "auth");
@@ -101,38 +121,37 @@ const App = () => {
 
   // console.log(user.photoURL, "user photourl");
   return (
-    <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
-      <BrowserRouter>
-        {user.email && user.email !== "" ? (
-          <UserContext.Provider value={{ user, setUser }}>
-            <SideBar />
-          </UserContext.Provider>
-        ) : (
-          ""
-        )}
-
-        <Routes>
-          {user.email && user.email !== "" ? (
-            <Route
-              path="/"
-              element={
-                <UserContext.Provider value={{ user, setUser }}>
-                  <Feed />
-                  <Widgets />
-                </UserContext.Provider>
-              }
-            />
-          ) : (
-            <Route
-              index
-              path="/"
-              element={<AuthGoogle setUser={setUser} auth={firebase.auth()} />}
-            />
-          )}
-          <Route path="/chatroom" element={<ChatRoom />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <UserContext.Provider value={{ user, setUser }}>
+      <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
+        <BrowserRouter>
+          {user.email && user.email !== "" && <SideBar />}
+          <Routes>
+            {user.email && user.email !== "" ? (
+              <>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <Feed />
+                      {/* <Widgets /> */}
+                    </>
+                  }
+                />
+                <Route path="/chatroom" element={<ChatRoom />} />
+              </>
+            ) : (
+              <Route
+                index
+                path="/"
+                element={
+                  <AuthGoogle setUser={setUser} auth={firebase.auth()} />
+                }
+              />
+            )}
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </UserContext.Provider>
   );
 };
 
