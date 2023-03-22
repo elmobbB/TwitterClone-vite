@@ -21,6 +21,7 @@ import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
 import ChatRoom from "./chatRoom/ChatRoom";
 import { UserIconContext } from "../store/UserImageContext";
+import { BrowserRouter, Route, Link } from "react-router-dom";
 interface SidebarRowProps {
   onPassIcon: (icon: string) => void;
 }
@@ -86,10 +87,12 @@ const SideBar = () => {
       <SideBarRow Icon={HashtagIcon} title="explore" />
       <SideBarRow Icon={BellIcon} title="notification" />
 
-      <button onClick={showMessageModalHandler}>
-        <SideBarRow Icon={EnvelopeIcon} title="message" />
-      </button>
-      {messageShowModal && <ChatRoom onClose={hideMessageModalHandler} />}
+      <Link to="/chatroom">
+        <button onClick={showMessageModalHandler}>
+          <SideBarRow Icon={EnvelopeIcon} title="message" />
+        </button>
+      </Link>
+      {/* {messageShowModal && <ChatRoom onClose={hideMessageModalHandler} />} */}
 
       <SideBarRow Icon={BookmarkIcon} title="bookmarks" />
       <SideBarRow Icon={ClipboardDocumentCheckIcon} title="lists" />

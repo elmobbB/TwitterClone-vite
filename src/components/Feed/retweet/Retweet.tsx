@@ -26,7 +26,7 @@ interface myType {
 }
 
 const Retweet = ({ onClose, id }: Props) => {
-  const ctx = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [postedtweets, setPostedTweets] = useState<
     {
       id: string;
@@ -56,14 +56,8 @@ const Retweet = ({ onClose, id }: Props) => {
             console.log("add doc , push to data base");
             const docRef = await addDoc(collection(db, "tweets"), {
               ...docSnap.data(),
-              // tweetContent: docSnap.data().tweetContent,
-              // email: ctx.email,
-              // image: docSnap.data().image,
-              // url: docSnap.data().url,
-              // likes: 0,
               retweetFrom: docSnap.data().email,
               timestamp: serverTimestamp(),
-              // retweetTimes: 0,
             });
           } catch (e) {
             console.log("error");
@@ -73,12 +67,12 @@ const Retweet = ({ onClose, id }: Props) => {
             console.log("add doc , push to data base");
             const docRef = await addDoc(collection(db, "tweets"), {
               tweetContent: docSnap.data().tweetContent,
-              email: ctx.email,
+              email: user.email,
               likes: 0,
               retweetFrom: docSnap.data().email,
               timestamp: serverTimestamp(),
               retweetTimes: 0,
-              userIcon: ctx.photoURL,
+              userIcon: user.userIcon,
             });
           } catch (e) {
             console.log("error");
