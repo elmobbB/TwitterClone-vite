@@ -12,7 +12,6 @@ import {
 } from "firebase/storage";
 import avatar from "../../img/avatar.svg";
 import "./Spinner.css";
-import { UserIconContext } from "../store/UserImageContext";
 function TweetBox() {
   const { user } = useContext(UserContext);
   const [tweetContent, setTweetContent] = useState("");
@@ -24,7 +23,6 @@ function TweetBox() {
   const [url, setUrl] = useState<string[]>([]);
   const [images, setImages] = useState([]);
   const [imageData, setImageData] = useState<string | null>(null);
-  const ctxUserIcon = useContext(UserIconContext);
 
   const onSelectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     //e: React.ChangeEvent<HTMLInputElement>

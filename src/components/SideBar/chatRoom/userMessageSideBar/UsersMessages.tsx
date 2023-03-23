@@ -2,14 +2,16 @@ import React, { useContext } from "react";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import UsersMessagesThread from "./UsersMessagesThread";
 import UserContext from "../../../store/UserContext";
-interface myType {
-  email: string | null;
-  uid: string | null;
-  userToReceiver: string;
-}
+import MessageContext from "../../../store/MessageContext";
+// interface myType {
+//   receiverEmail: string | null;
+//   receiverUid: string | null;
+//   userToReceiver: string | null;
+// }
 
 function UsersMessages() {
   const { user } = useContext(UserContext);
+  const { message } = useContext(MessageContext);
   const userArray = [
     "fsfs@gmail.com",
     "1@1.com",
@@ -28,14 +30,6 @@ function UsersMessages() {
     { uid: "RsmdqQWXdMessGwN9V3jFLi5lMx1", email: "pnthaha@gmail.com" },
   ];
 
-  // let newUserArray = [];
-
-  // for (let i = 0; i < arrOfObj.length; i++) {
-  //   newUserArray.push(
-  //     arrOfObj[i].email.substring(0, userArray[i].lastIndexOf("@"))
-  //   );
-  // }
-
   return (
     <div className="col-span-7 lg:col-span-3 border-r">
       <div className=" items-center flex space-x-2 p-5 border-b">
@@ -50,10 +44,10 @@ function UsersMessages() {
         return (
           //make changes later
           <UsersMessagesThread
-            userToReceiver={`${user.uid}-TO-${receiver.uid}`}
+            userToReceiver={`${user.email}-TO-${receiver.email}`}
             key={`${user.uid}-to-${receiver.uid}`}
-            uid={user.uid}
-            email={user.email}
+            receiverUid={receiver.uid}
+            receiverEmail={receiver.email}
           />
         );
       })}

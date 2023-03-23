@@ -34,10 +34,7 @@ interface myType {
   url: string;
   imageName: string;
 }
-interface UserContextType {
-  userIcon: string;
-  setUserIcon: (icon: string) => void;
-}
+
 function SetIcon({ onClose }: Props) {
   const { user, setUser } = useContext(UserContext);
 

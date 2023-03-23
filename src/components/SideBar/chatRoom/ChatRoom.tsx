@@ -6,10 +6,12 @@ import Chats from "./Chats";
 import UsersMessages from "./userMessageSideBar/UsersMessages";
 
 interface Type {
-  uid: string | null;
   email: string | null;
+  uid: string | null;
+  userToReceiver: string | null;
 }
 
+const passMessageInfoHandler = () => {};
 const ChatRoom = () => {
   const passAllUserData = (allUser: Type) => {};
   return (

@@ -20,7 +20,6 @@ import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
 import ChatRoom from "./chatRoom/ChatRoom";
-import { UserIconContext } from "../store/UserImageContext";
 import { BrowserRouter, Route, Routes, Router, Link } from "react-router-dom"; //use routes instead of switch
 
 interface SidebarRowProps {
@@ -38,7 +37,6 @@ const SideBar = () => {
   const [showModal, setShowModal] = useState(false);
   const [messageShowModal, setMessageShowModal] = useState(false);
 
-  const ctxUserIcon = useContext(UserIconContext);
   const signoutHandler = () => {
     firebase
       .auth()
@@ -71,7 +69,7 @@ const SideBar = () => {
 
   console.log("compnoent: ", user.photoURL);
   return (
-    <div className="col-span-2 items-center px-4 md:items-start">
+    <div className="col-span-2 items-center px-4 md:items-start ">
       <img
         className="h-10 w-10 m-3"
         src="https://links.papareact.com/drq"

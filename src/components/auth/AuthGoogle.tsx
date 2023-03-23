@@ -36,12 +36,11 @@ function AuthGoogle({ auth, setUser }: Props) {
           return false;
         },
       },
-      // signInSuccessUrl: "/",
       privacyPolicyUrl: "<your-privacy-policy-url>",
     });
   }, [auth]);
   return (
-    <div>
+    <div className="col-span-5  lg:col-span-7 lg:ml-72  mt-48 ">
       <div className={"firebase-auth-container"}></div>
     </div>
   );

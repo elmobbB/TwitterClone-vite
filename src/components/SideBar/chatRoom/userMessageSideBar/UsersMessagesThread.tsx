@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import avatar from "../../../../img/avatar.svg";
-
+import MessageContext from "../../../store/MessageContext";
 interface Type {
-  email: string | null;
-  uid: string | null;
-  userToReceiver: string;
+  receiverEmail: string | null;
+  receiverUid: string | null;
+  userToReceiver: string | null;
 }
-
-function UsersMessagesThread({ email, uid, userToReceiver }: Type) {
-  const username = email?.substring(0, email.lastIndexOf("@"));
+function UsersMessagesThread({
+  receiverEmail,
+  receiverUid,
+  userToReceiver,
+}: Type) {
+  const { message, setMessage } = useContext(MessageContext);
+  const username = receiverEmail?.substring(0, receiverEmail.lastIndexOf("@"));
   const handleClick = () => {
     console.log(userToReceiver);
+
+    //useContext to store all message info
+    setMessage({ receiverEmail, receiverUid, userToReceiver });
   };
   return (
     <div

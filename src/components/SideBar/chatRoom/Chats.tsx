@@ -3,27 +3,30 @@ import avatar from "../../../img/avatar.svg";
 import UserContext from "../../store/UserContext";
 import { db } from "../../../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import MessageContext from "../../store/MessageContext";
 function Chats() {
   const { user } = useContext(UserContext);
   const name = user.email?.substring(0, user.email.lastIndexOf("@"));
   const [messageInput, setMessageInput] = useState("");
-
+  const { message } = useContext(MessageContext);
+  console.log(message, "mesageddddd");
   const messageInputHandler = (e: React.FormEvent<HTMLInputElement>) => {
     setMessageInput(e.currentTarget.value);
   };
-
+  console.log(message.userToReceiver);
   const submitHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setMessageInput("");
 
     try {
-      const docRef = addDoc(collection(db, "idToId"), {
+      const docRef = await addDoc(collection(db, `${message.userToReceiver}`), {
         messageContent: messageInput,
         email: user.email,
         uid: user.uid,
         timestamp: serverTimestamp(),
         userIcon: user.photoURL,
       });
+      console.log("uploaded");
     } catch (error) {
       console.log(error);
     }
@@ -66,15 +69,26 @@ function Chats() {
           </div>
         </div>
 
-        <form onSubmit={submitHandler}></form>
-        <div className="py-5">
-          <input
-            onChange={messageInputHandler}
-            className=" w-full bg-gray-300 py-5 px-3 rounded-xl"
-            type="text"
-            placeholder="type your message here..."
-          />
-        </div>
+        <form onSubmit={submitHandler}>
+          <div className="py-5 flex justify-between">
+            <input
+              type="text"
+              onChange={messageInputHandler}
+              className=" w-9/12 bg-gray-300 py-5 px-3 rounded-xl"
+              placeholder="type your message here..."
+              value={messageInput}
+            />
+            <div>
+              <button
+                disabled={!messageInput}
+                className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
+                type="submit"
+              >
+                send
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );
