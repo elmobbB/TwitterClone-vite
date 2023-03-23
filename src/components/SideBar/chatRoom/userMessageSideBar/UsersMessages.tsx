@@ -26,24 +26,9 @@ function UsersMessages() {
       id: string;
     }[]
   >([]);
-  // const userArray = [
-  //   "fsfs@gmail.com",
-  //   "1@1.com",
-  //   "elmomoyeahyeah@gmail.com",
-  //   "pnthaha@gmail.com",
-  // ];
 
-  // const arrOfObj = [
-  //   {
-  //     uid: "2C7w47vCbOUDgD45MolSL4lec6E2",
-  //     email: "fsfs@gmail.com",
-  //     userIcon: "",
-  //   },
-  //   { uid: "rUDx5HzPHOWjT22pbXcf9nRbWd73", email: "1@1.com" },
-  //   { uid: "9PMVwuBoLSajinPgdaUYHuC53H42", email: "elmomoyeahyeah@gmail.com" },
-  //   { uid: "RsmdqQWXdMessGwN9V3jFLi5lMx1", email: "pnthaha@gmail.com" },
-  // ];
   useEffect(() => {
+    //get user collection
     const getUserCollection = async () => {
       const querySnapshot = await getDocs(collection(db, "data"));
 
@@ -71,7 +56,7 @@ function UsersMessages() {
         return (
           //make changes later
           <UsersMessagesThread
-            userToReceiver={`${user.email}-TO-${receiver.email}`}
+            userToReceiver={`${user.email}-AND-${receiver.email}`}
             key={receiver.id}
             receiverUid={receiver.uid}
             receiverEmail={receiver.email}

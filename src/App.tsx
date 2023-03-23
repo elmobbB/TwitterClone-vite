@@ -97,8 +97,8 @@ const App = () => {
     return () => unsubscribe();
   }, [db]);
 
-  console.log(user.email);
-  console.log(user.photoURL, "user.photo/url");
+  // console.log(user.email);
+  // console.log(user.photoURL, "user.photo/url");
 
   return (
     <MessageContext.Provider value={{ message, setMessage }}>

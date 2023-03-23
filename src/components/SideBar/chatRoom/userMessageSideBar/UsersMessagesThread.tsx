@@ -1,11 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import avatar from "../../../../img/avatar.svg";
 import MessageContext from "../../../store/MessageContext";
+import { db } from "../../../../firebase";
+import {
+  addDoc,
+  serverTimestamp,
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+} from "firebase/firestore";
 interface Type {
   receiverEmail: string | null;
   receiverUid: string | null;
   userToReceiver: string | null;
   receiverIcon: string | null;
+}
+interface myType {
+  email: string;
+  messageContent: string;
+  timestamp: string;
+  uid: string;
+  userIcon: string;
 }
 function UsersMessagesThread({
   receiverEmail,
@@ -15,12 +31,39 @@ function UsersMessagesThread({
 }: Type) {
   const { message, setMessage } = useContext(MessageContext);
   const username = receiverEmail?.substring(0, receiverEmail.lastIndexOf("@"));
-  const handleClick = () => {
+
+  const [uploadedMessage, setUploadedMessage] = useState<
+    {
+      email: string;
+      messageContent: string;
+      timestamp: string;
+      uid: string;
+      userIcon: string;
+    }[]
+  >([]);
+
+  const handleClick = async () => {
     console.log(userToReceiver);
 
+    //get message when the user is clicked in the thread
+    const doc_refs = await query(
+      collection(db, `messages`),
+      orderBy("timestamp", "asc")
+    );
+
+    onSnapshot(doc_refs, (snapshot) => {
+      const loadedmessage: myType[] = [];
+
+      snapshot.docs.forEach((doc: any) => {
+        loadedmessage.push({ ...doc.data(), id: doc.id });
+      });
+      setUploadedMessage(loadedmessage);
+    });
     //useContext to store all message info
     setMessage({ receiverEmail, receiverUid, userToReceiver });
   };
+
+  console.log(uploadedMessage);
   return (
     <div
       onClick={handleClick}

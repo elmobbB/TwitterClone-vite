@@ -11,7 +11,6 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import MessageContext from "../../store/MessageContext";
-import { getDatabase, ref, set } from "firebase/database";
 
 interface myType {
   email: string;
@@ -26,15 +25,6 @@ function Chats() {
   const name = user.email?.substring(0, user.email.lastIndexOf("@"));
   const [messageInput, setMessageInput] = useState("");
   const { message } = useContext(MessageContext);
-  const [uploadedMessage, setUploadedMessage] = useState<
-    {
-      email: string;
-      messageContent: string;
-      timestamp: string;
-      uid: string;
-      userIcon: string;
-    }[]
-  >([]);
 
   const messageInputHandler = (e: React.FormEvent<HTMLInputElement>) => {
     setMessageInput(e.currentTarget.value);
@@ -45,7 +35,7 @@ function Chats() {
     setMessageInput("");
 
     try {
-      const docRef = await addDoc(collection(db, `${message.userToReceiver}`), {
+      const docRef = await addDoc(collection(db, `messages`), {
         messageContent: messageInput,
         email: user.email,
         uid: user.uid,
@@ -53,27 +43,10 @@ function Chats() {
         userIcon: user.photoURL,
       });
       console.log("uploaded");
-
-      //get message
-      const doc_refs = await query(
-        collection(db, `${message.userToReceiver}`),
-        orderBy("timestamp", "asc")
-      );
-
-      onSnapshot(doc_refs, (snapshot) => {
-        const loadedmessage: myType[] = [];
-
-        snapshot.docs.forEach((doc: any) => {
-          loadedmessage.push({ ...doc.data(), id: doc.id });
-        });
-        setUploadedMessage(loadedmessage);
-        console.log(loadedmessage);
-      });
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(uploadedMessage);
   return (
     <div className="col-span-5 px-2 mt-2 hidden lg:inline  border-x ">
       <div className=" items-center flex space-x-2 p-5 border-b mb-6">
@@ -103,9 +76,10 @@ function Chats() {
           <div className="flex justify-end mb-4">
             <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
               {/* {uploadedMessage.map((message) => {
-                return <div>{message}</div>;
+                return <div>{message.messageContent}</div>;
               })} */}
             </div>
+
             <img
               className="h-12 w-12 rounded-full object-cover mt-4"
               src={avatar}
