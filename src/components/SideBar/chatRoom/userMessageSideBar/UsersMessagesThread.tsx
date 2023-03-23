@@ -5,11 +5,13 @@ interface Type {
   receiverEmail: string | null;
   receiverUid: string | null;
   userToReceiver: string | null;
+  receiverIcon: string | null;
 }
 function UsersMessagesThread({
   receiverEmail,
   receiverUid,
   userToReceiver,
+  receiverIcon,
 }: Type) {
   const { message, setMessage } = useContext(MessageContext);
   const username = receiverEmail?.substring(0, receiverEmail.lastIndexOf("@"));
@@ -24,7 +26,10 @@ function UsersMessagesThread({
       onClick={handleClick}
       className=" items-center flex space-x-2 p-3 border-b cursor-pointer"
     >
-      <img className="h-12 w-12 rounded-full object-cover " src={avatar} />
+      <img
+        className="h-12 w-12 rounded-full object-cover "
+        src={receiverIcon || avatar}
+      />
       <div className=" items-center justify-between ">
         <h1 className="p-5 pb-0 text-lg">{username}</h1>
         <div className="flex items-center  justify-content">

@@ -1,34 +1,61 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import UsersMessagesThread from "./UsersMessagesThread";
 import UserContext from "../../../store/UserContext";
 import MessageContext from "../../../store/MessageContext";
-// interface myType {
-//   receiverEmail: string | null;
-//   receiverUid: string | null;
-//   userToReceiver: string | null;
-// }
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../../firebase";
+import { reverse } from "dns";
 
+interface myType {
+  uid: string;
+  email: string;
+  photoURL: string;
+  timestamp: string;
+  id: string;
+}
 function UsersMessages() {
   const { user } = useContext(UserContext);
   const { message } = useContext(MessageContext);
-  const userArray = [
-    "fsfs@gmail.com",
-    "1@1.com",
-    "elmomoyeahyeah@gmail.com",
-    "pnthaha@gmail.com",
-  ];
-
-  const arrOfObj = [
+  const [userCollection, setUserCollection] = useState<
     {
-      uid: "2C7w47vCbOUDgD45MolSL4lec6E2",
-      email: "fsfs@gmail.com",
-      userIcon: "",
-    },
-    { uid: "rUDx5HzPHOWjT22pbXcf9nRbWd73", email: "1@1.com" },
-    { uid: "9PMVwuBoLSajinPgdaUYHuC53H42", email: "elmomoyeahyeah@gmail.com" },
-    { uid: "RsmdqQWXdMessGwN9V3jFLi5lMx1", email: "pnthaha@gmail.com" },
-  ];
+      uid: string;
+      email: string;
+      photoURL: string;
+      timestamp: string;
+      id: string;
+    }[]
+  >([]);
+  // const userArray = [
+  //   "fsfs@gmail.com",
+  //   "1@1.com",
+  //   "elmomoyeahyeah@gmail.com",
+  //   "pnthaha@gmail.com",
+  // ];
+
+  // const arrOfObj = [
+  //   {
+  //     uid: "2C7w47vCbOUDgD45MolSL4lec6E2",
+  //     email: "fsfs@gmail.com",
+  //     userIcon: "",
+  //   },
+  //   { uid: "rUDx5HzPHOWjT22pbXcf9nRbWd73", email: "1@1.com" },
+  //   { uid: "9PMVwuBoLSajinPgdaUYHuC53H42", email: "elmomoyeahyeah@gmail.com" },
+  //   { uid: "RsmdqQWXdMessGwN9V3jFLi5lMx1", email: "pnthaha@gmail.com" },
+  // ];
+  useEffect(() => {
+    const getUserCollection = async () => {
+      const querySnapshot = await getDocs(collection(db, "data"));
+
+      const listOfUsers: myType[] = [];
+
+      querySnapshot.forEach((doc: any) => {
+        listOfUsers.push({ ...doc.data(), id: doc.id });
+      });
+      setUserCollection(listOfUsers);
+    };
+    getUserCollection();
+  }, []);
 
   return (
     <div className="col-span-7 lg:col-span-3 border-r">
@@ -40,14 +67,15 @@ function UsersMessages() {
           </button>
         </div>
       </div>
-      {arrOfObj.map((receiver) => {
+      {userCollection.map((receiver) => {
         return (
           //make changes later
           <UsersMessagesThread
             userToReceiver={`${user.email}-TO-${receiver.email}`}
-            key={`${user.uid}-to-${receiver.uid}`}
+            key={receiver.id}
             receiverUid={receiver.uid}
             receiverEmail={receiver.email}
+            receiverIcon={receiver.photoURL}
           />
         );
       })}

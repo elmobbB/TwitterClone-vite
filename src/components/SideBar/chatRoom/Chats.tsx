@@ -2,14 +2,40 @@ import React, { useContext, useState } from "react";
 import avatar from "../../../img/avatar.svg";
 import UserContext from "../../store/UserContext";
 import { db } from "../../../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  serverTimestamp,
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+} from "firebase/firestore";
 import MessageContext from "../../store/MessageContext";
+import { getDatabase, ref, set } from "firebase/database";
+
+interface myType {
+  email: string;
+  messageContent: string;
+  timestamp: string;
+  uid: string;
+  userIcon: string;
+}
+
 function Chats() {
   const { user } = useContext(UserContext);
   const name = user.email?.substring(0, user.email.lastIndexOf("@"));
   const [messageInput, setMessageInput] = useState("");
   const { message } = useContext(MessageContext);
-  console.log(message, "mesageddddd");
+  const [uploadedMessage, setUploadedMessage] = useState<
+    {
+      email: string;
+      messageContent: string;
+      timestamp: string;
+      uid: string;
+      userIcon: string;
+    }[]
+  >([]);
+
   const messageInputHandler = (e: React.FormEvent<HTMLInputElement>) => {
     setMessageInput(e.currentTarget.value);
   };
@@ -27,10 +53,27 @@ function Chats() {
         userIcon: user.photoURL,
       });
       console.log("uploaded");
+
+      //get message
+      const doc_refs = await query(
+        collection(db, `${message.userToReceiver}`),
+        orderBy("timestamp", "asc")
+      );
+
+      onSnapshot(doc_refs, (snapshot) => {
+        const loadedmessage: myType[] = [];
+
+        snapshot.docs.forEach((doc: any) => {
+          loadedmessage.push({ ...doc.data(), id: doc.id });
+        });
+        setUploadedMessage(loadedmessage);
+        console.log(loadedmessage);
+      });
     } catch (error) {
       console.log(error);
     }
   };
+  console.log(uploadedMessage);
   return (
     <div className="col-span-5 px-2 mt-2 hidden lg:inline  border-x ">
       <div className=" items-center flex space-x-2 p-5 border-b mb-6">
@@ -59,7 +102,9 @@ function Chats() {
 
           <div className="flex justify-end mb-4">
             <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-              message by ME
+              {/* {uploadedMessage.map((message) => {
+                return <div>{message}</div>;
+              })} */}
             </div>
             <img
               className="h-12 w-12 rounded-full object-cover mt-4"

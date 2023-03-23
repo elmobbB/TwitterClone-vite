@@ -16,7 +16,10 @@ import { getDocs } from "firebase/firestore";
 import { useContext } from "react";
 import ChatRoom from "./components/SideBar/chatRoom/ChatRoom";
 import MessageContext from "./components/store/MessageContext";
-
+import { addDoc, serverTimestamp } from "firebase/firestore";
+import { getDatabase, ref, set } from "firebase/database";
+import { updateDoc } from "firebase/firestore";
+import { setDoc } from "firebase/firestore";
 const App = () => {
   const [user, setUser] = useState<{
     email: string | null;
@@ -60,8 +63,16 @@ const App = () => {
               .catch((error) => {
                 console.error("Error updating user profile:", error);
               });
-            await _user.reload();
           });
+          const docData = {
+            uid: _user.uid,
+            email: _user.email,
+            timestamp: serverTimestamp(),
+            photoURL: _user.photoURL,
+          };
+
+          //create usercollection
+          await setDoc(doc(db, "data", `${_user.email}`), docData);
         } catch (error) {
           console.log("Unexpected error", error);
         }
@@ -69,7 +80,6 @@ const App = () => {
         setUser({
           email: _user?.email,
           uid: _user?.uid,
-          // nickname: user?.displayName,
           photoURL: _user?.photoURL,
           userIcon: _user?.photoURL,
         });
@@ -90,7 +100,6 @@ const App = () => {
   console.log(user.email);
   console.log(user.photoURL, "user.photo/url");
 
-  // console.log(user.photoURL, "user photourl");
   return (
     <MessageContext.Provider value={{ message, setMessage }}>
       <UserContext.Provider value={{ user, setUser }}>
@@ -114,7 +123,7 @@ const App = () => {
               ) : (
                 <Route
                   index
-                  path="/"
+                  path="*"
                   element={
                     <AuthGoogle setUser={setUser} auth={firebase.auth()} />
                   }
