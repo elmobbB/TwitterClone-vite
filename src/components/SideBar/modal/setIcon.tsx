@@ -65,6 +65,7 @@ function SetIcon({ onClose }: Props) {
 
   const randomId = Math.random().toString(36).substring(2, 9) + "";
 
+  //udpate all feed icon to the latest one
   const updateicon = async (email: string, url: string) => {
     const querySnapshot = await getDocs(
       query(collection(db, "tweets"), where("email", "==", email))
@@ -73,6 +74,16 @@ function SetIcon({ onClose }: Props) {
       updateDoc(doc.ref, {
         userIcon: url,
       });
+    });
+    //uupdate all icon in messages
+    const querymessageSnapshot = await getDocs(
+      query(collection(db, "messages"), where("email", "==", email))
+    );
+    querymessageSnapshot.forEach((doc) => {
+      updateDoc(doc.ref, {
+        userIcon: url,
+      });
+      console.log("upload");
     });
   };
 

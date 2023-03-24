@@ -36,7 +36,21 @@ const App = () => {
     receiverEmail: string | null;
     receiverUid: string | null;
     userToReceiver: string | null;
-  }>({ receiverEmail: "", receiverUid: "", userToReceiver: "" });
+    uploadedMessage: {
+      email: string;
+      messageContent: string;
+      timestamp: string;
+      uid: string;
+      userIcon: string;
+      receiver: string;
+      id: string;
+    }[];
+  }>({
+    receiverEmail: "",
+    receiverUid: "",
+    userToReceiver: "",
+    uploadedMessage: [],
+  });
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (_user) => {

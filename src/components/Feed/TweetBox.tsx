@@ -25,17 +25,6 @@ function TweetBox() {
   const [imageData, setImageData] = useState<string | null>(null);
 
   const onSelectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //e: React.ChangeEvent<HTMLInputElement>
-
-    // const selectedFile = e.target.files;
-    // const selectedFileArray = Array.from(selectedFile);
-
-    // const imageArray = selectedFileArray.map((file) => {
-    //   return URL.createObjectURL(file);
-    // });
-
-    // setSelectedImage(imageArray);
-
     const file = event.target.files?.[0];
 
     if (file) {

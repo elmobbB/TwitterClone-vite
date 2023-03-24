@@ -5,6 +5,16 @@ interface IUser {
   receiverEmail: string | null;
   receiverUid: string | null;
   userToReceiver: string | null;
+
+  uploadedMessage: {
+    email: string;
+    messageContent: string;
+    timestamp: string;
+    uid: string;
+    userIcon: string;
+    receiver: string;
+    id: string;
+  }[];
 }
 interface Type {
   message: IUser;
@@ -16,6 +26,7 @@ const MessageContext = createContext<Type>({
     receiverEmail: "",
     receiverUid: "",
     userToReceiver: "",
+    uploadedMessage: [],
   },
   setMessage: () => {},
 });

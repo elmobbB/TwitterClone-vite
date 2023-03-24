@@ -6,6 +6,8 @@ import MessageContext from "../../../store/MessageContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { reverse } from "dns";
+import { Select, MenuItem } from "@mui/material";
+import { query, where } from "firebase/firestore";
 
 interface myType {
   uid: string;
@@ -30,7 +32,9 @@ function UsersMessages() {
   useEffect(() => {
     //get user collection
     const getUserCollection = async () => {
-      const querySnapshot = await getDocs(collection(db, "data"));
+      const querySnapshot = await getDocs(
+        query(collection(db, "data"), where("email", "!=", user.email))
+      );
 
       const listOfUsers: myType[] = [];
 
@@ -52,6 +56,7 @@ function UsersMessages() {
           </button>
         </div>
       </div>
+
       {userCollection.map((receiver) => {
         return (
           //make changes later

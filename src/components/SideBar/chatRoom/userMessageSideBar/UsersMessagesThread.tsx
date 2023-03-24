@@ -9,7 +9,9 @@ import {
   query,
   orderBy,
   onSnapshot,
+  where,
 } from "firebase/firestore";
+import UserContext from "../../../store/UserContext";
 interface Type {
   receiverEmail: string | null;
   receiverUid: string | null;
@@ -22,6 +24,8 @@ interface myType {
   timestamp: string;
   uid: string;
   userIcon: string;
+  receiver: string;
+  id: string;
 }
 function UsersMessagesThread({
   receiverEmail,
@@ -31,43 +35,51 @@ function UsersMessagesThread({
 }: Type) {
   const { message, setMessage } = useContext(MessageContext);
   const username = receiverEmail?.substring(0, receiverEmail.lastIndexOf("@"));
-
-  const [uploadedMessage, setUploadedMessage] = useState<
-    {
-      email: string;
-      messageContent: string;
-      timestamp: string;
-      uid: string;
-      userIcon: string;
-    }[]
-  >([]);
-
+  const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
+  const [receiverSelected, setReceiverSelected] = useState(false);
+  const { user } = useContext(UserContext);
   const handleClick = async () => {
     console.log(userToReceiver);
 
+    setReceiverSelected((prev) => !prev);
     //get message when the user is clicked in the thread
     const doc_refs = await query(
       collection(db, `messages`),
-      orderBy("timestamp", "asc")
+      orderBy("timestamp", "asc"),
+      where("email", "==", user.email)
+      // where("receiver", "==", receiverEmail)
+      // where("email", "==", receiverEmail),
+      // where("receiver", "==", user.email)
     );
-
+    //find meesages with the receiver
     onSnapshot(doc_refs, (snapshot) => {
       const loadedmessage: myType[] = [];
 
       snapshot.docs.forEach((doc: any) => {
         loadedmessage.push({ ...doc.data(), id: doc.id });
       });
+
       setUploadedMessage(loadedmessage);
+
+      setMessage({
+        receiverEmail,
+        receiverUid,
+        userToReceiver,
+        uploadedMessage: loadedmessage,
+      });
     });
     //useContext to store all message info
-    setMessage({ receiverEmail, receiverUid, userToReceiver });
   };
-
-  console.log(uploadedMessage);
   return (
     <div
-      onClick={handleClick}
-      className=" items-center flex space-x-2 p-3 border-b cursor-pointer"
+      onClick={() => {
+        handleClick();
+        // setReceiverSelected(true);
+      }}
+      className={`items-center flex space-x-2 p-3 border-b cursor-pointer ${
+        receiverSelected ? "bg-blue-200" : ""
+      }
+      `}
     >
       <img
         className="h-12 w-12 rounded-full object-cover "
