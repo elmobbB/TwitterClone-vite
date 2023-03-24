@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import avatar from "../../../../img/avatar.svg";
 import MessageContext from "../../../store/MessageContext";
 import { db } from "../../../../firebase";
@@ -38,6 +38,12 @@ function UsersMessagesThread({
   const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
   const [receiverSelected, setReceiverSelected] = useState(false);
   const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const getAllMessages = () => {};
+    getAllMessages();
+  }, []);
+
   const handleClick = async () => {
     console.log(userToReceiver);
 
@@ -45,11 +51,8 @@ function UsersMessagesThread({
     //get message when the user is clicked in the thread
     const doc_refs = await query(
       collection(db, `messages`),
-      orderBy("timestamp", "asc"),
-      where("email", "==", user.email)
-      // where("receiver", "==", receiverEmail)
-      // where("email", "==", receiverEmail),
-      // where("receiver", "==", user.email)
+      orderBy("timestamp", "asc")
+      // where("email", "==", user.email)
     );
     //find meesages with the receiver
     onSnapshot(doc_refs, (snapshot) => {
@@ -68,8 +71,11 @@ function UsersMessagesThread({
         uploadedMessage: loadedmessage,
       });
     });
+
     //useContext to store all message info
   };
+
+  console.log(message.uploadedMessage);
   return (
     <div
       onClick={() => {

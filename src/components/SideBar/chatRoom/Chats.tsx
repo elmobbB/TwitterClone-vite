@@ -59,7 +59,7 @@ function Chats() {
 
   const randomkey = Math.random().toString(36).substring(2, 9) + "";
   return (
-    <div className="col-span-5 px-2 mt-2 hidden lg:inline  border-x ">
+    <div className="col-span-7 lg:col-span-5 px-2 mt-2 border-x ">
       <div className=" items-center flex space-x-2 p-5 border-b mb-6">
         <img
           className="h-14 w-14 rounded-full object-cover mt-4"

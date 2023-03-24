@@ -36,6 +36,7 @@ function UsersMessages() {
         query(collection(db, "data"), where("email", "!=", user.email))
       );
 
+      console.log("get doc");
       const listOfUsers: myType[] = [];
 
       querySnapshot.forEach((doc: any) => {
@@ -47,7 +48,7 @@ function UsersMessages() {
   }, []);
 
   return (
-    <div className="col-span-7 lg:col-span-3 border-r">
+    <div className="col-span-3 border-r hidden lg:inline">
       <div className=" items-center flex space-x-2 p-5 border-b">
         <div className="flex items-center justify-between ">
           <h1 className="p-5 pb-0 text-xl font-bold">Message</h1>
