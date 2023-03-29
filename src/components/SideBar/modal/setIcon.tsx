@@ -12,26 +12,19 @@ import {
   collection,
   getDocs,
   serverTimestamp,
+  query,
+  where,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase";
 import Modal from "../../UI/Modal";
 
 import UserContext from "../../store/UserContext";
 import "./Spinner.css";
-import { orderBy, query, onSnapshot } from "firebase/firestore";
-import { where } from "firebase/firestore";
-import { updateDoc } from "firebase/firestore";
 interface Props {
   onClose: () => void;
   // imgCrop: string | boolean;
   // storeImg: string | boolean;
-}
-interface myType {
-  email: any;
-  uid: any;
-  id: string;
-  url: string;
-  imageName: string;
 }
 
 function SetIcon({ onClose }: Props) {
@@ -39,16 +32,6 @@ function SetIcon({ onClose }: Props) {
 
   const [imgCrop, setImgCrop] = useState("");
   const [storeImg, setStoreImg] = useState(""); //the view
-
-  const [url, setUrl] = useState<
-    {
-      email: any;
-      uid: any;
-      id: string;
-      url: string;
-      imageName: string;
-    }[]
-  >([]);
 
   const [loading, setLoading] = useState(false);
 
