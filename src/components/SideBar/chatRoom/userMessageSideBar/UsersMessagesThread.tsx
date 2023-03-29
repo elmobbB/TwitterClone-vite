@@ -41,12 +41,12 @@ function UsersMessagesThread({
   const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
   const [receiverSelected, setReceiverSelected] = useState(false);
   const { user } = useContext(UserContext);
-
   //get message
   const handleClick = async () => {
     console.log(userToReceiver);
 
-    setReceiverSelected((prev) => !prev);
+    setReceiverSelected(true);
+
     //get message when the user is clicked in the thread
     const doc_refs = await query(
       collection(db, `messages`),
@@ -72,7 +72,7 @@ function UsersMessagesThread({
     });
   };
 
-  console.log(allReceivingMessage);
+  console.log(allReceivingMessage?.timestamp?.seconds);
 
   return (
     <div
