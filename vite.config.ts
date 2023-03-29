@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-refresh";
 import EnvCompatible from "vite-plugin-env-compatible";
 import tsConfigPaths from "vite-tsconfig-paths";
+import EnvironmentPlugin from "vite-plugin-environment";
 
 export default defineConfig({
   envPrefix: "REACT_APP_",
@@ -10,5 +11,10 @@ export default defineConfig({
       "./runtimeConfig": "./runtimeConfig.browser",
     },
   },
-  plugins: [react(), EnvCompatible(), tsConfigPaths()],
+  plugins: [
+    react(),
+    EnvCompatible(),
+    tsConfigPaths(),
+    EnvironmentPlugin("all", { prefix: "REACT_APP_" }),
+  ],
 });

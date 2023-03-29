@@ -19,6 +19,7 @@ interface Type {
   userToReceiver: string | null;
   receiverIcon: string | null;
   allReceivingMessage: any;
+  index: number;
 }
 interface myType {
   email: string;
@@ -35,18 +36,18 @@ function UsersMessagesThread({
   userToReceiver,
   receiverIcon,
   allReceivingMessage,
-}: Type) {
+  index,
+}: Type): any {
   const { message, setMessage } = useContext(MessageContext);
   const username = receiverEmail?.substring(0, receiverEmail.lastIndexOf("@"));
   const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
-  const [receiverSelected, setReceiverSelected] = useState(false);
   const { user } = useContext(UserContext);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   //get message
+
   const handleClick = async () => {
-    console.log(userToReceiver);
-
-    setReceiverSelected(true);
-
+    // setIsActive(`${receiverUid}`);
+    console.log(receiverUid);
     //get message when the user is clicked in the thread
     const doc_refs = await query(
       collection(db, `messages`),
@@ -72,17 +73,24 @@ function UsersMessagesThread({
     });
   };
 
-  console.log(allReceivingMessage?.timestamp?.seconds);
+  // console.log(allReceivingMessage?.timestamp?.seconds);
+
+  function toDateTime(secs: number) {
+    var t = new Date(1970, 0, 1);
+    t.setSeconds(secs);
+    return t;
+  }
+
+  const date = toDateTime(allReceivingMessage?.timestamp?.seconds);
 
   return (
     <div
       onClick={() => {
         handleClick();
-        // setReceiverSelected(true);
+        setSelectedIndex(index);
       }}
-      className={`items-center flex space-x-2 p-3 border-b cursor-pointer ${
-        receiverSelected ? "bg-blue-200" : ""
-      }
+      className={`items-center flex space-x-2 p-3 border-b cursor-pointer   
+      ${index == selectedIndex ? "bg-blue-200" : ""}
       `}
     >
       <img
@@ -95,7 +103,11 @@ function UsersMessagesThread({
           <h1 className="p-5 pb-0 text-xs text-gray-500">
             {allReceivingMessage?.messageContent}
           </h1>
-          {/* <h3 className="p-5 pb-0 text-xs">{allReceivingMessage?.timestamp}</h3> */}
+          <h3 className="p-5 pb-0 text-xs  text-gray-500">
+            {allReceivingMessage?.timestamp?.seconds
+              ? date?.toLocaleTimeString("en-HK")
+              : ""}
+          </h3>
         </div>
       </div>
     </div>

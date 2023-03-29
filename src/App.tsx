@@ -20,7 +20,6 @@ import { addDoc, serverTimestamp } from "firebase/firestore";
 import { getDatabase, ref, set } from "firebase/database";
 import { updateDoc } from "firebase/firestore";
 import { setDoc } from "firebase/firestore";
-
 interface myType {
   messageTimeStamp: FieldValue;
   messageContent: string;
@@ -142,7 +141,8 @@ const App = () => {
 
   // console.log(user.email);
   // console.log(user.photoURL, "user.photo/url");
-
+  //
+  // console.log(import.meta.env.REACT_APP_API_KEY);
   return (
     <MessageContext.Provider value={{ message, setMessage }}>
       <UserContext.Provider value={{ user, setUser }}>

@@ -30,6 +30,7 @@ interface myType {
   userIcon: string;
   receiver: string;
   id: string;
+  color: string;
 }
 function UsersMessages() {
   const { user } = useContext(UserContext);
@@ -41,10 +42,11 @@ function UsersMessages() {
       photoURL: string;
       timestamp: string;
       id: string;
+      color: string;
     }[]
   >([]);
   const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
-
+  const [selectedIndex, setSelectedIndex] = useState("");
   useEffect(() => {
     //get user collection
     const getUserCollection = async () => {
@@ -84,10 +86,6 @@ function UsersMessages() {
     getAllMessages();
   }, []);
 
-  const latestMessage = uploadedMessage.filter((message) => {
-    return message.email === "fsfs@gmail.com";
-  })[uploadedMessage.length - 1];
-
   return (
     <div className="col-span-3  hidden lg:inline">
       <div className=" items-center flex space-x-2 p-5 border-b">
@@ -99,15 +97,16 @@ function UsersMessages() {
         </div>
       </div>
 
-      {userCollection.map((receiver) => {
+      {userCollection.map((receiver, index: number) => {
         return (
           //make changes later
           <UsersMessagesThread
-            allReceivingMessage={
-              uploadedMessage.filter((message) => {
+            index={index}
+            allReceivingMessage={uploadedMessage
+              .filter((message) => {
                 return message.email === receiver.email;
-              })[uploadedMessage.length - 1]
-            }
+              })
+              .pop()}
             userToReceiver={`${user.email}-AND-${receiver.email}`}
             key={receiver.id}
             receiverUid={receiver.uid}

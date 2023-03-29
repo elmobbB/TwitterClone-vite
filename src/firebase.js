@@ -2,8 +2,10 @@ import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage, ref } from "firebase/storage";
 import "firebase/firestore";
-
+import * as dotenv from "dotenv";
+// dotenv.config();
 const firebaseConfig = {
+  // apiKey: `${process.env.REACT_APP_API_KEY}`,
   apiKey: "AIzaSyDfU6mOcDHfBQKcufkg6cmCNGiFIkAsLZo",
   authDomain: "twitter-database-a9d09.firebaseapp.com",
   databaseURL: "https://twitter-database-a9d09-default-rtdb.firebaseio.com",

@@ -46,6 +46,7 @@ function Chats() {
         timestamp: serverTimestamp(),
         userIcon: user.photoURL,
         receiver: message.receiverEmail,
+        color: "transparent",
       });
       console.log("uploaded");
     } catch (error) {
@@ -119,28 +120,28 @@ function Chats() {
             })}
         </div>
       </div>
-      {allMessages.length > 0 && (
-        <form onSubmit={submitHandler}>
-          <div className="py-5 flex justify-between">
-            <input
-              type="text"
-              onChange={messageInputHandler}
-              className=" w-9/12 bg-gray-300 py-5 px-3 rounded-xl"
-              placeholder="type your message here..."
-              value={messageInput}
-            />
-            <div>
-              <button
-                disabled={!messageInput}
-                className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
-                type="submit"
-              >
-                send
-              </button>
-            </div>
+      {/* {allMessages.length > 0 && ( */}
+      <form onSubmit={submitHandler}>
+        <div className="py-5 flex justify-between">
+          <input
+            type="text"
+            onChange={messageInputHandler}
+            className=" w-9/12 bg-gray-300 py-5 px-3 rounded-xl"
+            placeholder="type your message here..."
+            value={messageInput}
+          />
+          <div>
+            <button
+              disabled={!messageInput}
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
+              type="submit"
+            >
+              send
+            </button>
           </div>
-        </form>
-      )}
+        </div>
+      </form>
+      {/* )} */}
     </div>
   );
 }
