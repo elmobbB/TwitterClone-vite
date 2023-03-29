@@ -10,6 +10,7 @@ import {
   orderBy,
   onSnapshot,
   where,
+  FieldValue,
 } from "firebase/firestore";
 import UserContext from "../../../store/UserContext";
 interface Type {
@@ -17,6 +18,7 @@ interface Type {
   receiverUid: string | null;
   userToReceiver: string | null;
   receiverIcon: string | null;
+  allReceivingMessage: any;
 }
 interface myType {
   email: string;
@@ -32,6 +34,7 @@ function UsersMessagesThread({
   receiverUid,
   userToReceiver,
   receiverIcon,
+  allReceivingMessage,
 }: Type) {
   const { message, setMessage } = useContext(MessageContext);
   const username = receiverEmail?.substring(0, receiverEmail.lastIndexOf("@"));
@@ -39,11 +42,7 @@ function UsersMessagesThread({
   const [receiverSelected, setReceiverSelected] = useState(false);
   const { user } = useContext(UserContext);
 
-  useEffect(() => {
-    const getAllMessages = () => {};
-    getAllMessages();
-  }, []);
-
+  //get message
   const handleClick = async () => {
     console.log(userToReceiver);
 
@@ -52,7 +51,6 @@ function UsersMessagesThread({
     const doc_refs = await query(
       collection(db, `messages`),
       orderBy("timestamp", "asc")
-      // where("email", "==", user.email)
     );
     //find meesages with the receiver
     onSnapshot(doc_refs, (snapshot) => {
@@ -64,6 +62,7 @@ function UsersMessagesThread({
 
       setUploadedMessage(loadedmessage);
 
+      //useContext 1to store all message info
       setMessage({
         receiverEmail,
         receiverUid,
@@ -71,11 +70,10 @@ function UsersMessagesThread({
         uploadedMessage: loadedmessage,
       });
     });
-
-    //useContext to store all message info
   };
 
-  console.log(message.uploadedMessage);
+  console.log(allReceivingMessage);
+
   return (
     <div
       onClick={() => {
@@ -94,8 +92,10 @@ function UsersMessagesThread({
       <div className=" items-center justify-between ">
         <h1 className="p-5 pb-0 text-lg">{username}</h1>
         <div className="flex items-center  justify-content">
-          <h1 className="p-5 pb-0 text-xs">latest message content</h1>
-          <h3 className="p-5 pb-0 text-xs">timestamp</h3>
+          <h1 className="p-5 pb-0 text-xs text-gray-500">
+            {allReceivingMessage?.messageContent}
+          </h1>
+          {/* <h3 className="p-5 pb-0 text-xs">{allReceivingMessage?.timestamp}</h3> */}
         </div>
       </div>
     </div>

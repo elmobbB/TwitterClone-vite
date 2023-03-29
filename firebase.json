@@ -1,6 +1,23 @@
 {
   "rules": {
-    ".read": "now < 1680364800000",  // 2023-4-2
-    ".write": "now < 1680364800000",  // 2023-4-2
+    ".read": true,
+    ".write": true
+  },
+  "database": {
+    "rules": {
+      ".read": true,
+      ".write": true
+    }
+  },
+  "hosting": {
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "functions": {
+    "source": "functions"
   }
 }

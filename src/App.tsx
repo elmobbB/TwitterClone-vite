@@ -8,7 +8,7 @@ import AuthGoogle from "./components/auth/AuthGoogle";
 import { BrowserRouter, Route, Routes, Router } from "react-router-dom"; //use routes instead of switch
 import { db } from "./firebase";
 import UserContext from "./components/store/UserContext";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, FieldValue, getDoc } from "firebase/firestore";
 import { orderBy, query, onSnapshot } from "firebase/firestore";
 import { collection, where } from "firebase/firestore";
 import { limit } from "firebase/firestore";
@@ -20,6 +20,13 @@ import { addDoc, serverTimestamp } from "firebase/firestore";
 import { getDatabase, ref, set } from "firebase/database";
 import { updateDoc } from "firebase/firestore";
 import { setDoc } from "firebase/firestore";
+
+interface myType {
+  messageTimeStamp: FieldValue;
+  messageContent: string;
+  id: string;
+}
+
 const App = () => {
   const [user, setUser] = useState<{
     email: string | null;
@@ -51,6 +58,7 @@ const App = () => {
     userToReceiver: "",
     uploadedMessage: [],
   });
+  const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (_user) => {
@@ -78,14 +86,35 @@ const App = () => {
                 console.error("Error updating user profile:", error);
               });
           });
-          const docData = {
+          let docData = {
             uid: _user.uid,
             email: _user.email,
             timestamp: serverTimestamp(),
             photoURL: _user.photoURL,
+            uploadedmessage: [],
           };
 
-          //create usercollection
+          //create usercollection, put the latest message and it's timestamp in it as well
+          // const usercollection_doc_refs = await query(
+          //   collection(db, `messages`),
+          //   orderBy("timestamp", "asc"),
+          //   where("receiver", "==", _user.email)
+          //   // limit(1)
+          // );
+          // onSnapshot(usercollection_doc_refs, (snapshot) => {
+          //   const loadedmessage: myType[] = [];
+
+          //   snapshot.docs.forEach((doc: any) => {
+          //     loadedmessage.push({
+          //       messageTimeStamp: doc.data().timestamp,
+          //       messageContent: doc.data().messageContent,
+          //       id: doc.id,
+          //     });
+          //     // setUploadedMessage(loadedmessage);
+          //     docData.uploadedmessage.push(loadedmessage);
+          //   });
+          //   console.log(docData);
+          // });
           await setDoc(doc(db, "data", `${_user.email}`), docData);
         } catch (error) {
           console.log("Unexpected error", error);

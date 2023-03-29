@@ -14,7 +14,6 @@ import {
 import SideBarRow from "./SideBarRow";
 import TweetButton from "./TweetButton";
 import firebase from "firebase/compat/app";
-import { icon } from "@fortawesome/fontawesome-svg-core";
 import SetIcon from "./modal/SetIcon";
 import UserContext from "../store/UserContext";
 import { useContext } from "react";

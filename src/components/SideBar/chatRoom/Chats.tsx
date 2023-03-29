@@ -14,7 +14,6 @@ import MessageContext from "../../store/MessageContext";
 
 interface myType {
   email: string;
-  messageContent: string;
   timestamp: string;
   uid: string;
   userIcon: string;
@@ -59,7 +58,7 @@ function Chats() {
 
   const randomkey = Math.random().toString(36).substring(2, 9) + "";
   return (
-    <div className="col-span-7 lg:col-span-5 px-2 mt-2 border-x ">
+    <div className="col-span-7 lg:col-span-5 px-2 mt-2 overflow-scroll">
       <div className=" items-center flex space-x-2 p-5 border-b mb-6">
         <img
           className="h-14 w-14 rounded-full object-cover mt-4"
@@ -74,49 +73,50 @@ function Chats() {
       <div className="w-full px-5 flex flex-col justify-between">
         <div className="flex flex-col mt-5 mb-96">
           {/* sort by timestamp */}
-          {allMessages.map((message) => {
-            return (
-              <div key={message.id}>
-                {/* take all messages out, filter the the current user and receiver's email  */}
-                {(message.email === currentUser &&
-                  receiver === message.receiver) ||
-                (message.email === receiver &&
-                  message.receiver === currentUser) ? (
-                  <div>
-                    {message.email === currentUser ? (
-                      <div className="flex justify-end mb-4">
-                        <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                          {message.messageContent}
-                          {/* {receiver === message.receiver && message.messageContent} */}
-                        </div>
+          {message.receiverEmail != null &&
+            allMessages.map((message) => {
+              return (
+                <div key={message.id}>
+                  {/* take all messages out, filter the the current user and receiver's email  */}
+                  {(message.email === currentUser &&
+                    receiver === message.receiver) ||
+                  (message.email === receiver &&
+                    message.receiver === currentUser) ? (
+                    <div>
+                      {message.email === currentUser ? (
+                        <div className="flex justify-end mb-4">
+                          <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+                            {message.messageContent}
+                            {/* {receiver === message.receiver && message.messageContent} */}
+                          </div>
 
-                        <img
-                          className="h-12 w-12 rounded-full object-cover mt-4"
-                          src={message.userIcon || avatar}
-                          alt="usericon"
-                        ></img>
-                      </div>
-                    ) : (
-                      <div className="flex justify-start mb-4">
-                        <img
-                          className="h-12 w-12 rounded-full object-cover mt-4"
-                          src={message.userIcon}
-                          alt="usericon"
-                        ></img>
-                        <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-                          {message.messageContent || avatar}
-
-                          {/* {receiver === message.receiver && message.messageContent} */}
+                          <img
+                            className="h-12 w-12 rounded-full object-cover mt-4"
+                            src={message.userIcon || avatar}
+                            alt="usericon"
+                          ></img>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div>{/* user havent contacted the receiver */}</div>
-                )}
-              </div>
-            );
-          })}
+                      ) : (
+                        <div className="flex justify-start mb-4">
+                          <img
+                            className="h-12 w-12 rounded-full object-cover mt-4"
+                            src={message.userIcon}
+                            alt="usericon"
+                          ></img>
+                          <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+                            {message.messageContent || avatar}
+
+                            {/* {receiver === message.receiver && message.messageContent} */}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div>{/* user havent contacted the receiver */}</div>
+                  )}
+                </div>
+              );
+            })}
         </div>
       </div>
       {allMessages.length > 0 && (

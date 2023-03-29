@@ -8,12 +8,27 @@ import { db } from "../../../../firebase";
 import { reverse } from "dns";
 import { Select, MenuItem } from "@mui/material";
 import { query, where } from "firebase/firestore";
-
+import {
+  addDoc,
+  serverTimestamp,
+  orderBy,
+  onSnapshot,
+} from "firebase/firestore";
 interface myType {
   uid: string;
   email: string;
   photoURL: string;
   timestamp: string;
+  id: string;
+  uploadedMessage: [];
+}
+interface myType {
+  email: string;
+  messageContent: string;
+  timestamp: string;
+  uid: string;
+  userIcon: string;
+  receiver: string;
   id: string;
 }
 function UsersMessages() {
@@ -28,6 +43,7 @@ function UsersMessages() {
       id: string;
     }[]
   >([]);
+  const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
 
   useEffect(() => {
     //get user collection
@@ -36,7 +52,6 @@ function UsersMessages() {
         query(collection(db, "data"), where("email", "!=", user.email))
       );
 
-      console.log("get doc");
       const listOfUsers: myType[] = [];
 
       querySnapshot.forEach((doc: any) => {
@@ -47,8 +62,34 @@ function UsersMessages() {
     getUserCollection();
   }, []);
 
+  //get message doc  again...
+  useEffect(() => {
+    const getAllMessages = async () => {
+      const doc_refs = await query(
+        collection(db, `messages`),
+        orderBy("timestamp", "asc"),
+        where("receiver", "==", user.email)
+      );
+      //find meesages with the receiver
+      onSnapshot(doc_refs, (snapshot) => {
+        const loadedmessage: myType[] = [];
+
+        snapshot.docs.forEach((doc: any) => {
+          loadedmessage.push({ ...doc.data(), id: doc.id });
+        });
+
+        setUploadedMessage(loadedmessage);
+      });
+    };
+    getAllMessages();
+  }, []);
+
+  const latestMessage = uploadedMessage.filter((message) => {
+    return message.email === "fsfs@gmail.com";
+  })[uploadedMessage.length - 1];
+
   return (
-    <div className="col-span-3 border-r hidden lg:inline">
+    <div className="col-span-3  hidden lg:inline">
       <div className=" items-center flex space-x-2 p-5 border-b">
         <div className="flex items-center justify-between ">
           <h1 className="p-5 pb-0 text-xl font-bold">Message</h1>
@@ -62,6 +103,11 @@ function UsersMessages() {
         return (
           //make changes later
           <UsersMessagesThread
+            allReceivingMessage={
+              uploadedMessage.filter((message) => {
+                return message.email === receiver.email;
+              })[uploadedMessage.length - 1]
+            }
             userToReceiver={`${user.email}-AND-${receiver.email}`}
             key={receiver.id}
             receiverUid={receiver.uid}

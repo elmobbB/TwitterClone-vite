@@ -13,10 +13,9 @@ import {
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
-import { db, getDb } from "../../../firebase";
+import { db } from "../../../firebase";
 import Modal from "../../UI/Modal";
 
-import avatar from "./../../../img/avatar.svg";
 import UserContext from "../../store/UserContext";
 import "./Spinner.css";
 import { orderBy, query, onSnapshot } from "firebase/firestore";
