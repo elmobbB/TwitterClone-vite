@@ -14,7 +14,7 @@ import {
 import SideBarRow from "./SideBarRow";
 import TweetButton from "./TweetButton";
 import firebase from "firebase/compat/app";
-import SetIcon from "./modal/SetIcon";
+import SetIcon from "./SetIconModal/SetIcon";
 import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
@@ -82,7 +82,7 @@ const SideBar = () => {
       <button onClick={showModalHandler}>
         <SideBarRow Icon={UserIcon} title="profile" />
       </button>
-
+      <SetIcon />
       {/* {showModal && <SetIcon onClose={hideModalHandler} />} */}
       <button
         onClick={signoutHandler}
