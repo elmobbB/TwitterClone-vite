@@ -21,16 +21,6 @@ import avatar from "../../img/avatar.svg";
 import ChatRoom from "./chatRoom/ChatRoom";
 import { BrowserRouter, Route, Routes, Router, Link } from "react-router-dom"; //use routes instead of switch
 
-interface SidebarRowProps {
-  onPassIcon: (icon: string) => void;
-}
-interface myType {
-  id: string;
-  email: string;
-  imageName: [];
-  url: [];
-}
-
 const SideBar = () => {
   const { user } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
@@ -78,19 +68,9 @@ const SideBar = () => {
         <SideBarRow Icon={HomeIcon} title="home" />
       </Link>
 
-      {/* <button
-        onClick={() => {
-          window.location.reload();
-        }}
-      >
-        <SideBarRow Icon={HomeIcon} title="home" />
-      </button> */}
       <SideBarRow Icon={HashtagIcon} title="explore" />
       <SideBarRow Icon={BellIcon} title="notification" />
-      {/* <button onClick={showMessageModalHandler}>
-        <SideBarRow Icon={EnvelopeIcon} title="message" />
-      </button> */}
-      {/* {messageShowModal && <ChatRoom onClose={hideMessageModalHandler} />} */}
+
       <Link to="/chatroom">
         <SideBarRow Icon={EnvelopeIcon} title="message" />
       </Link>

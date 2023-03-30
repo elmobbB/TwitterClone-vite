@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import Avatar from "react-avatar-edit";
+// import Avatar from "react-avatar-edit";
 
 import {
   getStorage,
@@ -114,7 +114,7 @@ function SetIcon({ onClose }: Props) {
       {!loading && (
         <div className="profile-img text-center p-4">
           <div className="div flex justify-center items-center">
-            {!storeImg && (
+            {/* {!storeImg && (
               <Avatar
                 width={400}
                 height={300}
@@ -124,7 +124,7 @@ function SetIcon({ onClose }: Props) {
                 onCrop={onCrop}
                 onClose={onClose2}
               />
-            )}
+            )} */}
 
             <img
               className=" first-letter:w-60 h-60 rounded-full  object-cover"
