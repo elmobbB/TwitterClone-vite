@@ -21,13 +21,13 @@ import Modal from "../../UI/Modal";
 
 import UserContext from "../../store/UserContext";
 import "./Spinner.css";
-interface Props {
-  onClose: () => void;
-  // imgCrop: string | boolean;
-  // storeImg: string | boolean;
-}
+// interface Props {
+//   onClose: () => void;
+//   // imgCrop: string | boolean;
+//   // storeImg: string | boolean;
+// }
 
-function SetIcon({ onClose }: Props) {
+function SetIcon() {
   const { user, setUser } = useContext(UserContext);
 
   const [imgCrop, setImgCrop] = useState("");
