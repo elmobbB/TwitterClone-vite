@@ -40,10 +40,10 @@ function SetIcon({ onClose }: Props) {
     console.log("on crop");
     setImgCrop(view);
   };
-  // const onClose2 = () => {
-  //   console.log("on close");
-  //   setImgCrop(""); //null?
-  // };
+  const onClose2 = () => {
+    console.log("on close");
+    setImgCrop(""); //null?
+  };
 
   const randomId = Math.random().toString(36).substring(2, 9) + "";
 
@@ -122,7 +122,7 @@ function SetIcon({ onClose }: Props) {
                   // console.log(file);
                 }}
                 onCrop={onCrop}
-                // onClose={onClose2}
+                onClose={onClose2}
               />
             )}
 
