@@ -69,41 +69,41 @@ function SetIcon({ onClose }: Props) {
   //   });
   // };
   console.log("fs");
-  const saveImg = async () => {
-    setLoading(true);
-    setStoreImg(imgCrop); //render the image after saving
-    //import image to storage and get url
-    const storage = getStorage();
-    const uploadRef = ref(storage, `images/${randomId}.png`);
-    uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
-      getDownloadURL(uploadRef).then(async (url: any) => {
-        // Store the file's URL in Firestore
-        try {
-          const docRef = await addDoc(collection(db, "userIcon"), {
-            imageName: `${randomId}.png`,
-            url: url,
-            uid: user.uid,
-            email: user.email,
-            timestamp: serverTimestamp(),
-          });
-          if (docRef) {
-            if (user.email && url) {
-              // update all tweet of the user with the user icon if upload success
-              updateicon(user.email, url);
-              setUser({
-                ...user,
-                userIcon: url,
-              });
-            }
-          }
-        } catch (e) {
-          console.log("error", e);
-        }
-      });
-      setLoading(false);
-      setSaveMessage("Save✅");
-    });
-  };
+  // const saveImg = async () => {
+  //   setLoading(true);
+  //   setStoreImg(imgCrop); //render the image after saving
+  //   //import image to storage and get url
+  //   const storage = getStorage();
+  //   const uploadRef = ref(storage, `images/${randomId}.png`);
+  //   uploadString(uploadRef, imgCrop, "data_url").then((snapshot) => {
+  //     getDownloadURL(uploadRef).then(async (url: any) => {
+  //       // Store the file's URL in Firestore
+  //       try {
+  //         const docRef = await addDoc(collection(db, "userIcon"), {
+  //           imageName: `${randomId}.png`,
+  //           url: url,
+  //           uid: user.uid,
+  //           email: user.email,
+  //           timestamp: serverTimestamp(),
+  //         });
+  //         if (docRef) {
+  //           if (user.email && url) {
+  //             // update all tweet of the user with the user icon if upload success
+  //             updateicon(user.email, url);
+  //             setUser({
+  //               ...user,
+  //               userIcon: url,
+  //             });
+  //           }
+  //         }
+  //       } catch (e) {
+  //         console.log("error", e);
+  //       }
+  //     });
+  //     setLoading(false);
+  //     setSaveMessage("Save✅");
+  //   });
+  // };
   return (
     // <Modal className="p-10" onClose={onClose}>
     //   {loading && (
