@@ -22,12 +22,12 @@ import Modal from "../../UI/Modal";
 import UserContext from "../../store/UserContext";
 import "./Spinner.css";
 interface Props {
-  // onClose: () => void;
+  onClose: () => void;
   // imgCrop: string | boolean;
   // storeImg: string | boolean;
 }
 
-function SetIcon() {
+function SetIcon({ onClose }: Props) {
   const { user, setUser } = useContext(UserContext);
 
   const [imgCrop, setImgCrop] = useState("");
@@ -105,7 +105,7 @@ function SetIcon() {
     });
   };
   return (
-    <Modal className="p-10">
+    <Modal className="p-10" onClose={onClose}>
       {loading && (
         <div className="mb-3 inset-0 flex items-center justify-center">
           <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
@@ -148,7 +148,7 @@ function SetIcon() {
       )}
       <div className="text-center">
         <button
-          // onClick={onClose}
+          onClick={onClose}
           type="button"
           className="text-white lg:pr-20 lg:pl-20  bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
         >

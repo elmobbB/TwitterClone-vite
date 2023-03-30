@@ -39,9 +39,9 @@ const SideBar = () => {
     setShowModal(true);
   };
 
-  // const hideModalHandler = () => {
-  //   setShowModal(false);
-  // };
+  const hideModalHandler = () => {
+    setShowModal(false);
+  };
 
   // const showMessageModalHandler = () => {
   //   setMessageShowModal(true);
@@ -82,7 +82,8 @@ const SideBar = () => {
       <button onClick={showModalHandler}>
         <SideBarRow Icon={UserIcon} title="profile" />
       </button>
-      {showModal && <SetIcon />}
+      <SetIcon onClose={hideModalHandler} />
+      {/* {showModal && <SetIcon onClose={hideModalHandler} />} */}
       <button
         onClick={signoutHandler}
         className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
