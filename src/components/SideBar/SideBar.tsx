@@ -82,7 +82,7 @@ const SideBar = () => {
       <button onClick={showModalHandler}>
         <SideBarRow Icon={UserIcon} title="profile" />
       </button>
-      <SetIcon />
+
       {/* {showModal && <SetIcon onClose={hideModalHandler} />} */}
       <button
         onClick={signoutHandler}
