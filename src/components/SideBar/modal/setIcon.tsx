@@ -17,7 +17,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase";
-import Modal from "../../UI/Modal";
+// import Modal from "../../UI/Modal";
 
 import UserContext from "../../store/UserContext";
 import "./Spinner.css";
@@ -105,7 +105,8 @@ function SetIcon({ onClose }: Props) {
     });
   };
   return (
-    <Modal className="p-10" onClose={onClose}>
+    // <Modal className="p-10" onClose={onClose}>
+    <div>
       {loading && (
         <div className="mb-3 inset-0 flex items-center justify-center">
           <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
@@ -155,7 +156,8 @@ function SetIcon({ onClose }: Props) {
           Close
         </button>
       </div>
-    </Modal>
+    </div>
+    // </Modal>
   );
 }
 
