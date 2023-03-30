@@ -17,4 +17,7 @@ export default defineConfig({
     tsConfigPaths(),
     EnvironmentPlugin("all", { prefix: "REACT_APP_" }),
   ],
+  build: {
+    chunkSizeWarningLimit: 1600,
+  },
 });
