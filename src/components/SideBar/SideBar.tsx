@@ -14,7 +14,7 @@ import {
 import SideBarRow from "./SideBarRow";
 import TweetButton from "./TweetButton";
 import firebase from "firebase/compat/app";
-// import SetIcon from "./modal/SetIcon";
+import SetIcon from "./modal/SetIcon";
 import UserContext from "../store/UserContext";
 import { useContext } from "react";
 import avatar from "../../img/avatar.svg";
@@ -39,9 +39,9 @@ const SideBar = () => {
     setShowModal(true);
   };
 
-  const hideModalHandler = () => {
-    setShowModal(false);
-  };
+  // const hideModalHandler = () => {
+  //   setShowModal(false);
+  // };
 
   // const showMessageModalHandler = () => {
   //   setMessageShowModal(true);
@@ -82,7 +82,7 @@ const SideBar = () => {
       <button onClick={showModalHandler}>
         <SideBarRow Icon={UserIcon} title="profile" />
       </button>
-      {/* {showModal && <SetIcon onClose={hideModalHandler} />} */}
+      {showModal && <SetIcon />}
       <button
         onClick={signoutHandler}
         className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
