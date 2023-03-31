@@ -81,6 +81,7 @@ function UsersMessagesThread({
   const fireBaseTime = new Date(
     time.seconds * 1000 + time.nanoseconds / 1000000
   );
+  // const date = fireBaseTime.toDateString().slice(0, -4);
   const date = fireBaseTime.toDateString();
   const atTime = fireBaseTime.toLocaleTimeString();
 
@@ -98,13 +99,13 @@ function UsersMessagesThread({
         className="h-12 w-12 rounded-full object-cover "
         src={receiverIcon || avatar}
       />
-      <div className=" items-center ">
+      <div className=" items-center">
         <h1 className="p-5 pb-0 text-lg">{username}</h1>
-        <div className="flex justify-between ">
-          <div className=" p-5 pb-0 text-xs  text-gray-500">
+        <div className="flex justify-between">
+          <div className=" p-5 pb-0 text-xs  w-full  text-gray-500">
             {allReceivingMessage?.messageContent.slice(0, 13)}
           </div>
-          <div className="p-5 pb-0 text-xs  text-gray-500">
+          <div className="p-5 pb-0 text-xs text-gray-500">
             {allReceivingMessage?.timestamp?.seconds ? `${date}${atTime}` : ""}
           </div>
         </div>
