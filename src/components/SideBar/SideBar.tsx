@@ -64,35 +64,54 @@ const SideBar = () => {
         src="https://links.papareact.com/drq"
         alt="twiiter icon"
       />
+
       <Link to="/">
-        <SideBarRow Icon={HomeIcon} title="home" />
+        <div className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group">
+          <HomeIcon className="h-7 w-7" />
+          <p className="hidden cursor-pointer group-hover:text-twitter md:inline-flex text-base lg:text-xl ">
+            home
+          </p>
+        </div>
       </Link>
 
       <SideBarRow Icon={HashtagIcon} title="explore" />
       <SideBarRow Icon={BellIcon} title="notification" />
 
       <Link to="/chatroom">
-        <SideBarRow Icon={EnvelopeIcon} title="message" />
+        <div className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group">
+          <EnvelopeIcon className="h-7 w-7" />
+          <p className="hidden cursor-pointer group-hover:text-twitter md:inline-flex text-base lg:text-xl ">
+            message
+          </p>
+        </div>
       </Link>
 
       <SideBarRow Icon={BookmarkIcon} title="bookmarks" />
       <SideBarRow Icon={ClipboardDocumentCheckIcon} title="lists" />
 
       <SideBarRow Icon={EllipsisHorizontalIcon} title="more" />
-      <button onClick={showModalHandler}>
-        <SideBarRow Icon={UserIcon} title="profile" />
+      <button
+        className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
+        onClick={showModalHandler}
+      >
+        <UserIcon className="h-7 w-7" />
+        <p className="hidden cursor-pointer group-hover:text-twitter md:inline-flex text-base lg:text-xl ">
+          profile
+        </p>
       </button>
+
       {showModal && <SetIcon onClose={hideModalHandler} />}
+
       <button
         onClick={signoutHandler}
         className="flex max-w-fit items-center space-x-2 px-4 py-3 rounded-full  hover:bg-gray-100 transition-all duration-200 group"
       >
         <ArrowLeftOnRectangleIcon className="h-7 w-7" />
-        <p className="hidden group-hover:text-twitter md:inline-flex text-base lg:text-xl ">
+        <p className="hidden cursor-pointer group-hover:text-twitter md:inline-flex text-base lg:text-xl ">
           Sign Out
         </p>
       </button>
-      <TweetButton />
+      {/* <TweetButton /> */}
       <div className="static hidden lg:block">
         <div className="flex text-center items-center my-40">
           <div>

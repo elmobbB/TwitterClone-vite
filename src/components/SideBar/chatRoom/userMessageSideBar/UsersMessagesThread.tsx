@@ -73,15 +73,16 @@ function UsersMessagesThread({
     });
   };
 
-  // console.log(allReceivingMessage?.timestamp?.seconds);
+  let time = {
+    seconds: allReceivingMessage?.timestamp?.seconds,
+    nanoseconds: allReceivingMessage?.timestamp?.nanoseconds,
+  };
 
-  function toDateTime(secs: number) {
-    var t = new Date(1970, 0, 1);
-    t.setSeconds(secs);
-    return t;
-  }
-
-  const date = toDateTime(allReceivingMessage?.timestamp?.seconds);
+  const fireBaseTime = new Date(
+    time.seconds * 1000 + time.nanoseconds / 1000000
+  );
+  const date = fireBaseTime.toDateString();
+  const atTime = fireBaseTime.toLocaleTimeString();
 
   return (
     <div
@@ -89,25 +90,23 @@ function UsersMessagesThread({
         handleClick();
         setSelectedIndex(index);
       }}
-      className={`items-center flex space-x-2 p-3 border-b cursor-pointer   
-      ${index == selectedIndex ? "bg-blue-200" : ""}
+      className={`items-center flex space-x-2 p-3 border-b hover:bg-blue-200  cursor-pointer   
+      ${index == selectedIndex ? "bg-blue-200" : ""}  
       `}
     >
       <img
         className="h-12 w-12 rounded-full object-cover "
         src={receiverIcon || avatar}
       />
-      <div className=" items-center justify-between ">
+      <div className=" items-center ">
         <h1 className="p-5 pb-0 text-lg">{username}</h1>
-        <div className="flex items-center  justify-content">
-          <h1 className="p-5 pb-0 text-xs text-gray-500">
-            {allReceivingMessage?.messageContent}
-          </h1>
-          <h3 className="p-5 pb-0 text-xs  text-gray-500">
-            {allReceivingMessage?.timestamp?.seconds
-              ? date?.toLocaleTimeString("en-HK")
-              : ""}
-          </h3>
+        <div className="flex justify-between ">
+          <div className=" p-5 pb-0 text-xs  text-gray-500">
+            {allReceivingMessage?.messageContent.slice(0, 13)}
+          </div>
+          <div className="p-5 pb-0 text-xs  text-gray-500">
+            {allReceivingMessage?.timestamp?.seconds ? `${date}${atTime}` : ""}
+          </div>
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import MessageContext from "../../store/MessageContext";
+import ScrollContainer from "./userMessageSideBar/ScrollContainer";
 
 interface myType {
   email: string;
@@ -59,7 +60,7 @@ function Chats() {
 
   const randomkey = Math.random().toString(36).substring(2, 9) + "";
   return (
-    <div className="col-span-7 lg:col-span-5 px-2 mt-2 overflow-scroll">
+    <div className=" col-span-7 lg:col-span-5 px-2 mt-2  border-l border-r">
       <div className=" items-center flex space-x-2 p-5 border-b mb-6">
         <img
           className="h-14 w-14 rounded-full object-cover mt-4"
@@ -70,9 +71,14 @@ function Chats() {
         </div>
       </div>
 
-      {/* map all message and use if else to differentiate whether the message is  from others/me */}
-      <div className="w-full px-5 flex flex-col justify-between">
-        <div className="flex flex-col mt-5 mb-96">
+      <div
+        className="w-full "
+        style={{
+          height: "545px",
+          border: "2px solid white",
+        }}
+      >
+        <ScrollContainer>
           {/* sort by timestamp */}
           {message.receiverEmail != null &&
             allMessages.map((message) => {
@@ -118,9 +124,10 @@ function Chats() {
                 </div>
               );
             })}
-        </div>
+        </ScrollContainer>
       </div>
       {/* {allMessages.length > 0 && ( */}
+
       <form onSubmit={submitHandler}>
         <div className="py-5 flex justify-between">
           <input

@@ -93,27 +93,7 @@ const App = () => {
             uploadedmessage: [],
           };
 
-          //create usercollection, put the latest message and it's timestamp in it as well
-          // const usercollection_doc_refs = await query(
-          //   collection(db, `messages`),
-          //   orderBy("timestamp", "asc"),
-          //   where("receiver", "==", _user.email)
-          //   // limit(1)
-          // );
-          // onSnapshot(usercollection_doc_refs, (snapshot) => {
-          //   const loadedmessage: myType[] = [];
-
-          //   snapshot.docs.forEach((doc: any) => {
-          //     loadedmessage.push({
-          //       messageTimeStamp: doc.data().timestamp,
-          //       messageContent: doc.data().messageContent,
-          //       id: doc.id,
-          //     });
-          //     // setUploadedMessage(loadedmessage);
-          //     docData.uploadedmessage.push(loadedmessage);
-          //   });
-          //   console.log(docData);
-          // });
+          //create usercollection,
           await setDoc(doc(db, "data", `${_user.email}`), docData);
         } catch (error) {
           console.log("Unexpected error", error);

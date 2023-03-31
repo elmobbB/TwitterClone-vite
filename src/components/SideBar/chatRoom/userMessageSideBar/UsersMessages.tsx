@@ -6,7 +6,6 @@ import MessageContext from "../../../store/MessageContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { reverse } from "dns";
-import { Select, MenuItem } from "@mui/material";
 import { query, where } from "firebase/firestore";
 import {
   addDoc,
@@ -14,6 +13,9 @@ import {
   orderBy,
   onSnapshot,
 } from "firebase/firestore";
+import Select from "react-dropdown-select";
+import { useRef } from "react";
+import ScrollContainer from "./ScrollContainer";
 interface myType {
   uid: string;
   email: string;
@@ -96,16 +98,13 @@ function UsersMessages() {
           </button>
         </div>
       </div>
-
       {userCollection.map((receiver, index: number) => {
         return (
           //make changes later
           <UsersMessagesThread
             index={index}
             allReceivingMessage={uploadedMessage
-              .filter((message) => {
-                return message.email === receiver.email;
-              })
+              .filter((message) => message.email === receiver.email)
               .pop()}
             userToReceiver={`${user.email}-AND-${receiver.email}`}
             key={receiver.id}
