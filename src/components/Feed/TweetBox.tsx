@@ -126,10 +126,11 @@ function TweetBox() {
               placeholder="What's Happening?"
             />
             <div className="border border-black rounded-lg max-w-fit">
-              <label htmlFor="image" className="items-center  max-w-fit ">
-                + Add Images
-                <br />
+              <label>
+                <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />
+
                 <input
+                  className="hidden"
                   type="file"
                   name="image"
                   onChange={onSelectFile}

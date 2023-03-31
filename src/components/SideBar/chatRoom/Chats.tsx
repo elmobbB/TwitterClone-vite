@@ -71,83 +71,87 @@ function Chats() {
         </div>
       </div>
 
-      <div
-        className="w-full "
-        style={{
-          height: "545px",
-          border: "2px solid white",
-        }}
-      >
-        <ScrollContainer>
-          {/* sort by timestamp */}
-          {message.receiverEmail != null &&
-            allMessages.map((message) => {
-              return (
-                <div key={message.id}>
-                  {/* take all messages out, filter the the current user and receiver's email  */}
-                  {(message.email === currentUser &&
-                    receiver === message.receiver) ||
-                  (message.email === receiver &&
-                    message.receiver === currentUser) ? (
-                    <div>
-                      {message.email === currentUser ? (
-                        <div className="flex justify-end mb-4">
-                          <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                            {message.messageContent}
-                            {/* {receiver === message.receiver && message.messageContent} */}
+      {message.isClick && (
+        <div
+          className="w-full "
+          style={{
+            height: "545px",
+            border: "2px solid white",
+          }}
+        >
+          <ScrollContainer>
+            {/* sort by timestamp */}
+            {message.receiverEmail != null &&
+              allMessages.map((message) => {
+                return (
+                  <div key={message.id}>
+                    {/* take all messages out, filter the the current user and receiver's email  */}
+                    {(message.email === currentUser &&
+                      receiver === message.receiver) ||
+                    (message.email === receiver &&
+                      message.receiver === currentUser) ? (
+                      <div>
+                        {message.email === currentUser ? (
+                          <div className="flex justify-end mb-4">
+                            <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+                              {message.messageContent}
+                              {/* {receiver === message.receiver && message.messageContent} */}
+                            </div>
+
+                            <img
+                              className="h-12 w-12 rounded-full object-cover mt-4"
+                              src={message.userIcon || avatar}
+                              alt="usericon"
+                            ></img>
                           </div>
+                        ) : (
+                          <div className="flex justify-start mb-4">
+                            <img
+                              className="h-12 w-12 rounded-full object-cover mt-4"
+                              src={message.userIcon}
+                              alt="usericon"
+                            ></img>
+                            <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
+                              {message.messageContent || avatar}
 
-                          <img
-                            className="h-12 w-12 rounded-full object-cover mt-4"
-                            src={message.userIcon || avatar}
-                            alt="usericon"
-                          ></img>
-                        </div>
-                      ) : (
-                        <div className="flex justify-start mb-4">
-                          <img
-                            className="h-12 w-12 rounded-full object-cover mt-4"
-                            src={message.userIcon}
-                            alt="usericon"
-                          ></img>
-                          <div className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-                            {message.messageContent || avatar}
-
-                            {/* {receiver === message.receiver && message.messageContent} */}
+                              {/* {receiver === message.receiver && message.messageContent} */}
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div>{/* user havent contacted the receiver */}</div>
-                  )}
-                </div>
-              );
-            })}
-        </ScrollContainer>
-      </div>
-      {/* {allMessages.length > 0 && ( */}
-
-      <form onSubmit={submitHandler}>
-        <div className="py-5 flex justify-between">
-          <input
-            type="text"
-            onChange={messageInputHandler}
-            className=" w-9/12 bg-gray-300 py-5 px-3 rounded-xl"
-            placeholder="type your message here..."
-            value={messageInput}
-          />
-          <div>
-            <button
-              disabled={!messageInput}
-              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
-              type="submit"
-            >
-              send
-            </button>
-          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div>{/* user havent contacted the receiver */}</div>
+                    )}
+                  </div>
+                );
+              })}
+          </ScrollContainer>
         </div>
-      </form>
+      )}
+      {/* {allMessages.length > 0 && ( */}
+      {message.isClick && (
+        <form onSubmit={submitHandler}>
+          <div className="py-5 flex justify-between">
+            <input
+              type="text"
+              onChange={messageInputHandler}
+              className=" w-9/12 bg-gray-300 py-5 px-3 rounded-xl"
+              placeholder="type your message here..."
+              value={messageInput}
+            />
+            <div>
+              <button
+                disabled={!messageInput}
+                className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
+                type="submit"
+              >
+                send
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
       {/* )} */}
     </div>
   );

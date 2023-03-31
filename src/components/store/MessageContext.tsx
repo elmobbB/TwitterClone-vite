@@ -15,6 +15,7 @@ interface IUser {
     receiver: string;
     id: string;
   }[];
+  isClick: boolean;
 }
 interface Type {
   message: IUser;
@@ -27,6 +28,7 @@ const MessageContext = createContext<Type>({
     receiverUid: "",
     userToReceiver: "",
     uploadedMessage: [],
+    isClick: false,
   },
   setMessage: () => {},
 });

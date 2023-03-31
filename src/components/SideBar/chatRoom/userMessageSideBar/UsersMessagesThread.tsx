@@ -69,8 +69,11 @@ function UsersMessagesThread({
         receiverUid,
         userToReceiver,
         uploadedMessage: loadedmessage,
+        isClick: true,
       });
     });
+
+    // onpassClick(true);
   };
 
   let time = {

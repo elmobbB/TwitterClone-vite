@@ -51,11 +51,13 @@ const App = () => {
       receiver: string;
       id: string;
     }[];
+    isClick: boolean;
   }>({
     receiverEmail: "",
     receiverUid: "",
     userToReceiver: "",
     uploadedMessage: [],
+    isClick: false,
   });
   const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
 
