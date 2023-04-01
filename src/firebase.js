@@ -15,15 +15,25 @@ const appId = import.meta.env.REACT_APP_APP_ID;
 const measurementID = import.meta.env.REACT_APP_MEASUREMENT_ID;
 
 const firebaseConfig = {
-  apiKey: `${apiKey}`,
-  authDomain: `${domain}`,
-  databaseURL: `${baseURL}`,
-  projectId: `${projectID}`,
-  storageBucket: `${storageBucket}`,
-  messagingSenderId: `${senderID}`,
-  appId: `${appId}`,
-  measurementId: `${measurementID}`,
+  apiKey: "AIzaSyDfU6mOcDHfBQKcufkg6cmCNGiFIkAsLZo",
+  authDomain: "twitter-database-a9d09.firebaseapp.com",
+  databaseURL: "https://twitter-database-a9d09-default-rtdb.firebaseio.com",
+  projectId: "twitter-database-a9d09",
+  storageBucket: "twitter-database-a9d09.appspot.com",
+  messagingSenderId: "211773134489",
+  appId: "1:211773134489:web:7fec9611ca83be06400a08",
+  measurementId: "G-12873YS1ZY",
 };
+// const firebaseConfig = {
+//   apiKey: `${apiKey}`,
+//   authDomain: `${domain}`,
+//   databaseURL: `${baseURL}`,
+//   projectId: `${projectID}`,
+//   storageBucket: `${storageBucket}`,
+//   messagingSenderId: `${senderID}`,
+//   appId: `${appId}`,
+//   measurementId: `${measurementID}`,
+// };
 
 // Initialize Firebase
 export const App = firebase.initializeApp(firebaseConfig);
