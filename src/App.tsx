@@ -130,7 +130,7 @@ const App = () => {
       <UserContext.Provider value={{ user, setUser }}>
         <div className="App mx-auto lg:max-w-7xl grid grid-cols-10 gap-3 overflow-hidden">
           <BrowserRouter>
-            {/* {user.email && user.email !== "" && <SideBar />} */}
+            {user.email && user.email !== "" && <SideBar />}
             <Routes>
               {user.email && user.email !== "" ? (
                 <>
@@ -138,8 +138,8 @@ const App = () => {
                     path="/"
                     element={
                       <>
-                        <Feed />
-                        <Widgets />
+                        {/* <Feed />
+                        <Widgets /> */}
                       </>
                     }
                   />
