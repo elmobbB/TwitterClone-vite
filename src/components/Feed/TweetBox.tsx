@@ -125,21 +125,18 @@ function TweetBox() {
               type="text"
               placeholder="What's Happening?"
             />
-            <div className=" rounded-lg max-w-fit">
-              {/* <label>
-                <div className=" flex flex-1 space-x-2">
-                  add photo
-                  <PhotoIcon className=" text-twitter h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />
-                </div>
+            <div className="border border-black rounded-lg max-w-fit">
+              <label htmlFor="image" className="items-center  max-w-fit ">
+                + Add Images
+                <br />
                 <input
-                  className="hidden"
                   type="file"
                   name="image"
                   onChange={onSelectFile}
                   multiple
                   accept="image/jpeg, image/png, image/webp, image/svg"
                 />
-              </label> */}
+              </label>
             </div>
             <div>
               <button
@@ -175,7 +172,7 @@ function TweetBox() {
 
             <div className="flex items-center">
               <div className=" flex flex-1 space-x-2 text-twitter">
-                {/* <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " /> */}
+                <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />
 
                 {/* <GifIcon className="h-5 w-5" />
                 <PhotoIcon className="h-5 w-5" />
