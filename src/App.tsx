@@ -138,8 +138,8 @@ const App = () => {
                     path="/"
                     element={
                       <>
-                        {/* <Feed /> */}
-                        <Widgets />
+                        <Feed />
+                        {/* <Widgets /> */}
                       </>
                     }
                   />
