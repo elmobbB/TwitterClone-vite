@@ -125,10 +125,12 @@ function TweetBox() {
               type="text"
               placeholder="What's Happening?"
             />
-            <div className="border border-black rounded-lg max-w-fit">
+            <div className=" rounded-lg max-w-fit">
               <label>
-                <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />
-
+                <div className=" flex flex-1 space-x-2">
+                  add photo
+                  <PhotoIcon className=" text-twitter h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />
+                </div>
                 <input
                   className="hidden"
                   type="file"
@@ -173,7 +175,7 @@ function TweetBox() {
 
             <div className="flex items-center">
               <div className=" flex flex-1 space-x-2 text-twitter">
-                <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " />
+                {/* <PhotoIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150 " /> */}
 
                 {/* <GifIcon className="h-5 w-5" />
                 <PhotoIcon className="h-5 w-5" />

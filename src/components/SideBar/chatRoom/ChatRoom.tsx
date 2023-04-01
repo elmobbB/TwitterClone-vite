@@ -17,8 +17,8 @@ const ChatRoom = () => {
   const passAllUserData = (allUser: Type) => {};
   return (
     <>
-      {/* <Chats />
-      <UsersMessages /> */}
+      <Chats />
+      <UsersMessages />
     </>
   );
 };
