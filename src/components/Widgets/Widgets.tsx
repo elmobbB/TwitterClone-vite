@@ -10,7 +10,6 @@ interface Props {
   screenName: string;
   options: { height: number };
 }
-
 export default function Widgets() {
   return (
     <div className="col-span-3 px-2 mt-2 hidden lg:inline ">
@@ -25,7 +24,8 @@ export default function Widgets() {
         />
       </div>
 
-      <TwitterTimelineEmbed
+      {/* <TwitterTimelineEmbed
+        // backgroundColor="#202327"
         noScrollbar
         // onLoad={function noRefCheck() {}}
         sourceType="profile"
@@ -33,7 +33,7 @@ export default function Widgets() {
         options={{
           height: 1200,
         }}
-      />
+      /> */}
     </div>
   );
 }
