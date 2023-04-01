@@ -138,7 +138,7 @@ const App = () => {
                     path="/"
                     element={
                       <>
-                        <Feed />
+                        {/* <Feed /> */}
                         <Widgets />
                       </>
                     }
