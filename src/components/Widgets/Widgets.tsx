@@ -25,7 +25,7 @@ export default function Widgets() {
         />
       </div>
 
-      <TwitterTimelineEmbed
+      {/* <TwitterTimelineEmbed
         // backgroundColor="#202327"
         noScrollbar
         onLoad={function noRefCheck() {}}
@@ -34,7 +34,7 @@ export default function Widgets() {
         options={{
           height: 1200,
         }}
-      />
+      /> */}
     </div>
   );
 }

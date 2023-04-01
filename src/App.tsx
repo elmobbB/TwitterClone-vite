@@ -139,7 +139,7 @@ const App = () => {
                     element={
                       <>
                         <Feed />
-                        {/* <Widgets /> */}
+                        <Widgets />
                       </>
                     }
                   />
