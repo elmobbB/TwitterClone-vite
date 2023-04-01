@@ -25,16 +25,15 @@ export default function Widgets() {
         />
       </div>
 
-      {/* <TwitterTimelineEmbed
-        // backgroundColor="#202327"
+      <TwitterTimelineEmbed
         noScrollbar
-        onLoad={function noRefCheck() {}}
+        // onLoad={function noRefCheck() {}}
         sourceType="profile"
         screenName="OpenAI"
         options={{
           height: 1200,
         }}
-      /> */}
+      />
     </div>
   );
 }
