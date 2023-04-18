@@ -1,6 +1,8 @@
 import React from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { TwitterTimelineEmbed } from "react-twitter-embed";
+// import { TwitterTimelineEmbed } from "react-twitter-embed";
+// import TweetEmbed from "react-tweet-embed";
+import { Timeline } from "react-twitter-widgets";
 
 interface Props {
   backgroundColor: string;
@@ -23,7 +25,6 @@ export default function Widgets() {
           //   flex-1 :input takes up available space
         />
       </div>
-
       {/* <TwitterTimelineEmbed
         // backgroundColor="#202327"
         noScrollbar
@@ -34,6 +35,16 @@ export default function Widgets() {
           height: 1200,
         }}
       /> */}
+      {/* <TweetEmbed tweetId="1648113929162203136" options={{ cards: "hidden" }} /> */}
+      <Timeline
+        dataSource={{
+          sourceType: "profile",
+          screenName: "OpenAI",
+        }}
+        options={{
+          height: "400",
+        }}
+      />
     </div>
   );
 }
