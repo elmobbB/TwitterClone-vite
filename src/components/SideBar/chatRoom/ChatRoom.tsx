@@ -6,15 +6,7 @@ import SideBar from "../SideBar";
 import Chats from "./Chats";
 import UsersMessages from "./userMessageSideBar/UsersMessages";
 
-interface Type {
-  email: string | null;
-  uid: string | null;
-  userToReceiver: string | null;
-}
-
 const ChatRoom = () => {
-  const { message } = useContext(MessageContext);
-  const passAllUserData = (allUser: Type) => {};
   return (
     <>
       <Chats />

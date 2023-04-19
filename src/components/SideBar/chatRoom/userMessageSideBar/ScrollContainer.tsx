@@ -1,11 +1,11 @@
 import React from "react";
 import { useEffect, useRef, useState, useCallback } from "react";
 
-const ScrollContainer = ({ children }: any) => {
+const ScrollContainer = ({ children, scrollCta }: any) => {
   const outerDiv = useRef<HTMLDivElement>(document.createElement("div"));
   const innerDiv = useRef<HTMLDivElement>(document.createElement("div"));
 
-  const prevInnerDivHeight = useRef(-1);
+  const prevInnerDivHeight = useRef(0);
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
@@ -68,16 +68,15 @@ const ScrollContainer = ({ children }: any) => {
         </div>
       </div>
       <button
-        className="text-white absolute left-1/2 bg-twitter hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-700  "
         style={{
-          color: "white",
           transform: "translateX(-50%)",
           opacity: showScrollButton ? 1 : 0,
           pointerEvents: showScrollButton ? "auto" : "none",
         }}
+        className="absolute bg-red-500 text-white bottom-1 left-1/2 w-28 rounded-lg text-sm transition-all duration-300"
         onClick={handleScrollButtonClick}
       >
-        Scroll to bottom
+        {scrollCta}
       </button>
     </div>
   );

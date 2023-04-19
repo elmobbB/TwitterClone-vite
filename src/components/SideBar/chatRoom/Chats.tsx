@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import MessageContext from "../../store/MessageContext";
 import ScrollContainer from "./userMessageSideBar/ScrollContainer";
-
+import ChatMessage from "./ChatMessage";
 interface myType {
   email: string;
   timestamp: string;
@@ -54,11 +54,13 @@ function Chats() {
       console.log(error);
     }
   };
+  const [numItems, setNumItems] = useState(5);
 
   const currentUser = user.email;
   const receiver = message.receiverEmail; //context
 
   const randomkey = Math.random().toString(36).substring(2, 9) + "";
+
   return (
     <div className=" col-span-7 lg:col-span-5 px-2 mt-2  border-l border-r">
       <div className=" items-center flex space-x-2 p-5 border-b mb-6">
@@ -79,7 +81,7 @@ function Chats() {
             border: "2px solid white",
           }}
         >
-          <ScrollContainer>
+          <ScrollContainer scrollCta="New message!">
             {/* sort by timestamp */}
             {message.receiverEmail != null &&
               allMessages.map((message) => {
@@ -140,13 +142,24 @@ function Chats() {
               value={messageInput}
             />
             <div>
-              <button
+              <div className="mt-2">
+                <button
+                  typeof="button"
+                  onClick={() => {
+                    setNumItems(numItems + 1);
+                  }}
+                  className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
+                >
+                  send
+                </button>
+              </div>
+              {/* <button
                 disabled={!messageInput}
                 className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
                 type="submit"
               >
                 send
-              </button>
+              </button> */}
             </div>
           </div>
         </form>

@@ -43,8 +43,8 @@ function UsersMessagesThread({
   const [uploadedMessage, setUploadedMessage] = useState<myType[]>([]);
   const { user } = useContext(UserContext);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  //get message
 
+  // get message
   const handleClick = async () => {
     // setIsActive(`${receiverUid}`);
     console.log(receiverUid);
@@ -72,8 +72,6 @@ function UsersMessagesThread({
         isClick: true,
       });
     });
-
-    // onpassClick(true);
   };
 
   let time = {
@@ -94,8 +92,8 @@ function UsersMessagesThread({
         handleClick();
         setSelectedIndex(index);
       }}
+      // ${index == selectedIndex ? "bg-blue-200" : "white"}
       className={`items-center flex space-x-2 p-3 border-b hover:bg-blue-200  cursor-pointer   
-      ${index == selectedIndex ? "bg-blue-200" : ""}  
       `}
     >
       <img
