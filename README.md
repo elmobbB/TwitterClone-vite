@@ -4,16 +4,17 @@
 
 <h4>Getting Started with vite</h4>
 
-# Clone the repository
+<h4>Clone the repository</h4>
 $ git clone https://github.com/elmobbB/TwitterClone-vite
 
-# Install dependencies
+<h4>Install dependencies</h4> 
 $ npm install
 
-# Start application
+<h4>Start application</h4>
 $ npm run vite
 
-# Application running on port 5173
+<h4>Application running on port 5173</h4>
 
-Contact
-pnthaha@gmail.com
+<h3>Contact</h3>
+<h4>pnthaha@gmail.com
+</h4>
