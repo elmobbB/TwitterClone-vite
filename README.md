@@ -1,5 +1,8 @@
-#Start project
-# Getting Started with vite
+<h1>Twitter clone</h1>
+
+<h3>Start project</h3>
+
+<h4>Getting Started with vite</h4>
 
 # Clone the repository
 $ git clone https://github.com/elmobbB/TwitterClone-vite
