@@ -1,4 +1,4 @@
-Start project
+#Start project
 # Getting Started with vite
 
 # Clone the repository
