@@ -144,7 +144,8 @@ function Chats() {
             <div>
               <div className="mt-2">
                 <button
-                  typeof="button"
+                  disabled={!messageInput}
+                  typeof="submit"
                   onClick={() => {
                     setNumItems(numItems + 1);
                   }}
@@ -153,13 +154,6 @@ function Chats() {
                   send
                 </button>
               </div>
-              {/* <button
-                disabled={!messageInput}
-                className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded my-1.5 disabled:opacity-40"
-                type="submit"
-              >
-                send
-              </button> */}
             </div>
           </div>
         </form>

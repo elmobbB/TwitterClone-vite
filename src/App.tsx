@@ -90,6 +90,7 @@ const App = () => {
           let docData = {
             uid: _user.uid,
             email: _user.email,
+            username: _user.email?.substring(0, _user.email?.lastIndexOf("@")),
             timestamp: serverTimestamp(),
             photoURL: _user.photoURL,
             uploadedmessage: [],

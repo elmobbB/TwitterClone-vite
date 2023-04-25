@@ -2,23 +2,24 @@ import React from "react";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const ScrollContainer = ({ children, scrollCta }: any) => {
-  const outerDiv = useRef<HTMLDivElement>(document.createElement("div"));
-  const innerDiv = useRef<HTMLDivElement>(document.createElement("div"));
+  const outerDiv = useRef<HTMLDivElement | null>(null);
+  // const innerDiv = useRef<HTMLDivElement>(document.createElement("div"));
+  const innerDiv = useRef<HTMLDivElement | null>(null);
 
   const prevInnerDivHeight = useRef(0);
 
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   useEffect(() => {
-    const outerDivHeight = outerDiv.current.clientHeight;
-    const innerDivHeight = innerDiv.current.clientHeight;
-    const outerDivScrollTop = outerDiv.current.scrollTop;
+    const outerDivHeight = outerDiv.current!.clientHeight;
+    const innerDivHeight = innerDiv.current!.clientHeight;
+    const outerDivScrollTop = outerDiv.current!.scrollTop;
 
     if (
       !prevInnerDivHeight.current ||
       outerDivScrollTop === prevInnerDivHeight.current - outerDivHeight
     ) {
-      outerDiv.current.scrollTo({
+      outerDiv.current!.scrollTo({
         top: innerDivHeight! - outerDivHeight!,
         left: 0,
         behavior: prevInnerDivHeight.current ? "smooth" : "auto",
@@ -31,10 +32,10 @@ const ScrollContainer = ({ children, scrollCta }: any) => {
   }, [children]);
 
   const handleScrollButtonClick = useCallback(() => {
-    const outerDivHeight = outerDiv.current.clientHeight;
-    const innerDivHeight = innerDiv.current.clientHeight;
+    const outerDivHeight = outerDiv.current!.clientHeight;
+    const innerDivHeight = innerDiv.current!.clientHeight;
 
-    outerDiv.current.scrollTo({
+    outerDiv.current!.scrollTo({
       top: innerDivHeight! - outerDivHeight!,
       left: 0,
       behavior: "smooth",
